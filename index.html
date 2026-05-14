@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>三维页面</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml"
+        href="https://z2586300277.github.io/three-cesium-examples/files/site/logo.svg" />
+    <script src="./githubExamples.js"></script>
+    <script>  window.FIX_HOST = 'https://z2586300277.github.io/three-cesium-examples/'</script>
+    <script type="module" src="https://z2586300277.github.io/three-cesium-examples/config/config.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="module">
+
+        const index = window.THREE_CESIUM_NAVIGATION.findIndex(i => i.name === 'ThreeJS');
+        if (index !== -1) window.THREE_CESIUM_NAVIGATION.splice(index, 1);
+
+        const index2 = window.THREE_CESIUM_NAVIGATION.findIndex(i => i.name === 'CesiumJS');
+        if (index2 !== -1) window.THREE_CESIUM_NAVIGATION.splice(index2, 1);
+
+        const githubExamples = window.THREE_CESIUM_NAVIGATION.find(i => i.name === 'Github');
+        if (githubExamples) githubExamples.examples = window.GITHUB_EXAMPLES;
+
+    </script>
+</body>
+
+</html>
