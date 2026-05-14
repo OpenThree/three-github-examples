@@ -9,8 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml"
         href="https://z2586300277.github.io/three-cesium-examples/files/site/logo.svg" />
-    <script src="./githubExamples.js"></script>
-    <script>  window.FIX_HOST = 'https://z2586300277.github.io/three-cesium-examples/'</script>
+    <script type="module">
+        import GITHUB_EXAMPLES from './githubExamples.js';
+        window.GITHUB_EXAMPLES = GITHUB_EXAMPLES;
+        window.FIX_HOST = 'https://z2586300277.github.io/three-cesium-examples/'
+    </script>
     <script type="module" src="https://z2586300277.github.io/three-cesium-examples/config/config.js"></script>
 </head>
 
@@ -18,6 +21,7 @@
     <div id="app"></div>
     <script type="module">
 
+        // console.log('GITHUB_EXAMPLES', GITHUB_EXAMPLES);
         const index = window.THREE_CESIUM_NAVIGATION.findIndex(i => i.name === 'ThreeJS');
         if (index !== -1) window.THREE_CESIUM_NAVIGATION.splice(index, 1);
 

@@ -1,4 +1,4 @@
-window.GITHUB_EXAMPLES = [
+export default [
     {
         pid: 'threeMap',
         name: '三维地图',
