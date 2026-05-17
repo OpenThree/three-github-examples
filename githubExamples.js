@@ -69,6 +69,15 @@ export default [
                 image: HOST + 'images/FluffyGrass.webp',
             },
             {
+                id: 'wawa-baking',
+                name: '烘培房间',
+                name_en: 'wawa-baking',
+                author: 'AUTO',
+                openUrl: 'https://baking.wawasensei.dev/',
+                githubUrl: 'https://github.com/wass08/r3f-baking',
+                image: HOST + 'images/wawa-baking.webp',
+            },
+            {
                 id: 'abigail-bloom-portolio-bokoko33',
                 name: '个人房间',
                 name_en: 'abigail-bloom-portolio-bokoko33',
