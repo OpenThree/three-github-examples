@@ -14,7 +14,7 @@ export default [
                 githubUrl: 'https://github.com/GordenSun/LearningCell',
                 image: HOST + 'images/LearningCell.webp',
             },
-            {
+{
                 id: 'PSU-VR',
                 name: '室内vr',
                 name_en: 'PSU-VR',
@@ -32,7 +32,7 @@ export default [
                 githubUrl: 'https://github.com/andrewwoan/sooahs-room-folio',
                 image: HOST + 'images/sooahs-room-folio.webp',
             },
-            {
+{
                 id: 'r3f-webgpu-post-processing',
                 name: 'webgpu 后期渲染',
                 name_en: 'r3f-webgpu-post-processing',
@@ -41,7 +41,7 @@ export default [
                 githubUrl: 'https://github.com/ektogamat/r3f-webgpu-starter',
                 image: HOST + 'images/r3f-webgpu-post-processing.webp',
             },
-            {
+{
                 id: 'DeviceShowcase',
                 name: '电脑',
                 name_en: 'DeviceShowcase',
@@ -50,7 +50,7 @@ export default [
                 githubUrl: 'https://github.com/repalash/threepipe-device-mockup-codrops',
                 image: HOST + 'images/DeviceShowcase.webp',
             },
-            {
+{
                 id: 'bellas-park',
                 name: '公园',
                 name_en: 'bellas-park',
@@ -59,7 +59,7 @@ export default [
                 githubUrl: 'https://github.com/andrewwoan/bellas-park',
                 image: HOST + 'images/bellas-park.webp',
             },
-            {
+{
                 id: 'FluffyGrass',
                 name: '草地',
                 name_en: 'FluffyGrass',
@@ -78,13 +78,13 @@ export default [
                 image: HOST + 'images/wawa-baking.webp',
             },
             {
-                id: 'abigail-bloom-portolio-bokoko33',
-                name: '个人房间',
-                name_en: 'abigail-bloom-portolio-bokoko33',
+                id: 'pmndrs',
+                name: 'pmndrs 作品库',
+                name_en: 'pmndrs',
                 author: 'AUTO',
-                openUrl: 'https://abigail-bloom-portolio-bokoko33.vercel.app/',
-                githubUrl: 'https://github.com/andrewwoan/abigail-bloom-portolio-bokoko33',
-                image: HOST + 'images/abigail-bloom-portolio-bokoko33.webp',
+                openUrl: 'https://pmnd.rs/',
+                githubUrl: 'https://github.com/pmndrs/ react-three-fiber',
+                image: HOST + 'images/pmndrs.webp',
             },
         ]
     }
