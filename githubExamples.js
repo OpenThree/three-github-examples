@@ -96,6 +96,15 @@ export default [
                 image: HOST + 'images/zen-robot-garden.webp',
             },
             {
+                id: 'Abdul-Wasay-008',
+                name: '太阳系',
+                name_en: 'Abdul-Wasay-008',
+                author: 'AUTO',
+                openUrl: 'https://atlas26.vercel.app/dashboard',
+                githubUrl: 'https://github.com/Abdul-Wasay-008/Atlas26',
+                image: HOST + 'images/Abdul-Wasay-008.webp',
+            },
+            {
                 id: 'pmndrs',
                 name: 'pmndrs 作品库',
                 name_en: 'pmndrs',
