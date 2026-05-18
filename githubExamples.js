@@ -84,7 +84,7 @@ export default [
                 author: 'AUTO',
                 openUrl: 'https://tympanus.net/Development/TextureTransition/',
                 githubUrl: 'https://github.com/mohAmineBrs/codrops-noise-transition/',
-                image: HOST + 'images/68747470733a2f2f74796d70616e75732e6e65742f636f64726f70732f77702d636f6e74656e742f75706c6f6164732f323032342f30352f746578747572657472616e736974696f6e2e6a7067',
+                image: HOST + 'images/codrops-noise-transition.webp',
             },
             {
                 id: 'pmndrs',
