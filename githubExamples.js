@@ -123,6 +123,15 @@ export default [
                 image: HOST + 'images/bike-demo-threejs.webp',
             },
             {
+                id: 'off-axis-sneaker',
+                name: '图像识别控制',
+                name_en: 'off-axis-sneaker',
+                author: 'AUTO',
+                openUrl: 'https://off-axis-sneaker.bolt.host/',
+                githubUrl: 'https://github.com/icurtis1/off-axis-sneaker',
+                image: HOST + 'images/off-axis-sneaker.webp',
+            },
+            {
                 id: 'pmndrs',
                 name: 'pmndrs 作品库',
                 name_en: 'pmndrs',
