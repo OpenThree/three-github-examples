@@ -114,6 +114,15 @@ export default [
                 image: HOST + 'images/icraft.webp',
             },
             {
+                id: 'bike-demo-threejs',
+                name: 'bike-demo-threejs',
+                name_en: 'bike-demo-threejs',
+                author: 'AUTO',
+                openUrl: 'https://bike-demo-threejs.vercel.app/',
+                githubUrl: 'https://github.com/Kirilbt/bike-demo-threejs',
+                image: HOST + 'images/bike-demo-threejs.webp',
+            },
+            {
                 id: 'pmndrs',
                 name: 'pmndrs 作品库',
                 name_en: 'pmndrs',
