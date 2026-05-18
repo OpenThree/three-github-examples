@@ -87,6 +87,15 @@ export default [
                 image: HOST + 'images/codrops-noise-transition.webp',
             },
             {
+                id: 'zen-robot-garden',
+                name: '割草机器人',
+                name_en: 'zen-robot-garden',
+                author: 'AUTO',
+                openUrl: 'https://robin7331.github.io/zen-robot-garden/',
+                githubUrl: 'https://github.com/robin7331/zen-robot-garden',
+                image: HOST + 'images/zen-robot-garden.webp',
+            },
+            {
                 id: 'pmndrs',
                 name: 'pmndrs 作品库',
                 name_en: 'pmndrs',
