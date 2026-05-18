@@ -105,6 +105,15 @@ export default [
                 image: HOST + 'images/Abdul-Wasay-008.webp',
             },
             {
+                id: 'icraft',
+                name: 'icraft',
+                name_en: 'icraft',
+                author: 'AUTO',
+                openUrl: 'https://icraft.design/app/player/dmqSz2F-niKujD94cPb7-Zsa9zIH2Ggt',
+                githubUrl: 'https://github.com/gantFDT/icraft',
+                image: HOST + 'images/icraft.webp',
+            },
+            {
                 id: 'pmndrs',
                 name: 'pmndrs 作品库',
                 name_en: 'pmndrs',
