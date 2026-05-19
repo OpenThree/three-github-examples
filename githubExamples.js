@@ -132,6 +132,15 @@ export default [
                 image: HOST + 'images/off-axis-sneaker.webp',
             },
             {
+                id: 'tiny-world-builder',
+                name: 'tiny-world-builder',
+                name_en: 'tiny-world-builder',
+                author: 'AUTO',
+                openUrl: 'https://tinyworld.build/',
+                githubUrl: 'https://github.com/jasonkneen/tiny-world-builder',
+                image: HOST + 'images/tiny-world-builder.webp',
+            },
+            {
                 id: 'pmndrs',
                 name: 'pmndrs 作品库',
                 name_en: 'pmndrs',
