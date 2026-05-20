@@ -86,7 +86,7 @@ export default [
                 githubUrl: 'https://github.com/mohAmineBrs/codrops-noise-transition/',
                 image: HOST + 'images/codrops-noise-transition.webp',
             },
-            {
+{
                 id: 'zen-robot-garden',
                 name: '割草机器人',
                 name_en: 'zen-robot-garden',
@@ -95,7 +95,7 @@ export default [
                 githubUrl: 'https://github.com/robin7331/zen-robot-garden',
                 image: HOST + 'images/zen-robot-garden.webp',
             },
-            {
+{
                 id: 'Abdul-Wasay-008',
                 name: '太阳系',
                 name_en: 'Abdul-Wasay-008',
@@ -113,7 +113,7 @@ export default [
                 githubUrl: 'https://github.com/gantFDT/icraft',
                 image: HOST + 'images/icraft.webp',
             },
-            {
+{
                 id: 'bike-demo-threejs',
                 name: 'bike-demo-threejs',
                 name_en: 'bike-demo-threejs',
@@ -122,7 +122,7 @@ export default [
                 githubUrl: 'https://github.com/Kirilbt/bike-demo-threejs',
                 image: HOST + 'images/bike-demo-threejs.webp',
             },
-            {
+{
                 id: 'off-axis-sneaker',
                 name: '图像识别控制',
                 name_en: 'off-axis-sneaker',
@@ -141,13 +141,13 @@ export default [
                 image: HOST + 'images/tiny-world-builder.webp',
             },
             {
-                id: 'pmndrs',
-                name: 'pmndrs 作品库',
-                name_en: 'pmndrs',
+                id: 'portfolio-cockpit',
+                name: '太空探索',
+                name_en: 'portfolio-cockpit',
                 author: 'AUTO',
-                openUrl: 'https://pmnd.rs/',
-                githubUrl: 'https://github.com/pmndrs/ react-three-fiber',
-                image: HOST + 'images/pmndrs.webp',
+                openUrl: 'https://matteodante.it/en',
+                githubUrl: 'https://github.com/matteodante/portfolio-cockpit',
+                image: HOST + 'images/portfolio-cockpit.webp',
             },
         ]
     }
