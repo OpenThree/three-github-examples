@@ -77,7 +77,7 @@ export default [
                 githubUrl: 'https://github.com/wass08/r3f-baking',
                 image: HOST + 'images/wawa-baking.webp',
             },
-            {
+{
                 id: 'codrops-noise-transition',
                 name: '易拉罐',
                 name_en: 'codrops-noise-transition',
@@ -139,6 +139,24 @@ export default [
                 openUrl: 'https://tinyworld.build/',
                 githubUrl: 'https://github.com/jasonkneen/tiny-world-builder',
                 image: HOST + 'images/tiny-world-builder.webp',
+            },
+            {
+                id: 'Interactive-Styling-Canvas',
+                name: '切换衣服',
+                name_en: 'Interactive-Styling-Canvas',
+                author: 'AUTO',
+                openUrl: 'https://tympanus.net/Development/InteractiveStylingUI/',
+                githubUrl: 'https://github.com/kaberikram/Interactive-Styling-Canvas',
+                image: HOST + 'images/Interactive-Styling-Canvas.webp',
+            },
+            {
+                id: 'r3f-unshift-effect',
+                name: 'unshift-effect',
+                name_en: 'r3f-unshift-effect',
+                author: 'AUTO',
+                openUrl: 'https://nemutas.github.io/r3f-unshift-effect/',
+                githubUrl: 'https://github.com/nemutas/r3f-unshift-effect',
+                image: HOST + 'images/r3f-unshift-effect.webp',
             },
             {
                 id: 'portfolio-cockpit',
