@@ -177,6 +177,15 @@ export default [
                 image: HOST + 'images/sat-hunter.webp',
             },
             {
+                id: 'marble-runner',
+                name: 'marble-runner',
+                name_en: 'marble-runner',
+                author: 'AUTO',
+                openUrl: 'https://marble-runner.vercel.app/',
+                githubUrl: 'https://github.com/panterathehacker/marble-runner',
+                image: HOST + 'images/marble-runner.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
