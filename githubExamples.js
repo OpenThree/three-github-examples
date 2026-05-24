@@ -186,6 +186,15 @@ export default [
                 image: HOST + 'images/marble-runner.webp',
             },
             {
+                id: 'articraft',
+                name: 'ai 建模动画',
+                name_en: 'articraft',
+                author: 'AUTO',
+                openUrl: 'https://articraft3d.github.io/#overview',
+                githubUrl: 'https://github.com/mattzh72/articraft',
+                image: HOST + 'images/articraft.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
