@@ -195,6 +195,15 @@ export default [
                 image: HOST + 'images/articraft.webp',
             },
             {
+                id: 'hologram-particles',
+                name: 'hologram-particles',
+                name_en: 'hologram-particles',
+                author: 'AUTO',
+                openUrl: 'https://hologram-particles.vercel.app/',
+                githubUrl: 'https://github.com/cortiz2894/hologram-particles',
+                image: HOST + 'images/hologram-particles.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
