@@ -204,6 +204,15 @@ export default [
                 image: HOST + 'images/hologram-particles.webp',
             },
             {
+                id: 'aholo-viewer',
+                name: '高斯渲染',
+                name_en: 'aholo-viewer',
+                author: 'AUTO',
+                openUrl: 'https://aholojs.dev/zh-CN/',
+                githubUrl: 'https://github.com/manycoretech/aholo-viewer',
+                image: HOST + 'images/aholo-viewer.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
