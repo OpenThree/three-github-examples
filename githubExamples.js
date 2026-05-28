@@ -68,7 +68,7 @@ export default [
                 githubUrl: 'https://github.com/thebenezer/FluffyGrass',
                 image: HOST + 'images/FluffyGrass.webp',
             },
-            {
+{
                 id: 'wawa-baking',
                 name: '烘培房间',
                 name_en: 'wawa-baking',
@@ -131,7 +131,7 @@ export default [
                 githubUrl: 'https://github.com/icurtis1/off-axis-sneaker',
                 image: HOST + 'images/off-axis-sneaker.webp',
             },
-            {
+{
                 id: 'tiny-world-builder',
                 name: 'tiny-world-builder',
                 name_en: 'tiny-world-builder',
@@ -149,7 +149,7 @@ export default [
                 githubUrl: 'https://github.com/kaberikram/Interactive-Styling-Canvas',
                 image: HOST + 'images/Interactive-Styling-Canvas.webp',
             },
-            {
+{
                 id: 'r3f-unshift-effect',
                 name: 'unshift-effect',
                 name_en: 'r3f-unshift-effect',
@@ -185,7 +185,7 @@ export default [
                 githubUrl: 'https://github.com/panterathehacker/marble-runner',
                 image: HOST + 'images/marble-runner.webp',
             },
-            {
+{
                 id: 'articraft',
                 name: 'ai 建模动画',
                 name_en: 'articraft',
@@ -194,7 +194,7 @@ export default [
                 githubUrl: 'https://github.com/mattzh72/articraft',
                 image: HOST + 'images/articraft.webp',
             },
-            {
+{
                 id: 'hologram-particles',
                 name: 'hologram-particles',
                 name_en: 'hologram-particles',
@@ -220,6 +220,15 @@ export default [
                 openUrl: 'https://john-and-patricias-romantic-comfort.vercel.app/',
                 githubUrl: 'https://github.com/andrewwoan/john-and-patricias-romantic-comfort-website',
                 image: HOST + 'images/comfort-website.webp',
+            },
+            {
+                id: 'three-fenestra',
+                name: 'three-fenestra',
+                name_en: 'three-fenestra',
+                author: 'AUTO',
+                openUrl: 'https://three-fenestra.codedgar.com/',
+                githubUrl: 'https://github.com/codedgar/three-fenestra',
+                image: HOST + 'images/three-fenestra.webp',
             },
             {
                 id: 'portfolio-cockpit',
