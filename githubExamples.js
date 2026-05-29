@@ -231,6 +231,15 @@ export default [
                 image: HOST + 'images/three-fenestra.webp',
             },
             {
+                id: 'cymatics-labs',
+                name: '音频粒子',
+                name_en: 'cymatics-labs',
+                author: 'AUTO',
+                openUrl: 'https://cymatics-labs.vercel.app/',
+                githubUrl: 'https://github.com/Sidmaz666/cymatics-labs',
+                image: HOST + 'images/cymatics-labs.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
