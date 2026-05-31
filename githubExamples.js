@@ -240,6 +240,15 @@ export default [
                 image: HOST + 'images/cymatics-labs.webp',
             },
             {
+                id: 'SysMocap',
+                name: '数字虚拟人',
+                name_en: 'SysMocap',
+                author: 'AUTO',
+                openUrl: 'https://github.com/xianfei/SysMocap',
+                githubUrl: 'https://github.com/xianfei/SysMocap',
+                image: HOST + 'images/SysMocap.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
