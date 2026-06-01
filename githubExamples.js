@@ -249,6 +249,15 @@ export default [
                 image: HOST + 'images/SysMocap.webp',
             },
             {
+                id: 'demo-threejs-chinamap',
+                name: '下钻地图',
+                name_en: 'demo-threejs-chinamap',
+                author: 'AUTO',
+                openUrl: 'https://github.com/chemistwang/demo-threejs-chinamap',
+                githubUrl: 'https://github.com/chemistwang/demo-threejs-chinamap',
+                image: HOST + 'images/demo-threejs-chinamap.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
