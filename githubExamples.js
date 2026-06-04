@@ -258,6 +258,15 @@ export default [
                 image: HOST + 'images/demo-threejs-chinamap.webp',
             },
             {
+                id: 'gta7',
+                name: 'gta7',
+                name_en: 'gta7',
+                author: 'AUTO',
+                openUrl: 'https://depixeled-chris.github.io/gta7/',
+                githubUrl: 'https://github.com/depixeled-chris/gta7',
+                image: HOST + 'images/gta7.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
