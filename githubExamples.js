@@ -287,6 +287,15 @@ export default [
                 image: HOST + 'images/house-builder.webp',
             },
             {
+                id: 'tang-changan',
+                name: 'tang-changan',
+                name_en: 'tang-changan',
+                author: 'AUTO',
+                openUrl: 'https://github.com/andyhuo520/tang-changan',
+                githubUrl: 'https://github.com/andyhuo520/tang-changan',
+                image: HOST + 'images/tang-changan.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
