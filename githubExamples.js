@@ -296,6 +296,15 @@ export default [
                 image: HOST + 'images/tang-changan.webp',
             },
             {
+                id: 'Rose_flower',
+                name: 'Rose_flower',
+                name_en: 'Rose_flower',
+                author: 'AUTO',
+                openUrl: 'https://wake-bikila-dev.github.io/Rose_flower/',
+                githubUrl: 'https://github.com/wake-bikila-dev/Rose_flower',
+                image: HOST + 'images/Rose_flower.webp',
+            },
+            {
                 id: 'portfolio-cockpit',
                 name: '太空探索',
                 name_en: 'portfolio-cockpit',
