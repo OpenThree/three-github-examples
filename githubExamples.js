@@ -7,7 +7,7 @@ export default [
         name_en: 'Recently Submitted',
         order: 0,
         children: [
-            {
+{
                 id: 'LearningCell',
                 name: '细胞课堂',
                 name_en: 'LearningCell',
@@ -25,7 +25,7 @@ export default [
                 githubUrl: 'https://github.com/andrewwoan/PSU-VR',
                 image: HOST + 'images/PSU-VR.webp',
             },
-            {
+{
                 id: 'sooahs-room-folio',
                 name: '房间',
                 name_en: 'sooahs-room-folio',
@@ -142,7 +142,7 @@ export default [
                 githubUrl: 'https://github.com/jasonkneen/tiny-world-builder',
                 image: HOST + 'images/tiny-world-builder.webp',
             },
-            {
+{
                 id: 'Interactive-Styling-Canvas',
                 name: '切换衣服',
                 name_en: 'Interactive-Styling-Canvas',
@@ -160,7 +160,7 @@ export default [
                 githubUrl: 'https://github.com/nemutas/r3f-unshift-effect',
                 image: HOST + 'images/r3f-unshift-effect.webp',
             },
-            {
+{
                 id: 'third-person-controller-splat',
                 name: '高斯漫游',
                 name_en: 'third-person-controller-splat',
@@ -178,7 +178,7 @@ export default [
                 githubUrl: 'https://github.com/knight-L/sat-hunter',
                 image: HOST + 'images/sat-hunter.webp',
             },
-            {
+{
                 id: 'marble-runner',
                 name: 'marble-runner',
                 name_en: 'marble-runner',
@@ -214,7 +214,7 @@ export default [
                 githubUrl: 'https://github.com/manycoretech/aholo-viewer',
                 image: HOST + 'images/aholo-viewer.webp',
             },
-            {
+{
                 id: 'comfort-website',
                 name: '3d主页网站',
                 name_en: 'comfort-website',
@@ -223,7 +223,7 @@ export default [
                 githubUrl: 'https://github.com/andrewwoan/john-and-patricias-romantic-comfort-website',
                 image: HOST + 'images/comfort-website.webp',
             },
-            {
+{
                 id: 'three-fenestra',
                 name: 'three-fenestra',
                 name_en: 'three-fenestra',
@@ -232,7 +232,7 @@ export default [
                 githubUrl: 'https://github.com/codedgar/three-fenestra',
                 image: HOST + 'images/three-fenestra.webp',
             },
-            {
+{
                 id: 'cymatics-labs',
                 name: '音频粒子',
                 name_en: 'cymatics-labs',
@@ -241,7 +241,7 @@ export default [
                 githubUrl: 'https://github.com/Sidmaz666/cymatics-labs',
                 image: HOST + 'images/cymatics-labs.webp',
             },
-            {
+{
                 id: 'SysMocap',
                 name: '数字虚拟人',
                 name_en: 'SysMocap',
@@ -250,7 +250,7 @@ export default [
                 githubUrl: 'https://github.com/xianfei/SysMocap',
                 image: HOST + 'images/SysMocap.webp',
             },
-            {
+{
                 id: 'demo-threejs-chinamap',
                 name: '下钻地图',
                 name_en: 'demo-threejs-chinamap',
@@ -259,7 +259,7 @@ export default [
                 githubUrl: 'https://github.com/chemistwang/demo-threejs-chinamap',
                 image: HOST + 'images/demo-threejs-chinamap.webp',
             },
-            {
+{
                 id: 'gta7',
                 name: 'gta7',
                 name_en: 'gta7',
@@ -268,7 +268,7 @@ export default [
                 githubUrl: 'https://github.com/depixeled-chris/gta7',
                 image: HOST + 'images/gta7.webp',
             },
-            {
+{
                 id: 'cat-planet',
                 name: 'cat-planet',
                 name_en: 'cat-planet',
@@ -277,7 +277,7 @@ export default [
                 githubUrl: 'https://github.com/qq598516797-dotcom/cat-planet',
                 image: HOST + 'images/cat-planet.webp',
             },
-            {
+{
                 id: 'house-builder',
                 name: 'house-builder',
                 name_en: 'house-builder',
@@ -286,7 +286,7 @@ export default [
                 githubUrl: 'https://github.com/ch-bas/threejs-sims-house-builder',
                 image: HOST + 'images/house-builder.webp',
             },
-            {
+{
                 id: 'tang-changan',
                 name: 'tang-changan',
                 name_en: 'tang-changan',
@@ -295,7 +295,7 @@ export default [
                 githubUrl: 'https://github.com/andyhuo520/tang-changan',
                 image: HOST + 'images/tang-changan.webp',
             },
-            {
+{
                 id: 'Rose_flower',
                 name: 'Rose_flower',
                 name_en: 'Rose_flower',
@@ -305,13 +305,13 @@ export default [
                 image: HOST + 'images/Rose_flower.webp',
             },
             {
-                id: 'portfolio-cockpit',
-                name: '太空探索',
-                name_en: 'portfolio-cockpit',
+                id: 'mma-lab',
+                name: 'mma-lab',
+                name_en: 'mma-lab',
                 author: 'AUTO',
-                openUrl: 'https://matteodante.it/en',
-                githubUrl: 'https://github.com/matteodante/portfolio-cockpit',
-                image: HOST + 'images/portfolio-cockpit.webp',
+                openUrl: 'https://mma-lab.netlify.app/',
+                githubUrl: 'https://github.com/elegantmonark/mma-lab',
+                image: HOST + 'images/mma-lab.webp',
             },
         ]
     }
