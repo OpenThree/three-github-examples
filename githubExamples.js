@@ -332,6 +332,15 @@ export default [
                 image: HOST + 'images/Lens-Flare.webp',
             },
             {
+                id: 'topoexport',
+                name: '框选地图导出白模',
+                name_en: 'topoexport',
+                author: 'AUTO',
+                openUrl: 'https://app.topoexport.com/',
+                githubUrl: 'https://github.com/ArunSahadeo/TopoExporter',
+                image: HOST + 'images/topoexport.webp',
+            },
+            {
                 id: 'mma-lab',
                 name: 'mma-lab',
                 name_en: 'mma-lab',
