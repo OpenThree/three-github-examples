@@ -311,7 +311,7 @@ export default [
                 author: 'AUTO',
                 openUrl: 'https://github.com/fanvanzh/3dtiles',
                 githubUrl: 'https://github.com/fanvanzh/3dtiles',
-                image: HOST + 'images/3dtiles%20Converter.webp',
+                image: HOST + 'images/dtilesConverter.webp',
             },
             {
                 id: 'webgpu-perf',
