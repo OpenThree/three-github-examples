@@ -304,7 +304,7 @@ export default [
                 githubUrl: 'https://github.com/wake-bikila-dev/Rose_flower',
                 image: HOST + 'images/Rose_flower.webp',
             },
-            {
+{
                 id: 'dtilesConverter',
                 name: '3dtiles Converter',
                 name_en: '3dtiles Converter',
@@ -331,7 +331,7 @@ export default [
                 githubUrl: 'https://github.com/ektogamat/R3F-Ultimate-Lens-Flare',
                 image: HOST + 'images/Lens-Flare.webp',
             },
-            {
+{
                 id: 'topoexport',
                 name: '框选地图导出白模',
                 name_en: 'topoexport',
@@ -339,6 +339,15 @@ export default [
                 openUrl: 'https://app.topoexport.com/',
                 githubUrl: 'https://github.com/ArunSahadeo/TopoExporter',
                 image: HOST + 'images/topoexport.webp',
+            },
+            {
+                id: 'yyhg',
+                name: '北京优悦幻光',
+                name_en: 'yyhg',
+                author: 'AUTO',
+                openUrl: 'https://z2586300277.github.io/yyhg/',
+                githubUrl: 'https://github.com/z2586300277/yyhg',
+                image: HOST + 'images/yyhg.webp',
             },
             {
                 id: 'mma-lab',
