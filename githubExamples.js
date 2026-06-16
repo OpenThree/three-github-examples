@@ -350,6 +350,15 @@ export default [
                 image: HOST + 'images/yyhg.webp',
             },
             {
+                id: 'scenic-digital',
+                name: '数字人',
+                name_en: 'scenic-digital',
+                author: 'AUTO',
+                openUrl: 'https://scenic.yueguichao.cn/#',
+                githubUrl: 'https://github.com/front-yue/scenic-digital',
+                image: HOST + 'images/scenic-digital.webp',
+            },
+            {
                 id: 'mma-lab',
                 name: 'mma-lab',
                 name_en: 'mma-lab',
