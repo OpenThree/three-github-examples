@@ -360,7 +360,7 @@ export default [
             },
             {
                 id: 'vrm-game',
-                name: 'vrm-game',
+                name: 'vrm-游戏',
                 name_en: 'vrm-game',
                 author: 'AUTO',
                 openUrl: 'https://norio.github.io/vrm-game-starter/',
