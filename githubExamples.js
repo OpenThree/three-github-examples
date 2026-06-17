@@ -368,6 +368,15 @@ export default [
                 image: HOST + 'images/vrm-game.webp',
             },
             {
+                id: 'openThree',
+                name: '开源三维',
+                name_en: 'openThree',
+                author: 'AUTO',
+                openUrl: 'https://z2586300277.github.io/three-cesium-examples',
+                githubUrl: 'https://github.com/z2586300277/three-cesium-examples',
+                image: HOST + 'images/openThree.webp',
+            },
+            {
                 id: 'mma-lab',
                 name: 'mma-lab',
                 name_en: 'mma-lab',
