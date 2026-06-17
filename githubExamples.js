@@ -359,6 +359,15 @@ export default [
                 image: HOST + 'images/scenic-digital.webp',
             },
             {
+                id: 'vrm-game',
+                name: 'vrm-game',
+                name_en: 'vrm-game',
+                author: 'AUTO',
+                openUrl: 'https://norio.github.io/vrm-game-starter/',
+                githubUrl: 'https://github.com/norio/vrm-game-starter',
+                image: HOST + 'images/vrm-game.webp',
+            },
+            {
                 id: 'mma-lab',
                 name: 'mma-lab',
                 name_en: 'mma-lab',
