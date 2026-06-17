@@ -169,7 +169,7 @@ export default [
                 githubUrl: 'https://github.com/icurtis1/third-person-controller-splat',
                 image: HOST + 'images/aa.webp',
             },
-            {
+{
                 id: 'sat-hunter',
                 name: '卫星地图下载',
                 name_en: 'sat-hunter',
@@ -205,7 +205,7 @@ export default [
                 githubUrl: 'https://github.com/cortiz2894/hologram-particles',
                 image: HOST + 'images/hologram-particles.webp',
             },
-            {
+{
                 id: 'aholo-viewer',
                 name: '高斯渲染',
                 name_en: 'aholo-viewer',
@@ -313,7 +313,7 @@ export default [
                 githubUrl: 'https://github.com/fanvanzh/3dtiles',
                 image: HOST + 'images/dtilesConverter.webp',
             },
-            {
+{
                 id: 'webgpu-perf',
                 name: 'webgpu-perf',
                 name_en: 'webgpu-perf',
@@ -322,7 +322,7 @@ export default [
                 githubUrl: 'https://github.com/ektogamat/r3f-webgpu-perf',
                 image: HOST + 'images/webgpu-perf.webp',
             },
-            {
+{
                 id: 'Lens-Flare',
                 name: 'Lens-Flare',
                 name_en: 'Lens-Flare',
@@ -358,7 +358,7 @@ export default [
                 githubUrl: 'https://github.com/front-yue/scenic-digital',
                 image: HOST + 'images/scenic-digital.webp',
             },
-            {
+{
                 id: 'vrm-game',
                 name: 'vrm-游戏',
                 name_en: 'vrm-game',
@@ -377,13 +377,13 @@ export default [
                 image: HOST + 'images/openThree.webp',
             },
             {
-                id: 'mma-lab',
-                name: 'mma-lab',
-                name_en: 'mma-lab',
+                id: 'mesh2motion',
+                name: '模型动画',
+                name_en: 'mesh2motion',
                 author: 'AUTO',
-                openUrl: 'https://mma-lab.netlify.app/',
-                githubUrl: 'https://github.com/elegantmonark/mma-lab',
-                image: HOST + 'images/mma-lab.webp',
+                openUrl: 'https://app.mesh2motion.org/',
+                githubUrl: 'https://github.com/Mesh2Motion/mesh2motion-app',
+                image: HOST + 'images/mesh2motion.webp',
             },
         ]
     }
