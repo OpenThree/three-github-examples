@@ -349,7 +349,7 @@ export default [
                 githubUrl: 'https://github.com/z2586300277/yyhg',
                 image: HOST + 'images/yyhg.webp',
             },
-            {
+{
                 id: 'scenic-digital',
                 name: '数字人',
                 name_en: 'scenic-digital',
@@ -367,7 +367,7 @@ export default [
                 githubUrl: 'https://github.com/norio/vrm-game-starter',
                 image: HOST + 'images/vrm-game.webp',
             },
-            {
+{
                 id: 'openThree',
                 name: '开源三维',
                 name_en: 'openThree',
@@ -386,13 +386,13 @@ export default [
                 image: HOST + 'images/rubiks-rubrics.webp',
             },
             {
-                id: 'mesh2motion',
-                name: '模型动画',
-                name_en: 'mesh2motion',
+                id: 'ecctrl',
+                name: 'ecctrl',
+                name_en: 'ecctrl',
                 author: 'AUTO',
-                openUrl: 'https://app.mesh2motion.org/',
-                githubUrl: 'https://github.com/Mesh2Motion/mesh2motion-app',
-                image: HOST + 'images/mesh2motion.webp',
+                openUrl: 'https://ecctrl.app/',
+                githubUrl: 'https://github.com/pmndrs/ecctrl',
+                image: HOST + 'images/ecctrl.webp',
             },
         ]
     }
