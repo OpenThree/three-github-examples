@@ -412,6 +412,15 @@ export default [
                 githubUrl: 'https://github.com/hh-hang/collider-forge',
                 image: HOST + 'images/collider-forge.webp',
             },
+            {
+                id: 'pixijs',
+                name: 'pixijs',
+                name_en: 'pixijs',
+                author: 'AUTO',
+                openUrl: 'https://pixijs.com/showcase',
+                githubUrl: 'https://github.com/pixijs/pixijs',
+                image: HOST + 'images/pixijs.webp',
+            },
         ]
     }
 ]
