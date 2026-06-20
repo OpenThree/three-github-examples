@@ -342,7 +342,7 @@ export default [
             },
             {
                 id: 'yyhg',
-                name: '北京优悦幻光',
+                name: '北京优悦幻光科技',
                 name_en: 'yyhg',
                 author: 'AUTO',
                 openUrl: 'https://z2586300277.github.io/yyhg/',
@@ -376,7 +376,7 @@ export default [
                 githubUrl: 'https://github.com/z2586300277/three-cesium-examples',
                 image: HOST + 'images/openThree.webp',
             },
-            {
+{
                 id: 'rubiks-rubrics',
                 name: 'rubiks-rubrics',
                 name_en: 'rubiks-rubrics',
@@ -384,15 +384,6 @@ export default [
                 openUrl: 'https://leereilly.net/rubiks-rubrics/',
                 githubUrl: 'https://github.com/leereilly/rubiks-rubrics',
                 image: HOST + 'images/rubiks-rubrics.webp',
-            },
-            {
-                id: 'ecctrl',
-                name: 'ecctrl',
-                name_en: 'ecctrl',
-                author: 'AUTO',
-                openUrl: 'https://ecctrl.app/',
-                githubUrl: 'https://github.com/pmndrs/ecctrl',
-                image: HOST + 'images/ecctrl.webp',
             },
         ]
     }
