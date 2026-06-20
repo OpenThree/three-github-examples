@@ -385,7 +385,7 @@ export default [
                 githubUrl: 'https://github.com/leereilly/rubiks-rubrics',
                 image: HOST + 'images/rubiks-rubrics.webp',
             },
-            {
+{
                 id: '3d_tools',
                 name: '3D相关工具集',
                 name_en: '3d_tools',
@@ -394,7 +394,7 @@ export default [
                 githubUrl: 'https://github.com/z2586300277/3d_tools',
                 image: HOST + 'images/3d_tools.webp',
             },
-            {
+{
                 id: 'ecctrl_ecctrl',
                 name: 'ecctrl_ecctrl',
                 name_en: 'ecctrl_ecctrl',
@@ -402,6 +402,15 @@ export default [
                 openUrl: 'https://ecctrl.app/',
                 githubUrl: 'https://github.com/pmndrs/ecctrl',
                 image: HOST + 'images/ecctrl_ecctrl.webp',
+            },
+            {
+                id: 'collider-forge',
+                name: 'collider-forge',
+                name_en: 'collider-forge',
+                author: 'AUTO',
+                openUrl: 'https://github.com/hh-hang/collider-forge',
+                githubUrl: 'https://github.com/hh-hang/collider-forge',
+                image: HOST + 'images/collider-forge.webp',
             },
         ]
     }
