@@ -386,6 +386,15 @@ export default [
                 image: HOST + 'images/rubiks-rubrics.webp',
             },
             {
+                id: '3d_tools',
+                name: '3d工具集',
+                name_en: '3d_tools',
+                author: 'AUTO',
+                openUrl: 'https://z2586300277.github.io/3d_tools/',
+                githubUrl: 'https://github.com/z2586300277/3d_tools',
+                image: HOST + 'images/3d_tools.webp',
+            },
+            {
                 id: 'ecctrl_ecctrl',
                 name: 'ecctrl_ecctrl',
                 name_en: 'ecctrl_ecctrl',
