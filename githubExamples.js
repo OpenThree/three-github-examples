@@ -376,7 +376,7 @@ export default [
                 githubUrl: 'https://github.com/z2586300277/three-cesium-examples',
                 image: HOST + 'images/openThree.webp',
             },
-            {
+{
                 id: 'rubiks-rubrics',
                 name: 'rubiks-rubrics',
                 name_en: 'rubiks-rubrics',
@@ -386,13 +386,13 @@ export default [
                 image: HOST + 'images/rubiks-rubrics.webp',
             },
             {
-                id: 'ecctrl',
-                name: 'ecctrl',
-                name_en: 'ecctrl',
+                id: '3d_tools',
+                name: '3d 工具类',
+                name_en: '3d_tools',
                 author: 'AUTO',
-                openUrl: 'https://ecctrl.app/',
-                githubUrl: 'https://github.com/pmndrs/ecctrl',
-                image: HOST + 'images/ecctrl.webp',
+                openUrl: 'https://z2586300277.github.io/3d_tools/',
+                githubUrl: 'https://github.com/z2586300277/3d_tools',
+                image: HOST + 'images/3d_tools.webp',
             },
         ]
     }
