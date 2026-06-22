@@ -33,12 +33,19 @@ export default [
                 codeUrl: HOST + 'three/octree.js',
                 image: HOST + 'three/octree.webp',
             },
-            {
+{
                 id: 'rainday',
                 name: '雷雨',
                 name_en: 'rainday',
                 codeUrl: HOST + 'three/rainday.js',
                 image: HOST + 'three/rainday.webp',
+            },
+            {
+                id: 'DQuantum',
+                name: '3D Quantum',
+                name_en: '3D Quantum',
+                htmlUrl: HOST + 'three/DQuantum.html',
+                image: HOST + 'three/DQuantum.webp',
             },
         ]
     }
