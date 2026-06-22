@@ -403,7 +403,7 @@ export default [
                 githubUrl: 'https://github.com/pmndrs/ecctrl',
                 image: HOST + 'images/ecctrl_ecctrl.webp',
             },
-            {
+{
                 id: 'collider-forge',
                 name: 'collider-forge',
                 name_en: 'collider-forge',
@@ -412,7 +412,7 @@ export default [
                 githubUrl: 'https://github.com/hh-hang/collider-forge',
                 image: HOST + 'images/collider-forge.webp',
             },
-            {
+{
                 id: 'pixijs',
                 name: 'pixijs',
                 name_en: 'pixijs',
@@ -420,6 +420,15 @@ export default [
                 openUrl: 'https://pixijs.com/showcase',
                 githubUrl: 'https://github.com/pixijs/pixijs',
                 image: HOST + 'images/pixijs.webp',
+            },
+            {
+                id: 'fable5world',
+                name: 'fable5world',
+                name_en: 'fable5world',
+                author: 'AUTO',
+                openUrl: 'https://dc5fzrbo8ssfx.cloudfront.net/laas/',
+                githubUrl: 'https://github.com/Braffolk/fable5-world-demo',
+                image: HOST + 'images/fable5world.webp',
             },
         ]
     }
