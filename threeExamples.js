@@ -7,17 +7,24 @@ export default [
         name_en: 'Recently Submitted',
         order: 0,
         children: [
-            {
+{
                 id: 'test',
                 name: 'test',
                 htmlUrl: HOST + 'three/test.html',
                 image: HOST + 'three/test.webp',
             },
-            {
+{
                 id: 'wuliTest',
                 name: 'wuliTest',
                 codeUrl: HOST + 'three/wuliTest.js',
                 image: HOST + 'three/wuliTest.webp',
+            },
+            {
+                id: 'shuiliu_kuan',
+                name: '宽水流',
+                name_en: 'shuiliu_kuan',
+                codeUrl: HOST + 'three/shuiliu_kuan.js',
+                image: HOST + 'three/shuiliu_kuan.webp',
             },
         ]
     }
