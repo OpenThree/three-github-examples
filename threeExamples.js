@@ -30,7 +30,7 @@ export default [
                 id: 'octree',
                 name: '八叉树',
                 name_en: 'octree',
-                htmlUrl: HOST + 'three/octree.html',
+                codeUrl: HOST + 'three/octree.js',
                 image: HOST + 'three/octree.webp',
             },
         ]
