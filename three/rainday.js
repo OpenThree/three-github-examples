@@ -10,7 +10,14 @@ let scene,
 	flash,
 	rain,
 	rainGeo,
+  directionalLight,
+  ambient,
+  rainDrop,
+  rainMaterial,
+  cloudGeo,
+  cloudMaterial,
 	rainCount = 15000;
+
 function init() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(
@@ -24,7 +31,7 @@ function init() {
 	camera.rotation.y = -0.12;
 	camera.rotation.z = 0.27;
 
-	ambient = new THREE.AmbientLight(0x555555);
+	 ambient = new THREE.AmbientLight(0x555555);
 	scene.add(ambient);
 
 	directionalLight = new THREE.DirectionalLight(0xffeedd);
@@ -77,7 +84,7 @@ function init() {
 	loader.load(
 		"https://static.vecteezy.com/system/resources/previews/010/884/548/original/dense-fluffy-puffs-of-white-smoke-and-fog-on-transparent-background-abstract-smoke-clouds-movement-blurred-out-of-focus-smoking-blows-from-machine-dry-ice-fly-fluttering-in-air-effect-texture-png.png",
 		function (texture) {
-			cloudGeo = new THREE.PlaneBufferGeometry(500, 500);
+			cloudGeo = new THREE.PlaneGeometry(500, 500);
 			cloudMaterial = new THREE.MeshLambertMaterial({
 				map: texture,
 				transparent: true
@@ -135,3 +142,8 @@ function onWindowResize() {
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
+/**
+ * 名称: 雷雨
+ * 作者: Open Three https://openthree.github.io/three-cesium-links/
+ */
