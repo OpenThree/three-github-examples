@@ -40,12 +40,19 @@ export default [
                 codeUrl: HOST + 'three/rainday.js',
                 image: HOST + 'three/rainday.webp',
             },
-            {
+{
                 id: 'DQuantum',
                 name: '3D Quantum',
                 name_en: '3D Quantum',
                 htmlUrl: HOST + 'three/DQuantum.html',
                 image: HOST + 'three/DQuantum.webp',
+            },
+            {
+                id: 'Singularity',
+                name: 'Singularity',
+                name_en: 'Singularity',
+                htmlUrl: HOST + 'three/Singularity.html',
+                image: HOST + 'three/Singularity.webp',
             },
         ]
     }
