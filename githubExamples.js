@@ -430,6 +430,15 @@ export default [
                 githubUrl: 'https://github.com/Braffolk/fable5-world-demo',
                 image: HOST + 'images/fable5world.webp',
             },
+            {
+                id: 'cesium-player-controller',
+                name: 'cesium 第三人称控制器',
+                name_en: 'cesium-player-controller',
+                author: 'AUTO',
+                openUrl: 'https://hh-hang.github.io/cesium-player-controller/',
+                githubUrl: 'https://github.com/hh-hang/cesium-player-controller',
+                image: HOST + 'images/cesium-player-controller.webp',
+            },
         ]
     }
 ]
