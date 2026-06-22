@@ -11,6 +11,8 @@
         href="https://z2586300277.github.io/three-cesium-examples/files/site/logo.svg" />
     <script type="module">
         import GITHUB_EXAMPLES from './githubExamples.js';
+        import THREE_EXAMPLES from './threeExamples.js';
+        window.THREE_EXAMPLES = THREE_EXAMPLES;
         window.GITHUB_EXAMPLES = GITHUB_EXAMPLES;
         window.FIX_HOST = 'https://z2586300277.github.io/three-cesium-examples/'
     </script>
@@ -20,10 +22,9 @@
 <body>
     <div id="app"></div>
     <script type="module">
-
-        // console.log('GITHUB_EXAMPLES', GITHUB_EXAMPLES);
-        const index = window.THREE_CESIUM_NAVIGATION.findIndex(i => i.name === 'ThreeJS');
-        if (index !== -1) window.THREE_CESIUM_NAVIGATION.splice(index, 1);
+        window.THREE_CESIUM_NAVIGATION.reverse();
+        const threeExamples = window.THREE_CESIUM_NAVIGATION.find(i => i.name === 'ThreeJS');
+        if (threeExamples) threeExamples.examples = window.THREE_EXAMPLES;
 
         const index2 = window.THREE_CESIUM_NAVIGATION.findIndex(i => i.name === 'CesiumJS');
         if (index2 !== -1) window.THREE_CESIUM_NAVIGATION.splice(index2, 1);

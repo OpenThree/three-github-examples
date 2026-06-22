@@ -1,0 +1,615 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        overflow: hidden;
+        background: #000;
+        color: #fff;
+        font-family: sans-serif;
+    }
+
+    canvas {
+        width: 100vw;
+        height: 100vh;
+        display: block;
+    }
+
+    #loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+    }
+
+    .glass-btn {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        padding: 14px 28px;
+        background: rgba(20, 20, 30, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        color: #fff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 100;
+        overflow: hidden;
+        outline: none;
+    }
+
+    .glass-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: skewX(-20deg);
+        transition: left 0.6s ease;
+    }
+
+    .glass-btn:hover {
+        background: rgba(40, 40, 60, 0.5);
+        border-color: rgba(0, 255, 255, 0.4);
+        box-shadow: 0 10px 40px 0 rgba(0, 255, 255, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+    }
+
+    .glass-btn:hover::before {
+        left: 200%;
+    }
+
+    .glass-btn:active {
+        transform: translateY(0);
+    }
+
+    .glass-icon {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    strong {
+        color: #00ffff;
+        font-weight: 600;
+    }
+</style>
+
+<div id="loading">Initializing Holographic Engine...</div>
+
+<button id="transformBtn" class="glass-btn">
+    <svg class="glass-icon" viewBox="0 0 24 24">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+    </svg>
+    <span>Transform: <strong id="shapeName">Square</strong></span>
+</button>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    const shapeScaleGLSL = `
+        uniform vec3 u_shapeWeights;
+        uniform float u_hueShift;
+        
+        float getShapeScale(float theta) {
+            float scaleCircle = 1.0;
+            
+            float cosT = cos(theta);
+            float sinT = sin(theta);
+            float scaleSquare = 0.85 / max(abs(cosT), abs(sinT)); 
+            
+            float theta_hex = mod(theta + 0.52359877, 1.04719755) - 0.52359877; 
+            float scaleHex = 0.92 / cos(theta_hex); 
+            
+            return u_shapeWeights.x * scaleCircle + 
+                   u_shapeWeights.y * scaleSquare + 
+                   u_shapeWeights.z * scaleHex;
+        }
+
+        vec3 rgb2hsv(vec3 c) {
+            vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+            vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+            vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+            float d = q.x - min(q.w, q.y);
+            float e = 1.0e-10;
+            return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+        }
+
+        vec3 hsv2rgb(vec3 c) {
+            vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+            vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+            return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        }
+
+        vec3 shiftHue(vec3 color, float shift) {
+            vec3 hsv = rgb2hsv(color);
+            hsv.x = fract(hsv.x + shift);
+            return hsv2rgb(hsv);
+        }
+    `;
+
+    const faceVertexShader = `
+        uniform float time;
+        uniform float u_secondAngle;
+        attribute float size;
+        varying vec3 vColor;
+        
+        ${shapeScaleGLSL}
+        
+        vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+        float snoise(vec2 v){
+            const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+            vec2 i  = floor(v + dot(v, C.yy) );
+            vec2 x0 = v -   i + dot(i, C.xx);
+            vec2 i1;
+            i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+            vec4 x12 = x0.xyxy + C.xxzz;
+            x12.xy -= i1;
+            i = mod(i, 289.0);
+            vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+            vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+            m = m*m ; m = m*m ;
+            vec3 x = 2.0 * fract(p * C.www) - 1.0;
+            vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5); vec3 a0 = x - ox;
+            m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+            vec3 g; g.x = a0.x*x0.x + h.x*x0.y; g.yz = a0.yz*x12.xz + h.yz*x12.yw;
+            return 130.0 * dot(m, g);
+        }
+
+        void main() {
+            vec3 pos = position;
+            
+            float r = length(pos.xy);
+            float theta = atan(pos.x, pos.y); 
+            
+            float orbitSpeed = 1.0 / (r + 1.0);
+            float newTheta = theta - time * 0.1 * orbitSpeed;
+            
+            float shapeScale = getShapeScale(newTheta);
+            pos.x = r * shapeScale * sin(newTheta);
+            pos.y = r * shapeScale * cos(newTheta);
+            
+            float angleDiff = mod(u_secondAngle - newTheta + 6.2831853, 6.2831853);
+            
+            float trail = exp(-angleDiff * 3.0); 
+            float crest = exp(-abs(angleDiff) * 15.0);
+            
+            float noise = snoise(pos.xy * 0.3 + time * 0.2);
+            
+            pos.z += (trail * 0.8) + (crest * 1.5) + (noise * 0.5);
+            
+            vec3 shiftedColor = shiftHue(color, u_hueShift);
+            vec3 trailColor = shiftHue(vec3(0.4, 0.1, 0.6), u_hueShift);
+
+            vec3 baseColor = shiftedColor + trailColor * trail; 
+            vColor = baseColor + vec3(crest * 0.8); 
+            
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            float dynamicSize = size * (1.0 + trail * 1.5 + noise * 0.5);
+            gl_PointSize = dynamicSize * (25.0 / -mvPosition.z);
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `;
+
+    const markerVertexShader = `
+        uniform float time;
+        uniform float u_secondAngle;
+        attribute float size;
+        attribute float a_angle;
+        varying vec3 vColor;
+        
+        ${shapeScaleGLSL}
+
+        void main() {
+            vec3 pos = position;
+            
+            float shapeScale = getShapeScale(a_angle);
+            pos.xy *= shapeScale;
+            
+            float diff = mod(u_secondAngle - a_angle + 6.2831853, 6.2831853);
+            float sweepGlow = exp(-diff * 6.0);
+            float pulse = sin(time * 2.0 + a_angle * 12.0) * 0.5 + 0.5;
+            
+            pos.z += sweepGlow * 1.0;
+
+            vec3 shiftedColor = shiftHue(color, u_hueShift);
+            vColor = shiftedColor + shiftedColor * sweepGlow * 2.5 + vec3(pulse * 0.2);
+
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            gl_PointSize = size * (1.0 + sweepGlow * 1.5) * (25.0 / -mvPosition.z);
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `;
+
+    const handVertexShader = `
+        uniform float time;
+        uniform float u_handAngle; 
+        attribute float size;
+        attribute float a_progress;
+        varying vec3 vColor;
+        
+        ${shapeScaleGLSL}
+
+        void main() {
+            vec3 pos = position;
+            
+            float shapeScale = getShapeScale(u_handAngle);
+            pos.xy *= shapeScale; 
+            
+            float flow = fract(-time * 1.5 + a_progress);
+            float highlight = smoothstep(0.0, 0.15, flow) * smoothstep(0.4, 0.15, flow);
+            
+            pos.x += sin(a_progress * 15.0 - time * 8.0) * 0.08 * a_progress;
+
+            vec3 shiftedColor = shiftHue(color, u_hueShift);
+            vColor = mix(shiftedColor, vec3(1.0, 1.0, 1.0), highlight * 0.8);
+
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            gl_PointSize = size * (1.0 + highlight * 1.5) * (30.0 / -mvPosition.z);
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `;
+
+    const particleFragmentShader = `
+        varying vec3 vColor;
+
+        void main() {
+            vec2 uv = gl_PointCoord.xy - vec2(0.5);
+            float dist = length(uv);
+            
+            if(dist > 0.5) discard;
+            
+            float strength = pow(1.0 - (dist * 2.0), 2.0);
+            gl_FragColor = vec4(vColor * strength, strength);
+        }
+    `;
+
+    let scene, camera, renderer, composer, controls;
+    let clockGroup;
+    let hourHand, minuteHand, secondHand;
+
+    let currentShapeIndex = 0;
+    const targetShapeWeights = new THREE.Vector3(1, 0, 0);
+    let targetHueShift = 0.0;
+
+    const uniforms = {
+        time: { value: 0 },
+        u_secondAngle: { value: 0 },
+        u_minuteAngle: { value: 0 },
+        u_hourAngle: { value: 0 },
+        u_shapeWeights: { value: new THREE.Vector3(1, 0, 0) },
+        u_hueShift: { value: 0.0 }
+    };
+
+    init();
+    setupInteraction();
+    animate();
+
+    function init() {
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x020205, 0.025);
+
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 14);
+
+        renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x020205);
+        document.body.appendChild(renderer.domElement);
+
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.6, 0.5, 0.85);
+        bloomPass.threshold = 0.05;
+        bloomPass.strength = 2.0;
+        bloomPass.radius = 0.8;
+
+        composer = new EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.minDistance = 5;
+        controls.maxDistance = 40;
+        controls.maxPolarAngle = Math.PI / 1.5;
+
+        clockGroup = new THREE.Group();
+        clockGroup.rotation.x = 0;
+        scene.add(clockGroup);
+
+        createClockFace();
+        createClockMarkers();
+        createHands();
+
+        window.addEventListener('resize', onWindowResize, false);
+
+        setTimeout(() => {
+            document.getElementById('loading').style.opacity = '0';
+        }, 500);
+    }
+
+    function createClockFace() {
+        const count = 50000;
+        const positions = [];
+        const colors = [];
+        const sizes = [];
+
+        const colorCenter = new THREE.Color(0x00ffff);
+        const colorEdge = new THREE.Color(0x7a00ff);
+        const tempColor = new THREE.Color();
+
+        for (let i = 0; i < count; i++) {
+            const r = 5.8 * Math.pow(Math.random(), 0.5);
+            const theta = Math.random() * 2 * Math.PI;
+
+            positions.push(
+                r * Math.sin(theta),
+                r * Math.cos(theta),
+                (Math.random() - 0.5) * 1.5 - 1.0
+            );
+
+            tempColor.lerpColors(colorCenter, colorEdge, r / 5.8);
+            tempColor.r += (Math.random() - 0.5) * 0.2;
+            tempColor.b += (Math.random() - 0.5) * 0.2;
+
+            colors.push(tempColor.r, tempColor.g, tempColor.b);
+            sizes.push(Math.random() * 2.0 + 0.5);
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+
+        const material = new THREE.ShaderMaterial({
+            vertexShader: faceVertexShader,
+            fragmentShader: particleFragmentShader,
+            uniforms: uniforms,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            vertexColors: true
+        });
+
+        clockGroup.add(new THREE.Points(geometry, material));
+    }
+
+    function createClockMarkers() {
+        const positions = [];
+        const colors = [];
+        const sizes = [];
+        const angles = [];
+
+        for (let i = 0; i < 60; i++) {
+            const isHour = i % 5 === 0;
+            const pCount = isHour ? 180 : 20;
+            const rBase = 5.2;
+            const angle = (i / 60) * Math.PI * 2;
+
+            const c = new THREE.Color(isHour ? 0xffffff : 0x00aaff);
+
+            for (let j = 0; j < pCount; j++) {
+                const spread = isHour ? 0.18 : 0.05;
+                const r = rBase + (Math.random() - 0.5) * spread;
+                const a = angle + (Math.random() - 0.5) * (spread / rBase);
+
+                positions.push(
+                    r * Math.sin(a),
+                    r * Math.cos(a),
+                    (Math.random() - 0.5) * 0.2 + 0.2
+                );
+
+                colors.push(c.r, c.g, c.b);
+                sizes.push(isHour ? Math.random() * 3.0 + 1.5 : Math.random() * 1.5 + 0.5);
+                angles.push(angle);
+            }
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+        geometry.setAttribute('a_angle', new THREE.Float32BufferAttribute(angles, 1));
+
+        const material = new THREE.ShaderMaterial({
+            vertexShader: markerVertexShader,
+            fragmentShader: particleFragmentShader,
+            uniforms: uniforms,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            vertexColors: true
+        });
+
+        clockGroup.add(new THREE.Points(geometry, material));
+    }
+
+    function createHandGeometry(length, width, count, colorHex, zOffset) {
+        const positions = [], colors = [], sizes = [], progress = [];
+        const baseColor = new THREE.Color(colorHex);
+
+        for (let i = 0; i < count; i++) {
+            const y = Math.pow(Math.random(), 0.6) * length;
+            const p = y / length;
+            const taper = 1.0 - p * 0.85;
+            const x = (Math.random() - 0.5) * width * taper;
+            const z = (Math.random() - 0.5) * 0.15 + zOffset;
+
+            positions.push(x, y, z);
+
+            const tipIntensity = 0.3 + 0.7 * p;
+            colors.push(
+                baseColor.r * tipIntensity + (1 - tipIntensity) * 0.1,
+                baseColor.g * tipIntensity + (1 - tipIntensity) * 0.1,
+                baseColor.b * tipIntensity + (1 - tipIntensity) * 0.1
+            );
+
+            sizes.push(Math.random() * 2.5 + 1.0);
+            progress.push(p);
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+        geometry.setAttribute('a_progress', new THREE.Float32BufferAttribute(progress, 1));
+        return geometry;
+    }
+
+    function createHands() {
+        const baseMaterial = new THREE.ShaderMaterial({
+            vertexShader: handVertexShader,
+            fragmentShader: particleFragmentShader,
+            uniforms: uniforms,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            vertexColors: true
+        });
+
+        function cloneHandMat() {
+            const mat = baseMaterial.clone();
+            mat.uniforms = { ...uniforms, u_handAngle: { value: 0 } };
+            return mat;
+        }
+
+        hourHand = new THREE.Points(createHandGeometry(2.5, 0.5, 3000, 0x00ff88, 0.8), cloneHandMat());
+        clockGroup.add(hourHand);
+
+        minuteHand = new THREE.Points(createHandGeometry(3.8, 0.35, 4000, 0x00aaff, 1.2), cloneHandMat());
+        clockGroup.add(minuteHand);
+
+        secondHand = new THREE.Points(createHandGeometry(4.6, 0.15, 2000, 0xff0055, 1.6), cloneHandMat());
+        const counterGeo = createHandGeometry(1.2, 0.15, 600, 0xff0055, 1.6);
+
+        const posAttr = counterGeo.attributes.position.array;
+        for (let i = 1; i < posAttr.length; i += 3) posAttr[i] *= -1;
+
+        const mGeo = new THREE.BufferGeometry();
+        ['position', 'color', 'size', 'a_progress'].forEach(attr => {
+            const arr1 = secondHand.geometry.attributes[attr].array;
+            const arr2 = counterGeo.attributes[attr].array;
+            const merged = new Float32Array(arr1.length + arr2.length);
+            merged.set(arr1);
+            merged.set(arr2, arr1.length);
+            mGeo.setAttribute(attr, new THREE.BufferAttribute(merged, attr === 'position' || attr === 'color' ? 3 : 1));
+        });
+
+        secondHand.geometry = mGeo;
+        clockGroup.add(secondHand);
+
+        const coreGeo = new THREE.BufferGeometry();
+        const corePos = [], coreCol = [], coreSize = [];
+        for (let i = 0; i < 150; i++) {
+            corePos.push((Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 0.3, 1.8 + Math.random() * 0.2);
+            coreCol.push(1, 1, 1);
+            coreSize.push(Math.random() * 4.0 + 2.0);
+        }
+        coreGeo.setAttribute('position', new THREE.Float32BufferAttribute(corePos, 3));
+        coreGeo.setAttribute('color', new THREE.Float32BufferAttribute(coreCol, 3));
+        coreGeo.setAttribute('size', new THREE.Float32BufferAttribute(coreSize, 1));
+        clockGroup.add(new THREE.Points(coreGeo, baseMaterial));
+    }
+
+    function setupInteraction() {
+        const btn = document.getElementById('transformBtn');
+        const shapeNames = ["Square", "Hexagon", "Circle"];
+
+        btn.addEventListener('click', () => {
+            currentShapeIndex = (currentShapeIndex + 1) % 3;
+
+            if (currentShapeIndex === 0) targetShapeWeights.set(1, 0, 0);
+            else if (currentShapeIndex === 1) targetShapeWeights.set(0, 1, 0);
+            else if (currentShapeIndex === 2) targetShapeWeights.set(0, 0, 1);
+
+            targetHueShift += 0.33333;
+
+            document.getElementById('shapeName').innerText = shapeNames[currentShapeIndex];
+        });
+    }
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function updateClockHands() {
+        const now = new Date();
+        const hours = now.getHours() % 12;
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const milliseconds = now.getMilliseconds();
+
+        const hourAngle = ((hours + minutes / 60) / 12) * Math.PI * 2;
+        const minuteAngle = ((minutes + seconds / 60) / 60) * Math.PI * 2;
+        const secondAngle = ((seconds + milliseconds / 1000) / 60) * Math.PI * 2;
+
+        if (hourHand) hourHand.rotation.z = -hourAngle;
+        if (minuteHand) minuteHand.rotation.z = -minuteAngle;
+        if (secondHand) secondHand.rotation.z = -secondAngle;
+
+        uniforms.u_hourAngle.value = hourAngle;
+        uniforms.u_minuteAngle.value = minuteAngle;
+        uniforms.u_secondAngle.value = secondAngle;
+
+        if (hourHand) hourHand.material.uniforms.u_handAngle.value = hourAngle;
+        if (minuteHand) minuteHand.material.uniforms.u_handAngle.value = minuteAngle;
+        if (secondHand) secondHand.material.uniforms.u_handAngle.value = secondAngle;
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        uniforms.time.value = performance.now() * 0.001;
+
+        uniforms.u_shapeWeights.value.lerp(targetShapeWeights, 0.05);
+
+        uniforms.u_hueShift.value = THREE.MathUtils.lerp(uniforms.u_hueShift.value, targetHueShift, 0.05);
+
+        controls.update();
+        updateClockHands();
+
+        composer.render();
+    }
+</script>
