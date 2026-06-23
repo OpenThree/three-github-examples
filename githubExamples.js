@@ -439,6 +439,15 @@ export default [
                 githubUrl: 'https://github.com/hh-hang/cesium-player-controller',
                 image: HOST + 'images/cesium-player-controller.webp',
             },
+            {
+                id: 'GeoLibre',
+                name: 'GeoLibre',
+                name_en: 'GeoLibre',
+                author: 'AUTO',
+                openUrl: 'https://geolibre.app/demo/',
+                githubUrl: 'https://github.com/opengeos/GeoLibre',
+                image: HOST + 'images/GeoLibre.webp',
+            },
         ]
     }
 ]
