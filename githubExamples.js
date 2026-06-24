@@ -457,6 +457,15 @@ export default [
                 githubUrl: 'https://github.com/amap-cvlab/ABot-Earth-0.5',
                 image: HOST + 'images/ABot-Earth.webp',
             },
+            {
+                id: 'cesium-ez-tree',
+                name: 'cesium-ez-tree',
+                name_en: 'cesium-ez-tree',
+                author: 'AUTO',
+                openUrl: 'https://xiaobai-grow.github.io/cesium-ez-tree/',
+                githubUrl: 'https://github.com/Xiaobai-grow/cesium-ez-tree',
+                image: HOST + 'images/cesium-ez-tree.webp',
+            },
         ]
     }
 ]
