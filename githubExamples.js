@@ -448,6 +448,15 @@ export default [
                 githubUrl: 'https://github.com/opengeos/GeoLibre',
                 image: HOST + 'images/GeoLibre.webp',
             },
+            {
+                id: 'ABot-Earth',
+                name: 'ABot-Earth',
+                name_en: 'ABot-Earth',
+                author: 'AUTO',
+                openUrl: 'https://abot-earth.amap.com/',
+                githubUrl: 'https://github.com/amap-cvlab/ABot-Earth-0.5',
+                image: HOST + 'images/ABot-Earth.webp',
+            },
         ]
     }
 ]
