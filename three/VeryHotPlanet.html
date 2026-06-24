@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - animation - keyframes</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lil-gui@0.19"></script>
+		<style>
+			     body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+		</style>
+	</head>
+
+	<body>
+
+		<script>
+			 // --- SHADERS ---
+
+    const vertexShader = `
+        void main() {
+            // Standard vertex shader for fullscreen quad
+            gl_Position = vec4(position, 1.0);
+        }
+    `;
+
+    const fragmentShader = `
+        uniform float iTime;
+        uniform vec2 iResolution;
+
+        // GUI Parameters
+        uniform float u_camSpeed;
+        uniform float u_noiseIntensity;
+        
+        uniform float u_flowSpeed;
+        uniform float u_distFreq;
+        uniform float u_pulseSpeed;
+        uniform float u_ampBase;
+
+        uniform float u_octaves;
+        uniform float u_fbmAmp;
+        uniform float u_fbmFreqMult;
+        uniform float u_fbmGain;
+        uniform float u_groundHeight;
+
+        uniform vec3 u_lavaColorBase;
+        uniform float u_lavaBaseIntensity;
+        uniform vec3 u_lavaColorCool;
+        uniform float u_lavaCoolIntensity;
+
+        uniform vec3 u_sparkColor;
+        uniform float u_sparkIntensity;
+        uniform float u_sparkCount;
+
+        // Efficient 1D to 3D Hash function for sparks
+        vec3 hash31(float p) {
+           vec3 p3 = fract(vec3(p) * vec3(0.1031, 0.1030, 0.0973));
+           p3 += dot(p3, p3.yzx + 33.33);
+           return fract((p3.xxy + p3.yzz) * p3.zyx);
+        }
+
+        // 2D Hash function for terrain and film noise
+        // This sine-less hash is safe for high-res/Retina screens
+        float hash(vec2 p) {
+            vec3 p3  = fract(vec3(p.xyx) * 0.1031);
+            p3 += dot(p3, p3.yzx + 33.33);
+            return fract((p3.x + p3.y) * p3.z);
+        }
+
+        // 2D Value Noise (for efficient terrain)
+        float noise(vec2 p) {
+            vec2 i = floor(p);
+            vec2 f = fract(p);
+            vec2 u = f * f * (3.0 - 2.0 * f);
+            return mix(mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),
+                       mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+        }
+
+        // Signed Distance Field (SDF) mapping the scene
+        float map(vec3 p) {
+            vec2 q = p.xz;
+            
+            // Forward flow
+            q.x += iTime * u_flowSpeed;
+            q.y += iTime * u_flowSpeed * 1.5; 
+
+            // Organic, shifting distortion
+            vec2 distort = vec2(
+                sin(q.y * u_distFreq + iTime * 0.4),
+                cos(q.x * u_distFreq + iTime * 0.3)
+            ) * 0.2;
+            q += distort;
+
+            // Slow Amplitude Modulation
+            float ampMod = 0.1 * sin(iTime * u_pulseSpeed); 
+            float activeAmp = u_ampBase + ampMod;
+
+            // N-octave 2D fBm
+            float h = 0.0;
+            float amp = u_fbmAmp;
+            mat2 m = mat2(0.8, -0.6, 0.6, 0.8);
+            for(int i = 0; i < 10; i++) {
+                if(float(i) >= u_octaves) break;
+                h += amp * noise(q);
+                q = m * q * u_fbmFreqMult; 
+                amp *= u_fbmGain;
+            }
+            
+            // Base floor
+            float ground = p.y + u_groundHeight;
+            
+            // Apply final heightmap
+            float d = ground - h * activeAmp;
+            
+            return d * 0.5; 
+        }
+
+        // Compute surface normals
+        vec3 calcNormal(vec3 p) {
+            vec2 e = vec2(0.01, 0.0);
+            return normalize(vec3(
+                map(p + e.xyy) - map(p - e.xyy),
+                map(p + e.yxy) - map(p - e.yxy),
+                map(p + e.yyx) - map(p - e.yyx)
+            ));
+        }
+
+        void main() {
+            vec2 fragCoord = gl_FragCoord.xy;
+            vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+            // Camera setup 
+            vec3 ro = vec3(0.0, 0.2, iTime * u_camSpeed); 
+            vec3 rd = normalize(vec3(uv.x, uv.y - 0.35, 1.0)); 
+
+            float t = 0.0;
+            float maxD = 15.0; 
+            vec3 p;
+            float lavaGlow = 0.0;
+
+            // Main Raymarching Loop
+            for(int i = 0; i < 75; i++) {
+                p = ro + rd * t;
+                float d = map(p);
+                
+                if(d < 0.005 || t > maxD) break;
+                t += d;
+
+                // Volumetric Glow for lava stream
+                float lavaFactor = smoothstep(-0.2, -0.9, p.y); 
+                lavaGlow += exp(-d * 6.0) * lavaFactor * 0.05;
+            }
+
+            vec3 bgCol = vec3(0.005, 0.002, 0.01);
+            vec3 col = bgCol; 
+
+            // Environment hit
+            if(t < maxD) {
+                vec3 n = calcNormal(p);
+                vec3 l = normalize(vec3(0.5, 1.0, -0.3));
+                float diff = max(dot(n, l), 0.0);
+
+                // Dark rock with specular highlight
+                vec3 rockCol = vec3(0.04, 0.03, 0.03) * diff;
+                rockCol += vec3(0.12, 0.1, 0.12) * pow(max(dot(reflect(-l, n), -rd), 0.0), 8.0);
+
+                // Lava/Rock mix based on height
+                float h = p.y;
+                float isRock = smoothstep(-0.7, -0.3, h);
+
+                // Vibrant Crimson Lava gradient
+                vec3 lavaColBase = u_lavaColorBase * u_lavaBaseIntensity;
+                vec3 lavaColCool = u_lavaColorCool * u_lavaCoolIntensity;   
+                vec3 lavaCol = mix(lavaColBase, lavaColCool, smoothstep(-0.9, -0.6, h));
+
+                col = mix(lavaCol, rockCol, isRock);
+            }
+
+            // Add main lava glow
+            col += vec3(1.4, 0.1, 0.01) * lavaGlow;        
+            
+            // Explicit particle system for realistic sparks
+            float sparkAccum = 0.0;
+            
+            // Loop up to max possible sparks, break if exceeded GUI limit
+            for(float i = 0.0; i < 150.0; i++) {
+                if(i >= u_sparkCount) break;
+                
+                // Get random properties for this spark
+                vec3 h = hash31(i + 13.37);
+                
+                // Lifecycle 
+                float speed = 0.08 + h.x * 0.12; 
+                float life = fract(iTime * speed + h.y);
+                
+                // Starting position
+                vec3 sPos = vec3(0.0);
+                
+                // Distribute sparks around the camera
+                sPos.x = (h.x - 0.5) * 6.0;
+                sPos.z = ro.z + (h.y - 0.5) * 5.0 + 3.0; 
+                
+                // Height animation (Non-linear to simulate heat acceleration)
+                float startHeight = -0.8 + (h.z * 0.3); 
+                float endHeight = startHeight + 1.5 + (h.x * 1.0);
+                sPos.y = mix(startHeight, endHeight, pow(life, 1.3)); 
+                
+                // Chaotic 3D drift (Simulating heat convection and turbulence)
+                float tMod = iTime * (0.8 + h.x * 0.4);
+                
+                sPos.x += sin(tMod * 2.0 + h.z * 10.0) * 0.3 * life;
+                sPos.x += cos(tMod * 4.5 + h.y * 5.0) * 0.1 * life;
+                
+                sPos.z += cos(tMod * 2.3 + h.x * 8.0) * 0.3 * life;
+                sPos.z += sin(tMod * 5.1 + h.z * 6.0) * 0.1 * life;
+                
+                // Check intersection with view ray
+                vec3 p2 = sPos - ro;
+                float t_proj = dot(p2, rd);
+                
+                if(t_proj > 0.0 && t_proj < t) {
+                    vec3 closestPoint = ro + rd * t_proj;
+                    float dist = length(closestPoint - sPos);
+                    
+                    // Spark brightness profile (ULTRA TINY)
+                    float glow = 0.000002 / (dist * dist + 0.000001); 
+                    glow += smoothstep(0.0015, 0.0001, dist) * 1.2; 
+                    
+                    // Fade in/out
+                    float fade = smoothstep(0.0, 0.1, life) * smoothstep(1.0, 0.7, life);
+                    
+                    sparkAccum += glow * fade * (0.5 + h.z * 0.5);
+                }
+            }
+            
+            // Add sparks to color 
+            col += u_sparkColor * u_sparkIntensity * sparkAccum;
+
+            // Distance fog
+            float fog = 1.0 - exp(-0.04 * t * t);
+            col = mix(col, bgCol, fog);
+
+            // Vignette and Gamma
+            col *= 1.0 - 0.4 * length(uv);
+            col = pow(max(col, 0.0), vec3(0.4545));
+
+            // Apply robust film noise to prevent color banding (Fixed for Retina)
+            // We use fract to keep time values small and avoid precision issues over long sessions
+            vec2 noiseSeed = fragCoord + vec2(fract(iTime * 0.123), fract(iTime * 0.321)) * 1000.0;
+            float n = hash(noiseSeed);
+            col += (n - 0.5) * u_noiseIntensity;
+
+            gl_FragColor = vec4(col, 1.0);
+        }
+    `;
+
+    // --- THREE.JS SETUP ---
+    
+    const scene = new THREE.Scene();
+    
+    // We use a flat orthographic camera for the fullscreen quad
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    
+    const renderer = new THREE.WebGLRenderer({ antialias: false });
+    document.body.appendChild(renderer.domElement);
+
+    // Initial Parameters Data
+    const params = {
+        dpr: 0.8,
+        camSpeed: 0.1,
+        noiseIntensity: 0.015, // Default subtle noise
+        
+        flowSpeed: 0.1,
+        distFreq: 0.0,
+        pulseSpeed: 0.05,
+        ampBase: 0.4,
+
+        octaves: 7.0,
+        fbmAmp: 0.8,
+        fbmFreqMult: 2.1,
+        fbmGain: 0.5,
+        groundHeight: 0.9,
+        
+        // Colors mapped to typical hex, with intensity to mimic HDR
+        lavaColorBase: '#ff1402', 
+        lavaBaseIntensity: 1.7,
+        lavaColorCool: '#b20000',
+        lavaCoolIntensity: 1.0,
+        
+        sparkCount: 80,
+        sparkColor: '#ff5511',
+        sparkIntensity: 3.0
+    };
+
+    // Uniforms initialization
+    const uniforms = {
+        iTime: { value: 0 },
+        iResolution: { value: new THREE.Vector2() },
+        
+        u_camSpeed: { value: params.camSpeed },
+        u_noiseIntensity: { value: params.noiseIntensity },
+        
+        u_flowSpeed: { value: params.flowSpeed },
+        u_distFreq: { value: params.distFreq },
+        u_pulseSpeed: { value: params.pulseSpeed },
+        u_ampBase: { value: params.ampBase },
+
+        u_octaves: { value: params.octaves },
+        u_fbmAmp: { value: params.fbmAmp },
+        u_fbmFreqMult: { value: params.fbmFreqMult },
+        u_fbmGain: { value: params.fbmGain },
+        u_groundHeight: { value: params.groundHeight },
+
+        u_lavaColorBase: { value: new THREE.Color(params.lavaColorBase) },
+        u_lavaBaseIntensity: { value: params.lavaBaseIntensity },
+        u_lavaColorCool: { value: new THREE.Color(params.lavaColorCool) },
+        u_lavaCoolIntensity: { value: params.lavaCoolIntensity },
+
+        u_sparkColor: { value: new THREE.Color(params.sparkColor) },
+        u_sparkIntensity: { value: params.sparkIntensity },
+        u_sparkCount: { value: params.sparkCount }
+    };
+
+    // Create fullscreen quad
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const material = new THREE.ShaderMaterial({
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        uniforms: uniforms,
+        depthWrite: false,
+        depthTest: false
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // --- LIL-GUI SETUP ---
+    const gui = new lil.GUI({ title: 'Scene Settings' });
+    
+    const fGeneral = gui.addFolder('General Settings');
+    fGeneral.add(params, 'dpr', 0.5, 2.0, 0.1).name('Device Pixel Ratio').onChange(v => {
+        renderer.setPixelRatio(v);
+        resize(); // Recalculate uniforms based on new DPR
+    });
+    fGeneral.add(params, 'camSpeed', 0.0, 1.0, 0.01).name('Camera Speed').onChange(v => uniforms.u_camSpeed.value = v);
+    fGeneral.add(params, 'noiseIntensity', 0.0, 0.1, 0.001).name('Film Noise').onChange(v => uniforms.u_noiseIntensity.value = v);
+
+    const fShape = gui.addFolder('Lava Deformation');
+    fShape.add(params, 'flowSpeed', 0.0, 1.0, 0.01).name('Flow Speed').onChange(v => uniforms.u_flowSpeed.value = v);
+    fShape.add(params, 'distFreq', 0.0, 2.0, 0.01).name('Distortion Freq').onChange(v => uniforms.u_distFreq.value = v);
+    fShape.add(params, 'pulseSpeed', 0.0, 0.5, 0.01).name('Pulse Speed').onChange(v => uniforms.u_pulseSpeed.value = v);
+    fShape.add(params, 'ampBase', 0.0, 1.0, 0.01).name('Base Amplitude').onChange(v => uniforms.u_ampBase.value = v);
+
+    const fProc = gui.addFolder('Procedural Generation');
+    fProc.add(params, 'octaves', 1, 10, 1).name('Octaves').onChange(v => uniforms.u_octaves.value = v);
+    fProc.add(params, 'fbmAmp', 0.1, 2.0, 0.1).name('Noise Amplitude').onChange(v => uniforms.u_fbmAmp.value = v);
+    fProc.add(params, 'fbmFreqMult', 1.0, 4.0, 0.1).name('Frequency Mult').onChange(v => uniforms.u_fbmFreqMult.value = v);
+    fProc.add(params, 'fbmGain', 0.1, 1.0, 0.05).name('Amplitude Gain').onChange(v => uniforms.u_fbmGain.value = v);
+    fProc.add(params, 'groundHeight', -1.0, 2.0, 0.1).name('Ground Level').onChange(v => uniforms.u_groundHeight.value = v);
+
+    const fColors = gui.addFolder('Lava Colors');
+    fColors.addColor(params, 'lavaColorBase').name('Base Color').onChange(v => uniforms.u_lavaColorBase.value.set(v));
+    fColors.add(params, 'lavaBaseIntensity', 0.0, 5.0, 0.1).name('Base Intensity').onChange(v => uniforms.u_lavaBaseIntensity.value = v);
+    fColors.addColor(params, 'lavaColorCool').name('Cool Color').onChange(v => uniforms.u_lavaColorCool.value.set(v));
+    fColors.add(params, 'lavaCoolIntensity', 0.0, 5.0, 0.1).name('Cool Intensity').onChange(v => uniforms.u_lavaCoolIntensity.value = v);
+
+    const fSparks = gui.addFolder('Sparks Settings');
+    fSparks.add(params, 'sparkCount', 0, 150, 1).name('Particle Count').onChange(v => uniforms.u_sparkCount.value = v);
+    fSparks.addColor(params, 'sparkColor').name('Spark Color').onChange(v => uniforms.u_sparkColor.value.set(v));
+    fSparks.add(params, 'sparkIntensity', 0.0, 10.0, 0.1).name('Spark Intensity').onChange(v => uniforms.u_sparkIntensity.value = v);
+
+    // Default state: closed
+    gui.close();
+
+    // --- RESIZE HANDLING ---
+    function resize() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        renderer.setSize(width, height);
+        
+        // Pass resolution multiplied by DPR to shader
+        const dpr = renderer.getPixelRatio();
+        uniforms.iResolution.value.set(width * dpr, height * dpr);
+    }
+    
+    window.addEventListener('resize', resize);
+    
+    // Apply initial setup
+    renderer.setPixelRatio(params.dpr);
+    resize();
+
+    // --- ANIMATION LOOP ---
+    const clock = new THREE.Clock();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        // Pass time elapsed to Shader
+        uniforms.iTime.value = clock.getElapsedTime();
+        
+        renderer.render(scene, camera);
+    }
+    
+    animate();
+		</script>
+
+	</body>
+
+</html>

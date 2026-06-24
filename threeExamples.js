@@ -47,12 +47,19 @@ export default [
                 htmlUrl: HOST + 'three/DQuantum.html',
                 image: HOST + 'three/DQuantum.webp',
             },
-            {
+{
                 id: 'Singularity',
                 name: 'Singularity',
                 name_en: 'Singularity',
                 htmlUrl: HOST + 'three/Singularity.html',
                 image: HOST + 'three/Singularity.webp',
+            },
+            {
+                id: 'VeryHotPlanet',
+                name: 'VeryHotPlanet',
+                name_en: 'VeryHotPlanet',
+                htmlUrl: HOST + 'three/VeryHotPlanet.html',
+                image: HOST + 'three/VeryHotPlanet.webp',
             },
         ]
     }
