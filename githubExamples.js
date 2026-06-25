@@ -466,6 +466,15 @@ export default [
                 githubUrl: 'https://github.com/Xiaobai-grow/cesium-ez-tree',
                 image: HOST + 'images/cesium-ez-tree.webp',
             },
+            {
+                id: 'threejswaterpro',
+                name: 'threejswaterpro',
+                name_en: 'threejswaterpro',
+                author: 'AUTO',
+                openUrl: 'https://www.threejswaterpro.com/',
+                githubUrl: 'https://github.com/dgreenheck/webgpu-water',
+                image: HOST + 'images/threejswaterpro.webp',
+            },
         ]
     }
 ]
