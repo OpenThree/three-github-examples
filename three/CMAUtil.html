@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CMAUtil Integrated Demo</title>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+<script type="importmap">
+    {
+        "imports": {
+            "three": "../three/build/three.module.js",
+            "three/addons/": "../three/examples/jsm/"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { TransformControls } from "three/addons/controls/TransformControls.js";
+    import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+    import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import Stats from "three/addons/libs/stats.module.js";
+
+    // --- CMAUtil.js Logic Start ---
+    const _raycaster = new THREE.Raycaster();
+    const _mouse = new THREE.Vector2();
+
+    const HELPER_SIZE = 1; 
+    const DESIRED_PIXEL_RADIUS = 20; 
+
+    const COLOR_POSITION = 0x00ccff;
+    const COLOR_TARGET = 0xff6644;
+    const COLOR_SELECTED = 0xffff00;
+
+    function updateHelperScale(mesh, camera, renderer) {
+        if (!camera || !renderer) return;
+        const distance = mesh.getWorldPosition(new THREE.Vector3()).distanceTo(camera.position);
+        let scale = 1;
+        if (camera.isPerspectiveCamera) {
+            const height = renderer.domElement.clientHeight;
+            const fov = camera.fov;
+            scale = (distance * Math.tan(fov * Math.PI / 360) * 2) / height * DESIRED_PIXEL_RADIUS;
+        } else if (camera.isOrthographicCamera) {
+            const height = renderer.domElement.clientHeight;
+            const orthoHeight = camera.top - camera.bottom;
+            scale = (orthoHeight / camera.zoom) / height * DESIRED_PIXEL_RADIUS;
+        }
+        if (mesh.userData.isSelected) {
+            scale *= 1.25;
+        }
+        mesh.scale.setScalar(scale);
+    }
+
+    function createPositionHelper(color, role) {
+        const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(HELPER_SIZE, 16, 16),
+            new THREE.MeshStandardMaterial({
+                color,
+                emissive: 0x000000,
+                roughness: 0.4,
+                metalness: 0.1
+            })
+        );
+        mesh.userData.role = role;
+        mesh.onBeforeRender = function(renderer, scene, camera) {
+            updateHelperScale(this, camera, renderer);
+        };
+        return mesh;
+    }
+
+    function createTargetHelper(color, role) {
+        const mesh = new THREE.Mesh(
+            new THREE.OctahedronGeometry(HELPER_SIZE, 0),
+            new THREE.MeshStandardMaterial({
+                color,
+                emissive: 0x000000,
+                roughness: 0.4,
+                metalness: 0.1,
+                depthTest: false,
+                depthWrite: false,
+                transparent: true
+            })
+        );
+        mesh.renderOrder = 1;
+        mesh.userData.role = role;
+        mesh.onBeforeRender = function(renderer, scene, camera) {
+            updateHelperScale(this, camera, renderer);
+        };
+        return mesh;
+    }
+
+    class CatmullPathTrack {
+        constructor({ name, color, getPoints }) {
+            this.name = name;
+            this.getPoints = getPoints;
+            this.curve = new THREE.CatmullRomCurve3([], false, "catmullrom", 0.5);
+            this.material = new THREE.LineBasicMaterial({ color });
+            this.geometry = new THREE.BufferGeometry();
+            this.line = new THREE.Line(this.geometry, this.material);
+            this.line.name = name;
+            this.guiState = {
+                visible: true,
+                closed: false,
+                tension: 0.5,
+                segments: 64,
+                curveType: "catmullrom"
+            };
+        }
+        update() {
+            let points = this.getPoints();
+            if (points.length === 0) {
+                this.geometry.setFromPoints([]);
+                this.line.visible = false;
+                return;
+            }
+            if (points.length === 1) {
+                points = [points[0].clone(), points[0].clone()];
+            }
+            this.curve.points = points;
+            this.curve.closed = this.guiState.closed;
+            this.curve.curveType = this.guiState.curveType;
+            this.curve.tension = this.guiState.tension;
+            this.geometry.setFromPoints(this.curve.getPoints(this.guiState.segments));
+            this.line.visible = this.guiState.visible;
+        }
+        setupGui(folder) {
+            folder.add(this.guiState, "visible").name("显示").onChange(() => this.update());
+            folder.add(this.guiState, "closed").name("闭合").onChange(() => this.update());
+            folder.add(this.guiState, "tension", 0, 1, 0.01).name("张力").onChange(() => this.update());
+            folder.add(this.guiState, "curveType", ["centripetal", "chordal", "catmullrom"]).name("曲线类型").onChange(() => this.update());
+            folder.add(this.guiState, "segments", 8, 200, 1).name("分段数").onChange(() => this.update());
+            folder.add({ refresh: () => this.update() }, "refresh").name("刷新");
+        }
+        dispose() {
+            this.geometry.dispose();
+            this.material.dispose();
+        }
+    }
+
+    class CameraMoveAid {
+        constructor(id, position, target) {
+            this.id = id;
+            this.label = `运镜组 ${id}`;
+            this.group = new THREE.Group();
+            this.group.name = `CMA_${id}`;
+            this.positionSphere = createPositionHelper(COLOR_POSITION, "position");
+            this.positionSphere.position.copy(position);
+            this.positionSphere.name = "相机位置";
+            this.targetHelper = createTargetHelper(COLOR_TARGET, "target");
+            this.targetHelper.position.copy(target);
+            this.targetHelper.name = "观察焦点";
+            this.line = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints([position.clone(), target.clone()]),
+                new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 })
+            );
+            this.line.name = "连线";
+            this.group.add(this.line, this.positionSphere, this.targetHelper);
+            this.positionSphere.userData.aid = this;
+            this.targetHelper.userData.aid = this;
+        }
+        updateLine() {
+            const attr = this.line.geometry.attributes.position;
+            attr.setXYZ(0, this.positionSphere.position.x, this.positionSphere.position.y, this.positionSphere.position.z);
+            attr.setXYZ(1, this.targetHelper.position.x, this.targetHelper.position.y, this.targetHelper.position.z);
+            attr.needsUpdate = true;
+        }
+        setHighlight(object) {
+            const highlight = (mesh, active) => {
+                mesh.material.emissive.setHex(active ? COLOR_SELECTED : 0x000000);
+                mesh.material.emissiveIntensity = active ? 0.35 : 0;
+                mesh.userData.isSelected = active;
+            };
+            highlight(this.positionSphere, object === this.positionSphere);
+            highlight(this.targetHelper, object === this.targetHelper);
+        }
+        clearHighlight() {
+            this.setHighlight(null);
+        }
+        dispose() {
+            this.group.remove(this.line, this.positionSphere, this.targetHelper);
+            this.line.geometry.dispose();
+            this.line.material.dispose();
+            this.positionSphere.geometry.dispose();
+            this.positionSphere.material.dispose();
+            this.targetHelper.geometry.dispose();
+            this.targetHelper.material.dispose();
+        }
+    }
+
+    class CMAUtil {
+        constructor({ scene, camera, renderer, orbit }) {
+            this.scene = scene;
+            this.camera = camera;
+            this.renderer = renderer;
+            this.orbit = orbit;
+            this.aids = [];
+            this._nextId = 1;
+            this.selectedAid = null;
+            this.selectedObject = null;
+            this._guiState = null;
+            this.duration = 5;
+            this.root = new THREE.Group();
+            this.root.name = "CMAUtilRoot";
+            scene.add(this.root);
+            this.runPath = new CatmullPathTrack({
+                name: "相机运行轨迹",
+                color: COLOR_POSITION,
+                getPoints: () => this._collectAidPoints("position")
+            });
+            this.previewPath = new CatmullPathTrack({
+                name: "预览焦点轨迹",
+                color: COLOR_TARGET,
+                getPoints: () => this._collectAidPoints("target")
+            });
+            this.root.add(this.runPath.line, this.previewPath.line);
+            this.transformControls = new TransformControls(camera, renderer.domElement);
+            this.scene.add(this.transformControls.getHelper());
+            this.transformControls.addEventListener("dragging-changed", (event) => {
+                this.orbit.enabled = !event.value;
+            });
+            this.transformControls.addEventListener("objectChange", () => {
+                if (this.selectedAid) {
+                    this.selectedAid.updateLine();
+                }
+                this._updatePathCurves();
+            });
+            this._onDoubleClick = this._onDoubleClick.bind(this);
+            this._onMouseClick = this._onMouseClick.bind(this);
+            renderer.domElement.addEventListener("dblclick", this._onDoubleClick);
+            renderer.domElement.addEventListener("click", this._onMouseClick);
+        }
+        _onMouseClick(event) {
+            if (event.ctrlKey) {
+                this._onDoubleClick(event);
+            }
+        }
+        _collectAidPoints(role) {
+            return this.aids.map((aid) => {
+                const object = role === "position" ? aid.positionSphere : aid.targetHelper;
+                return object.getWorldPosition(new THREE.Vector3());
+            });
+        }
+        _updatePathCurves() {
+            this.root.updateMatrixWorld(true);
+            this.runPath.update();
+            this.previewPath.update();
+        }
+        add(options = {}) {
+            const index = this.aids.length;
+            const offset = index * 3;
+            const position = options.position ?? new THREE.Vector3(5 + offset, 5, 5);
+            const target = options.target ?? new THREE.Vector3(offset, 0, 0);
+            const aid = new CameraMoveAid(this._nextId++, position, target);
+            this.aids.push(aid);
+            this.root.add(aid.group);
+            aid.updateLine();
+            this._updatePathCurves();
+            return aid;
+        }
+        remove() {
+            if (!this.selectedAid) return false;
+            const aid = this.selectedAid;
+            const index = this.aids.indexOf(aid);
+            if (index === -1) return false;
+            if (this.transformControls.object === aid.positionSphere || this.transformControls.object === aid.targetHelper) {
+                this.transformControls.detach();
+            }
+            this.root.remove(aid.group);
+            aid.dispose();
+            this.aids.splice(index, 1);
+            this.selectedAid = null;
+            this.selectedObject = null;
+            this._syncGuiState();
+            this._updatePathCurves();
+            return true;
+        }
+        _getPickables() {
+            const pickables = [];
+            for (const aid of this.aids) {
+                pickables.push(aid.positionSphere, aid.targetHelper);
+            }
+            return pickables;
+        }
+        _selectObject(object) {
+            const aid = object.userData.aid;
+            if (!aid) return;
+            if (this.selectedAid && this.selectedAid !== aid) {
+                this.selectedAid.clearHighlight();
+            }
+            this.selectedAid = aid;
+            this.selectedObject = object;
+            aid.setHighlight(object);
+            this.transformControls.attach(object);
+            this._syncGuiState();
+        }
+        _clearSelection() {
+            if (this.selectedAid) {
+                this.selectedAid.clearHighlight();
+            }
+            this.selectedAid = null;
+            this.selectedObject = null;
+            this.transformControls.detach();
+            this._syncGuiState();
+        }
+        _syncGuiState() {
+            if (!this._guiState) return;
+            if (this.selectedAid && this.selectedObject) {
+                const role = this.selectedObject.userData.role === "position" ? "相机位置" : "观察焦点";
+                this._guiState.selectedInfo = `${this.selectedAid.label} · ${role}`;
+            } else {
+                this._guiState.selectedInfo = "无";
+            }
+        }
+        _onDoubleClick(event) {
+            const rect = this.renderer.domElement.getBoundingClientRect();
+            _mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            _mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            _raycaster.setFromCamera(_mouse, this.camera);
+            const intersects = _raycaster.intersectObjects(this._getPickables(), false);
+            if (intersects.length > 0) {
+                this._selectObject(intersects[0].object);
+            }
+        }
+        save() {
+            const data = {
+                nextId: this._nextId,
+                duration: this.duration,
+                runPath: { ...this.runPath.guiState },
+                previewPath: { ...this.previewPath.guiState },
+                aids: this.aids.map(aid => ({
+                    id: aid.id,
+                    position: aid.positionSphere.position.toArray(),
+                    target: aid.targetHelper.position.toArray()
+                }))
+            };
+            const code = JSON.stringify(data, null, 4);
+            console.log("CMA Data Saved (Code String):\n", code);
+            return code;
+        }
+        download(filename = "cma_data.json") {
+            const code = this.save();
+            const blob = new Blob([code], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        load(data) {
+            if (!data) return;
+            if (typeof data === "string") {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    console.error("Failed to parse CMA data:", e);
+                    return;
+                }
+            }
+            if (!data.aids) return;
+            this._clearSelection();
+            while (this.aids.length > 0) {
+                const aid = this.aids.pop();
+                this.root.remove(aid.group);
+                aid.dispose();
+            }
+            this._nextId = data.nextId || 1;
+            this.duration = data.duration ?? 5;
+            if (this._guiState) this._guiState.duration = this.duration;
+            if (data.runPath) Object.assign(this.runPath.guiState, data.runPath);
+            if (data.previewPath) Object.assign(this.previewPath.guiState, data.previewPath);
+            for (const aidData of data.aids) {
+                const position = new THREE.Vector3().fromArray(aidData.position);
+                const target = new THREE.Vector3().fromArray(aidData.target);
+                const aid = new CameraMoveAid(aidData.id, position, target);
+                this.aids.push(aid);
+                this.root.add(aid.group);
+                aid.updateLine();
+            }
+            this._updatePathCurves();
+            this._syncGuiState();
+            if (this._gui) {
+                this._gui.controllersRecursive().forEach(c => c.updateDisplay());
+            }
+        }
+        play(data, previewTarget, duration) {
+            this.load(data);
+            this.preview(previewTarget, duration ?? this.duration);
+        }
+        test(gui) {
+            this._gui = gui;
+            const folder = gui.addFolder("运镜工具");
+            this._guiState = {
+                selectedInfo: "无",
+                mode: "translate",
+                space: "world",
+                duration: this.duration
+            };
+            folder.add(this._guiState, "selectedInfo").name("当前选中").disable();
+            folder.add(this._guiState, "duration", 0.1, 60, 0.1).name("持续时间(秒)").onChange((value) => {
+                this.duration = value;
+            });
+            folder.add({ add: () => this.add() }, "add").name("添加");
+            folder.add({ remove: () => this.remove() }, "remove").name("删除");
+            folder.add(this._guiState, "mode", ["translate", "rotate", "scale"]).name("变换模式").onChange((value) => {
+                this.transformControls.setMode(value);
+            });
+            folder.add(this._guiState, "space", ["world", "local"]).name("坐标空间").onChange((value) => {
+                this.transformControls.setSpace(value);
+            });
+            folder.add({ clear: () => this._clearSelection() }, "clear").name("取消选中");
+            folder.add({ preview: () => this.preview(this.orbit) }, "preview").name("预览 (Orbit)");
+            folder.add({ save: () => { this.download(); } }, "save").name("保存数据并下载");
+            folder.add({
+                copy: () => {
+                    const code = this.save();
+                    this._lastSavedData = code;
+                    navigator.clipboard.writeText(code).then(() => {
+                        alert("数据已转换为字符串并复制到剪贴板，同时输出到控制台");
+                    }).catch(() => {
+                        alert("数据已输出到控制台（剪贴板写入失败）");
+                    });
+                }
+            }, "copy").name("保存数据为代码(剪贴板)");
+            folder.add({
+                load: () => {
+                    if (this._lastSavedData) {
+                        this.load(this._lastSavedData);
+                    } else {
+                        alert("请先点击保存");
+                    }
+                }
+            }, "load").name("加载数据");
+            folder.add({
+                play: () => {
+                    if (this._lastSavedData) {
+                        this.play(this._lastSavedData, this.orbit);
+                    } else {
+                        alert("请先点击保存");
+                    }
+                }
+            }, "play").name("播放动画");
+            const runFolder = folder.addFolder("相机运行轨迹");
+            this.runPath.setupGui(runFolder);
+            const previewFolder = folder.addFolder("预览焦点轨迹");
+            this.previewPath.setupGui(previewFolder);
+            this.add();
+            this.add();
+        }
+        dispose() {
+            this.renderer.domElement.removeEventListener("dblclick", this._onDoubleClick);
+            this.transformControls.detach();
+            this.scene.remove(this.transformControls.getHelper());
+            this.transformControls.dispose();
+            while (this.aids.length > 0) {
+                this.selectedAid = this.aids[0];
+                this.remove();
+            }
+            this.runPath.dispose();
+            this.previewPath.dispose();
+            this.root.remove(this.runPath.line, this.previewPath.line);
+            this.scene.remove(this.root);
+        }
+        getRunCurve() { return this.runPath.curve; }
+        getPreviewCurve() { return this.previewPath.curve; }
+        preview(previewTarget, duration) {
+            if (this.aids.length < 2) {
+                console.warn("至少需要两个运镜组才能进行预览");
+                return;
+            }
+            const runDuration = duration ?? this.duration;
+            const isOrbit = previewTarget.isOrbitControls || (previewTarget.target && previewTarget.object);
+            const camera = isOrbit ? previewTarget.object : previewTarget;
+            const startTime = performance.now();
+            const runCurve = this.getRunCurve();
+            const previewCurve = this.getPreviewCurve();
+            const animate = (currentTime) => {
+                const elapsed = (currentTime - startTime) / 1000;
+                const t = Math.min(elapsed / runDuration, 1);
+                const pos = runCurve.getPointAt(t);
+                const lookAtPos = previewCurve.getPointAt(t);
+                camera.position.copy(pos);
+                if (isOrbit) {
+                    previewTarget.target.copy(lookAtPos);
+                    previewTarget.update();
+                } else {
+                    camera.lookAt(lookAtPos);
+                }
+                if (t < 1) requestAnimationFrame(animate);
+            };
+            requestAnimationFrame(animate);
+        }
+    }
+    // --- CMAUtil.js Logic End ---
+
+    let gui = new GUI();
+    let stats = new Stats();
+    document.body.appendChild(stats.dom);
+
+    let scene, renderer, camera, orbit, cmaUtil;
+    let dracoLoader, loader, textureLoader;
+
+    function init() {
+        scene = new THREE.Scene();
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.add(new THREE.PointLight(0xffffff, 1, 1000, 0.01));
+        camera.position.set(10, 10, 10);
+        scene.add(camera);
+
+        orbit = new OrbitControls(camera, renderer.domElement);
+        orbit.enableDamping = true;
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+        scene.add(new THREE.GridHelper(10, 10));
+
+        textureLoader = new THREE.TextureLoader();
+        dracoLoader = new DRACOLoader().setDecoderPath('../three/examples/jsm/libs/draco/gltf/')
+        loader = new GLTFLoader().setDRACOLoader(dracoLoader);
+    }
+
+    function addMesh() {
+        let geometry = new THREE.BoxGeometry(1, 1, 1);
+        let material = new THREE.MeshStandardMaterial({ color: 0xffffff * Math.random() });
+        let mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+    }
+
+    function initCMA() {
+        cmaUtil = new CMAUtil({ scene, camera, renderer, orbit });
+        cmaUtil.test(gui);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+        orbit.update();
+        stats.update();
+        requestAnimationFrame(render);
+    }
+
+    window.addEventListener('load', () => {
+        init();
+        addMesh();
+        initCMA();
+        render();
+    });
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
+</body>
+</html>

@@ -54,12 +54,19 @@ export default [
                 htmlUrl: HOST + 'three/Singularity.html',
                 image: HOST + 'three/Singularity.webp',
             },
-            {
+{
                 id: 'VeryHotPlanet',
                 name: 'VeryHotPlanet',
                 name_en: 'VeryHotPlanet',
                 htmlUrl: HOST + 'three/VeryHotPlanet.html',
                 image: HOST + 'three/VeryHotPlanet.webp',
+            },
+            {
+                id: 'CMAUtil',
+                name: '运镜辅助工具',
+                name_en: 'CameraMovementUtil',
+                htmlUrl: HOST + 'three/CMAUtil.html',
+                image: HOST + 'three/CMAUtil.webp',
             },
         ]
     }
