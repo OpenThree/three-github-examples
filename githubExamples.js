@@ -493,6 +493,15 @@ export default [
                 githubUrl: 'https://github.com/cyanfish-x/tellux',
                 image: HOST + 'images/tellux.webp',
             },
+            {
+                id: 'de-bees',
+                name: 'de-bees',
+                name_en: 'de-bees',
+                author: 'AUTO',
+                openUrl: 'https://de-bees.vercel.app/',
+                githubUrl: 'https://github.com/snyderb-de/de-bees',
+                image: HOST + 'images/de-bees.jpg',
+            },
         ]
     }
 ]
