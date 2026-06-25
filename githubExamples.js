@@ -484,6 +484,15 @@ export default [
                 githubUrl: 'https://github.com/arafays/messenger-copy',
                 image: HOST + 'images/messenger-copy.webp',
             },
+            {
+                id: 'tellux',
+                name: 'tellux',
+                name_en: 'tellux',
+                author: 'AUTO',
+                openUrl: 'https://tellux.cyanfish.site/sandcastle.html',
+                githubUrl: 'https://github.com/cyanfish-x/tellux',
+                image: HOST + 'images/tellux.webp',
+            },
         ]
     }
 ]
