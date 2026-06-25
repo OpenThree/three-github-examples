@@ -475,6 +475,15 @@ export default [
                 githubUrl: 'https://github.com/dgreenheck/webgpu-water',
                 image: HOST + 'images/threejswaterpro.webp',
             },
+            {
+                id: 'messenger-copy',
+                name: 'messenger-copy',
+                name_en: 'messenger-copy',
+                author: 'AUTO',
+                openUrl: 'https://messenger.abeto.co/',
+                githubUrl: 'https://github.com/arafays/messenger-copy',
+                image: HOST + 'images/messenger-copy.webp',
+            },
         ]
     }
 ]
