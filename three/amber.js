@@ -23,7 +23,7 @@ import * as THREE from "three";
         document.body.appendChild(renderer.domElement);
 
         renderer2 = new THREE.WebGLRenderer({alpha:true,antilias:true});
-        renderer2.setSize(512,512);
+        renderer2.setSize(256,256);
         renderer2.domElement.style.position = "absolute";
         renderer2.domElement.style.left = "0";
         renderer2.domElement.style.top = "0";
