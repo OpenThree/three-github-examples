@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>热带浅水 · 焦散 / 见底折射 / 物理吸色</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #07141a; }
+    #app { position: fixed; inset: 0; }
+    #hint {
+      position: fixed; left: 16px; bottom: 16px; z-index: 10;
+      font: 13px/1.6 system-ui, "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: rgba(255,255,255,.85); text-shadow: 0 1px 3px rgba(0,0,0,.6);
+      pointer-events: none; user-select: none;
+    }
+    #hint b { color: #8fe6ff; }
+    #loading {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      color: #cfeaff; font: 16px system-ui, sans-serif; z-index: 20; background: #07141a;
+      transition: opacity .6s ease; letter-spacing: .05em;
+    }
+    #loading.hide { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="loading">正在加载泻湖…</div>
+  <div id="hint">
+    <b>W/S</b> 前后 · <b>A/D</b> 左右 · <b>Q/E</b> 下/上 · <b>Shift</b> 加速 &nbsp;|&nbsp; 鼠标 <b>拖拽</b> 转视角 · <b>滚轮</b> 缩放 &nbsp;|&nbsp; 右上角面板调 <b>清澈度 / 焦散 / 水色</b>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { Sky } from 'three/addons/objects/Sky.js';
+    import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+    let scene, camera, renderer, controls, water, sky, sunLight;
+    let refractionRT, cubeCamera, cubeRT, pmrem;
+    let cloudDome, boltGroup, boltMat;
+    const sun = new THREE.Vector3();
+    const clock = new THREE.Clock();
+
+    // 跨材质共享的 uniform
+    const uTime = { value: 0 };
+    const uCaustic = { value: 0.9 };
+
+    // 体积云 + 闪电
+    const uFlash = { value: 0 };
+    const uFlashPos = { value: new THREE.Vector3() };
+    const cloudParams = { coverage: 0.58, lightning: true, strikeEvery: 2.0 };
+    let nextStrikeAt = 3.0, strikeStart = -100;
+    const strikePos = new THREE.Vector3();
+    const baseExposure = 0.62;
+
+    // 键盘飞行控制
+    const keys = {};
+
+    const params = {
+      elevation: 30,
+      azimuth: 150,
+      clarity: 0.085,        // 越小越清澈(Beer-Lambert 密度);调清以突出浅水见底
+      causticStrength: 0.9,
+      waterColor: '#2bb3c4', // 远处浅水色(青绿松石,不再是深蓝)
+      waveHeight: 0.5,
+      foamWidth: 2.4,
+      reflection: 0.38
+    };
+
+    // 离屏/环境状态(需在 init 调用前初始化,避免 TDZ)
+    let needCubeUpdate = true;
+    let envRT = null;
+    const skyScene = new THREE.Scene();
+
+    init();
+
+    function init() {
+      const container = document.getElementById('app');
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.62;
+      container.appendChild(renderer.domElement);
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 1, 20000);
+      camera.position.set(0, 55, 280); // 低空略仰、望向海平线:水做前景,远处雷暴
+
+      // ---- 天空 ----
+      sky = new Sky();
+      sky.scale.setScalar(12000);
+      scene.add(sky);
+      const su = sky.material.uniforms;
+      su['turbidity'].value = 6;
+      su['rayleigh'].value = 1.6;
+      su['mieCoefficient'].value = 0.005;
+      su['mieDirectionalG'].value = 0.8;
+
+      // ---- 体积云 + 闪电 ----
+      setupClouds();
+      setupLightning();
+
+      // ---- 灯光 ----
+      sunLight = new THREE.DirectionalLight(0xfff4e0, 2.6);
+      scene.add(sunLight);
+      scene.add(new THREE.HemisphereLight(0xcfefff, 0x20506a, 0.7));
+
+      // ---- 海床(注入焦散)----
+      const floorGeo = new THREE.PlaneGeometry(1600, 1600, 200, 200);
+      floorGeo.rotateX(-Math.PI / 2);
+      const p = floorGeo.attributes.position;
+      for (let i = 0; i < p.count; i++) {
+        const x = p.getX(i), z = p.getZ(i);
+        const t = THREE.MathUtils.clamp((z + 800) / 1600, 0, 1); // +z 抬升成沙滩
+        let y = -34 + t * 44;
+        y += Math.sin(x * 0.012) * Math.cos(z * 0.014) * 3.5;
+        y += Math.sin(x * 0.06 + z * 0.05) * 1.1;                // 沙波纹
+        y += (Math.random() - 0.5) * 0.6;
+        p.setY(i, y);
+      }
+      floorGeo.computeVertexNormals();
+      const floorMat = new THREE.MeshStandardMaterial({ map: makeSandTexture(), roughness: 1.0, metalness: 0.0 });
+      addCaustics(floorMat);
+      scene.add(new THREE.Mesh(floorGeo, floorMat));
+
+      // ---- 礁石 / 珊瑚 ----
+      const rockGeo = new THREE.DodecahedronGeometry(1, 0);
+      const rockColors = [0x7a6e5a, 0x6b5b4a, 0xb5654a, 0xcf7d63, 0x8a9a5b];
+      for (let i = 0; i < 30; i++) {
+        const mat = new THREE.MeshStandardMaterial({
+          color: rockColors[i % rockColors.length], roughness: 0.9, flatShading: true
+        });
+        addCaustics(mat);
+        const r = new THREE.Mesh(rockGeo, mat);
+        const s = 3 + Math.random() * 9;
+        r.scale.set(s, s * (0.5 + Math.random() * 0.6), s);
+        r.position.set((Math.random() - 0.5) * 1100, -24 + Math.random() * 22, -300 + Math.random() * 900);
+        r.rotation.set(Math.random(), Math.random(), Math.random());
+        scene.add(r);
+      }
+
+      // ---- 离屏:反射 cube + 折射 RT(带深度)----
+      pmrem = new THREE.PMREMGenerator(renderer);
+      cubeRT = new THREE.WebGLCubeRenderTarget(256, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+      cubeCamera = new THREE.CubeCamera(1, 20000, cubeRT);
+      cubeCamera.position.set(0, 4, 0);
+      scene.add(cubeCamera);
+
+      const db = new THREE.Vector2();
+      renderer.getDrawingBufferSize(db);
+      refractionRT = new THREE.WebGLRenderTarget(db.x, db.y);
+      refractionRT.depthTexture = new THREE.DepthTexture(db.x, db.y);
+      refractionRT.depthTexture.type = THREE.UnsignedIntType;
+      refractionRT.depthTexture.format = THREE.DepthFormat;
+
+      const normalMap = makeWaterNormalMap(256);
+
+      // ---- 水面(热带浅水:见底清澈,远处仍是浅水色而非深蓝)----
+      water = new THREE.Mesh(
+        new THREE.PlaneGeometry(16000, 16000, 384, 384),
+        buildWaterMaterial(normalMap, db)
+      );
+      water.rotation.x = -Math.PI / 2;
+      scene.add(water);
+
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 130, -400);
+      controls.maxPolarAngle = Math.PI * 0.49;
+      controls.minDistance = 30;
+      controls.maxDistance = 2000;
+      controls.enableDamping = true;
+
+      // WASD 前后左右 + QE 上下
+      window.addEventListener('keydown', (e) => {
+        const tag = e.target && e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        keys[e.code] = true;
+      });
+      window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+      buildGUI();
+      updateSun();
+
+      document.getElementById('loading').classList.add('hide');
+      window.addEventListener('resize', onResize);
+      renderer.setAnimationLoop(animate);
+    }
+
+    // ============ 焦散:TDM caustic 注入海床/礁石材质 ============
+    const CAUSTIC_GLSL = /* glsl */`
+      uniform float uTime;
+      uniform float uCaustic;
+      varying vec3 vCWorld;
+      float causticX( vec2 uv ) {
+        vec2 p = mod( uv * 6.28318530718, 6.28318530718 ) - 250.0;
+        vec2 i = vec2( p );
+        float c = 1.0;
+        float inten = 0.005;
+        for ( int n = 0; n < 5; n++ ) {
+          float t = uTime * 0.5 * ( 1.0 - ( 3.5 / float( n + 1 ) ) );
+          i = p + vec2( cos( t - i.x ) + sin( t + i.y ), sin( t - i.y ) + cos( t + i.x ) );
+          c += 1.0 / length( vec2( p.x / ( sin( i.x + t ) / inten ), p.y / ( cos( i.y + t ) / inten ) ) );
+        }
+        c /= 5.0;
+        c = 1.17 - pow( c, 1.4 );
+        return pow( abs( c ), 8.0 );
+      }
+    `;
+    function addCaustics(material) {
+      material.onBeforeCompile = (shader) => {
+        shader.uniforms.uTime = uTime;
+        shader.uniforms.uCaustic = uCaustic;
+        shader.vertexShader = shader.vertexShader
+          .replace('#include <common>', '#include <common>\nvarying vec3 vCWorld;')
+          .replace('#include <begin_vertex>', '#include <begin_vertex>\n  vCWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;');
+        shader.fragmentShader = shader.fragmentShader
+          .replace('#include <common>', '#include <common>\n' + CAUSTIC_GLSL)
+          .replace('#include <emissivemap_fragment>',
+            '#include <emissivemap_fragment>\n' +
+            '  float cDepth = smoothstep( 0.0, -2.0, vCWorld.y );\n' +
+            '  float caus = causticX( vCWorld.xz * 0.06 );\n' +
+            '  caus += causticX( vCWorld.xz * 0.13 + 40.0 ) * 0.6;\n' +
+            '  totalEmissiveRadiance += vec3( 0.45, 0.85, 0.8 ) * caus * cDepth * uCaustic;');
+      };
+    }
+
+    // ============ 水面 ShaderMaterial ============
+    function buildWaterMaterial(normalMap, db) {
+      const u = {
+        uTime:        uTime,
+        tRefraction:  { value: refractionRT.texture },
+        tDepth:       { value: refractionRT.depthTexture },
+        tEnv:         { value: cubeRT.texture },
+        normalMap:    { value: normalMap },
+        resolution:   { value: db.clone() },
+        cameraNear:   { value: camera.near },
+        cameraFar:    { value: camera.far },
+        invProjection:{ value: new THREE.Matrix4() },
+        camWorld:     { value: new THREE.Matrix4() },
+        sunDirection: { value: new THREE.Vector3() },
+        sunColor:     { value: new THREE.Color(0xfff3da) },
+        waterColor:   { value: new THREE.Color(params.waterColor) },
+        absorption:   { value: new THREE.Vector3(0.45, 0.09, 0.05) },
+        foamColor:    { value: new THREE.Color(0xf2ffff) },
+        clarity:      { value: params.clarity },
+        foamWidth:    { value: params.foamWidth },
+        waveHeight:   { value: params.waveHeight },
+        reflection:   { value: params.reflection }
+      };
+
+      return new THREE.ShaderMaterial({
+        uniforms: u,
+        vertexShader: /* glsl */`
+          uniform float uTime;
+          uniform float waveHeight;
+          varying vec3 vWorldPos;
+          varying float vEyeDepth;
+          varying vec3 vWaveNormal;
+          varying vec2 vWorldUv;
+
+          float wv(vec2 p, vec2 d, float f, float a, float s){ return a*sin(dot(p,normalize(d))*f + uTime*s); }
+          float h(vec2 p){
+            float v = 0.0;
+            v += wv(p, vec2(0.2,1.0), 0.040, 1.0, 0.9);   // 涌向岸
+            v += wv(p, vec2(1.0,0.3), 0.055, 0.6, 1.1);
+            v += wv(p, vec2(-0.6,0.7),0.090, 0.35,1.5);
+            return v;
+          }
+          void main(){
+            vec2 wp = vec2(position.x, -position.y);
+            float e = 1.5;
+            float H  = h(wp)        * waveHeight;
+            float Hx = h(wp+vec2(e,0.0)) * waveHeight;
+            float Hz = h(wp+vec2(0.0,e)) * waveHeight;
+            vWaveNormal = normalize(vec3(-(Hx-H)/e, 1.0, -(Hz-H)/e));
+            vWorldUv = wp;
+            vec3 disp = position; disp.z += H;
+            vec4 wpos = modelMatrix * vec4(disp,1.0);
+            vWorldPos = wpos.xyz;
+            vec4 mv = viewMatrix * wpos;
+            vEyeDepth = -mv.z;
+            gl_Position = projectionMatrix * mv;
+          }
+        `,
+        fragmentShader: /* glsl */`
+          precision highp float;
+          uniform sampler2D tRefraction, tDepth, normalMap;
+          uniform samplerCube tEnv;
+          uniform mat4 invProjection, camWorld;
+          uniform vec2 resolution;
+          uniform float cameraNear, cameraFar, uTime, clarity, foamWidth, reflection;
+          uniform vec3 sunDirection, sunColor, waterColor, absorption, foamColor;
+          varying vec3 vWorldPos;
+          varying float vEyeDepth;
+          varying vec3 vWaveNormal;
+          varying vec2 vWorldUv;
+
+          float sat(float x){ return clamp(x,0.0,1.0); }
+          // 由屏幕 uv + 深度重建世界坐标
+          vec3 reconWorld(vec2 uvc, float d){
+            vec4 clip = vec4(uvc * 2.0 - 1.0, d * 2.0 - 1.0, 1.0);
+            vec4 vpos = invProjection * clip; vpos /= vpos.w;
+            return (camWorld * vpos).xyz;
+          }
+
+          void main(){
+            vec2 uv = gl_FragCoord.xy / resolution;
+
+            // 细碎涟漪法线(两层滚动)+ 宏观波法线
+            vec3 n1 = texture2D(normalMap, vWorldUv*0.025 + uTime*vec2(0.02,0.015)).xyz*2.0-1.0;
+            vec3 n2 = texture2D(normalMap, vWorldUv*0.060 - uTime*vec2(0.015,0.02)).xyz*2.0-1.0;
+            vec3 normal = normalize(vWaveNormal + vec3(n1.x+n2.x, 0.0, n1.y+n2.y)*0.45);
+
+            // ---- 折射 + 真实垂直水深(重建海底世界坐标,与视角无关)----
+            vec2 refrUV = clamp(uv + normal.xz * 0.05, vec2(0.001), vec2(0.999));
+            vec3 fpos = reconWorld(refrUV, texture2D(tDepth, refrUV).x);
+            if (fpos.y > vWorldPos.y - 0.05) {            // 采样到水面上方物体 → 回退,避免渗色
+              refrUV = uv;
+              fpos = reconWorld(uv, texture2D(tDepth, uv).x);
+            }
+            float depth = max(vWorldPos.y - fpos.y, 0.0); // 垂直水柱厚度
+            vec3 refr = texture2D(tRefraction, refrUV).rgb;
+
+            // ---- Beer-Lambert 物理吸色:浅处见底,渐变青绿,深处湛蓝 ----
+            vec3 transmit = exp(-depth * absorption * clarity);
+            vec3 throughWater = refr * transmit + waterColor * (1.0 - transmit);
+
+            // ---- 菲涅尔天空反射 ----
+            vec3 viewDir = normalize(vWorldPos - cameraPosition);
+            vec3 refl = textureCube(tEnv, reflect(viewDir, normal)).rgb;
+            float fres = 0.02 + 0.98*pow(1.0 - sat(dot(normal, -viewDir)), 5.0);
+            vec3 color = mix(throughWater, refl, fres * reflection);
+
+            // ---- 岸边/物体泡沫(动态)----
+            float foam = 1.0 - smoothstep(0.0, foamWidth, depth);
+            float fn = texture2D(normalMap, vWorldUv*0.08 + uTime*0.04).r;
+            foam *= smoothstep(0.35, 0.85, fn + foam*0.4);
+            color = mix(color, foamColor, sat(foam));
+
+            // ---- 太阳波光 ----
+            vec3 hf = normalize(sunDirection - viewDir);
+            float spec = pow(max(dot(normal, hf), 0.0), 280.0);
+            color += sunColor * spec * 2.2;
+
+            // 离屏纹理已色调映射,这里仅做 sRGB 编码
+            color = pow(clamp(color, 0.0, 1.0), vec3(1.0/2.2));
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `
+      });
+    }
+
+    // ============ 程序化水面法线贴图(可平铺,零外部依赖)============
+    function makeWaterNormalMap(N) {
+      const rnd = new Float32Array(N * N);
+      for (let i = 0; i < N * N; i++) rnd[i] = Math.random();
+      const blur = (src, r) => {
+        const dst = new Float32Array(N * N);
+        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+          let s = 0, c = 0;
+          for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+            s += src[((y + dy + N) % N) * N + ((x + dx + N) % N)]; c++;
+          }
+          dst[y * N + x] = s / c;
+        }
+        return dst;
+      };
+      const low = blur(rnd, 4);   // 大尺度涟漪
+      const high = blur(rnd, 1);  // 细尺度涟漪
+      const h = new Float32Array(N * N);
+      for (let i = 0; i < N * N; i++) h[i] = low[i] * 0.7 + high[i] * 0.3;
+
+      const cv = document.createElement('canvas'); cv.width = cv.height = N;
+      const ctx = cv.getContext('2d');
+      const img = ctx.createImageData(N, N);
+      const H = (x, y) => h[((y + N) % N) * N + ((x + N) % N)];
+      const strength = 3.0;
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        const nx = (H(x - 1, y) - H(x + 1, y)) * strength;
+        const ny = (H(x, y - 1) - H(x, y + 1)) * strength;
+        const len = Math.hypot(nx, ny, 1.0);
+        const o = (y * N + x) * 4;
+        img.data[o]     = (nx / len * 0.5 + 0.5) * 255;
+        img.data[o + 1] = (ny / len * 0.5 + 0.5) * 255;
+        img.data[o + 2] = (1.0 / len * 0.5 + 0.5) * 255;
+        img.data[o + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      const tex = new THREE.CanvasTexture(cv);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.colorSpace = THREE.NoColorSpace;
+      return tex;
+    }
+
+    // ============ 沙地纹理 ============
+    function makeSandTexture() {
+      const c = document.createElement('canvas');
+      c.width = c.height = 512;
+      const g = c.getContext('2d');
+      g.fillStyle = '#d8c79b'; g.fillRect(0, 0, 512, 512);
+      for (let i = 0; i < 12000; i++) {
+        const v = 170 + Math.random()*70 | 0;
+        g.fillStyle = `rgba(${v},${v-22},${v-65},0.22)`;
+        g.fillRect(Math.random()*512, Math.random()*512, 1.6, 1.6);
+      }
+      for (let i = 0; i < 26; i++) {                      // 深色珊瑚/海草斑块
+        g.fillStyle = `rgba(${60+Math.random()*40|0},${90+Math.random()*50|0},${70+Math.random()*40|0},0.30)`;
+        g.beginPath();
+        g.ellipse(Math.random()*512, Math.random()*512, 8+Math.random()*26, 6+Math.random()*20, Math.random()*6, 0, 7);
+        g.fill();
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(10, 10);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // ============ 程序化 3D 噪声(灰度可平铺,供云使用)============
+    function makeCloudNoiseTex(N) {
+      const blur = (src, r) => {
+        const dst = new Float32Array(N * N);
+        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+          let s = 0, c = 0;
+          for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+            s += src[((y + dy + N) % N) * N + ((x + dx + N) % N)]; c++;
+          }
+          dst[y * N + x] = s / c;
+        }
+        return dst;
+      };
+      const gen = () => {                              // 一个可平铺、归一化的随机噪声场
+        const rnd = new Float32Array(N * N);
+        for (let i = 0; i < N * N; i++) rnd[i] = Math.random();
+        const a = blur(rnd, 3), b = blur(rnd, 1);
+        const out = new Float32Array(N * N);
+        let mn = 1e9, mx = -1e9;
+        for (let i = 0; i < N * N; i++) { out[i] = a[i] * 0.65 + b[i] * 0.35; mn = Math.min(mn, out[i]); mx = Math.max(mx, out[i]); }
+        for (let i = 0; i < N * N; i++) out[i] = (out[i] - mn) / (mx - mn);
+        return out;
+      };
+      const R = gen(), G = gen();                      // iq 的 3D 噪声技巧需要两个独立通道
+      const cv = document.createElement('canvas'); cv.width = cv.height = N;
+      const g = cv.getContext('2d');
+      const img = g.createImageData(N, N);
+      for (let i = 0; i < N * N; i++) {
+        const o = i * 4;
+        img.data[o] = R[i] * 255; img.data[o + 1] = G[i] * 255; img.data[o + 2] = 0; img.data[o + 3] = 255;
+      }
+      g.putImageData(img, 0, 0);
+      const t = new THREE.CanvasTexture(cv);
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      t.colorSpace = THREE.NoColorSpace;
+      t.minFilter = THREE.LinearFilter; t.magFilter = THREE.LinearFilter; t.generateMipmaps = false;
+      return t;
+    }
+
+    // ============ 体积云穹顶(光线步进)============
+    function setupClouds() {
+      const mat = new THREE.ShaderMaterial({
+        side: THREE.BackSide,
+        transparent: true,
+        depthWrite: false,
+        uniforms: {
+          uTime: uTime,
+          uNoise: { value: makeCloudNoiseTex(256) },
+          sunDirection: { value: new THREE.Vector3() },
+          sunColor: { value: new THREE.Color(0xfff0dd) },
+          skyTint: { value: new THREE.Color(0x6f9fce) },
+          uCoverage: { value: cloudParams.coverage },
+          uFlash: uFlash,
+          uFlashPos: uFlashPos
+        },
+        vertexShader: /* glsl */`
+          varying vec3 vWorldPos;
+          void main(){
+            vec4 wp = modelMatrix * vec4(position, 1.0);
+            vWorldPos = wp.xyz;
+            gl_Position = projectionMatrix * viewMatrix * wp;
+          }
+        `,
+        fragmentShader: /* glsl */`
+          precision highp float;
+          uniform sampler2D uNoise;
+          uniform vec3 sunDirection, sunColor, skyTint, uFlashPos;
+          uniform float uTime, uCoverage, uFlash;
+          varying vec3 vWorldPos;
+
+          const float CMIN = 600.0;
+          const float CMAX = 1700.0;
+          // 倍频之间的旋转矩阵:打散自相似,消除"假"的重复感(iq）
+          const mat3 m = mat3( 0.00, 0.80, 0.60, -0.80, 0.36, -0.48, -0.60, -0.48, 0.64 );
+
+          // 由 2D 双通道噪声构造 3D 噪声(iq 技巧)
+          float noise( in vec3 x ){
+            vec3 p = floor(x);
+            vec3 f = fract(x);
+            f = f*f*(3.0-2.0*f);
+            vec2 uv = ( p.xy + vec2(37.0,239.0)*p.z ) + f.xy;
+            vec2 rg = texture2D( uNoise, (uv+0.5)/256.0 ).yx;
+            return mix( rg.x, rg.y, f.z );
+          }
+          // 5 倍频 fbm + 高度整形 + 云量
+          float density( vec3 wp ){
+            float h = (wp.y - CMIN) / (CMAX - CMIN);
+            if( h < 0.0 || h > 1.0 ) return 0.0;
+            vec3 q = wp * 0.0022 - vec3( uTime*0.06, 0.0, uTime*0.03 );
+            float f;
+            f  = 0.50000 * noise( q ); q = m*q*2.02;
+            f += 0.25000 * noise( q ); q = m*q*2.03;
+            f += 0.12500 * noise( q ); q = m*q*2.01;
+            f += 0.06250 * noise( q ); q = m*q*2.02;
+            f += 0.03125 * noise( q );
+            float shape = smoothstep( 0.0, 0.30, h ) * smoothstep( 1.0, 0.55, h ); // 圆润的顶/底
+            return clamp( (f - (1.0 - uCoverage)) * shape * 2.6, 0.0, 1.0 );
+          }
+          void main(){
+            vec3 ro = cameraPosition;
+            vec3 rd = normalize( vWorldPos - ro );
+            if( rd.y < 0.02 ) discard;
+            float tEnter = max( (CMIN - ro.y) / rd.y, 0.0 );
+            float tExit  = (CMAX - ro.y) / rd.y;
+            const float STEPS = 48.0;
+            float dt = (tExit - tEnter) / STEPS;
+            // 抖动起点,消除分层带状
+            float jit = fract( sin(dot(gl_FragCoord.xy, vec2(12.9898,78.233))) * 43758.5453 );
+            vec3 p = ro + rd * (tEnter + dt * jit);
+            vec3 sdir = normalize( sunDirection );
+
+            vec4 sum = vec4(0.0);
+            for( int i=0; i<48; i++ ){
+              if( sum.a > 0.99 ) break;
+              float den = density( p );
+              if( den > 0.01 ){
+                // iq 的朝阳密度梯度光照 → 体积感 + 银边
+                float dif = clamp( (den - density(p + sdir*60.0)) / 0.5, 0.0, 1.0 );
+                vec3 lin = skyTint*1.1 + sunColor*2.2*dif;              // 环境天光 + 太阳
+                vec4 col = vec4( mix( vec3(1.0,0.98,0.92), vec3(0.30,0.36,0.45), den ), den );
+                col.rgb *= lin;
+                float fd = length( p.xz - uFlashPos.xz );               // 闪电从云内照亮
+                col.rgb += vec3(0.6,0.75,1.0) * uFlash * exp(-fd*0.0016) * den;
+                col.a *= 0.5;
+                col.rgb *= col.a;                                       // 预乘,前到后混合
+                sum += col * (1.0 - sum.a);
+              }
+              p += rd * dt;
+            }
+            float alpha = sum.a * smoothstep( 0.02, 0.14, rd.y );        // 近地平线淡出
+            if( alpha < 0.01 ) discard;
+            vec3 col = sum.rgb / max(sum.a, 0.0001);                     // 还原直通色
+            col = (col*(2.51*col+0.03))/(col*(2.43*col+0.59)+0.14);      // ACES 近似
+            col = pow( clamp(col,0.0,1.0), vec3(1.0/2.2) );
+            gl_FragColor = vec4( col, clamp(alpha,0.0,1.0) );
+          }
+        `
+      });
+      cloudDome = new THREE.Mesh(new THREE.SphereGeometry(8000, 32, 16), mat);
+      cloudDome.renderOrder = 2;
+      scene.add(cloudDome);
+    }
+
+    // ============ 闪电(多道主闪 + 分叉)============
+    function setupLightning() {
+      boltMat = new THREE.MeshBasicMaterial({
+        color: 0xdcebff, transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false
+      });
+      boltGroup = new THREE.Group();
+      boltGroup.visible = false;
+      scene.add(boltGroup);
+    }
+    // 生成一段锯齿状闪电(从 top 到 bottom),返回路径点
+    function addBolt(sx, sz, top, bottom, spread, radius) {
+      const pts = []; let cx = sx, cz = sz;
+      const seg = Math.max(5, Math.floor((top - bottom) / 80));
+      for (let i = 0; i <= seg; i++) {
+        const t = i / seg;
+        pts.push(new THREE.Vector3(cx, top + (bottom - top) * t, cz));
+        cx += (Math.random() - 0.5) * spread;
+        cz += (Math.random() - 0.5) * spread;
+      }
+      const geo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), seg * 4, radius, 5, false);
+      const mesh = new THREE.Mesh(geo, boltMat);
+      mesh.renderOrder = 3;
+      boltGroup.add(mesh);
+      return pts;
+    }
+    function buildBolts() {
+      for (const c of boltGroup.children) c.geometry.dispose();
+      boltGroup.clear();
+      const trunks = 1 + Math.floor(Math.random() * 3);        // 1~3 道主闪
+      let fx = 0, fz = 0;
+      for (let k = 0; k < trunks; k++) {
+        const x = (Math.random() - 0.5) * 5000;
+        const z = -(1000 + Math.random() * 4500);              // 落在前方远处的海面/地平线
+        if (k === 0) { fx = x; fz = z; }
+        const main = addBolt(x, z, 1180, 18, 110, 14.0);       // 加粗,远处也看得见
+        const nb = 2 + Math.floor(Math.random() * 3);          // 每道 2~4 个分叉
+        for (let b = 0; b < nb; b++) {
+          const sp = main[2 + Math.floor(Math.random() * (main.length - 4))];
+          addBolt(sp.x, sp.z, sp.y, sp.y - (160 + Math.random() * 420), 130, 7.0);
+        }
+      }
+      uFlashPos.value.set(fx, 1100, fz);
+    }
+    function updateLightning() {
+      if (!cloudParams.lightning) {
+        uFlash.value = 0;
+        boltGroup.visible = false;
+        renderer.toneMappingExposure = baseExposure;
+        return;
+      }
+      const now = uTime.value;
+      if (now >= nextStrikeAt) {
+        strikeStart = now;
+        buildBolts();
+        nextStrikeAt = now + cloudParams.strikeEvery * (0.4 + Math.random() * 0.8);
+      }
+      const tf = now - strikeStart;
+      let f = 0;
+      if (tf >= 0.0 && tf < 0.5) f = Math.max(0, Math.exp(-tf * 5.5) * (0.5 + 0.5 * Math.sin(tf * 60.0)));
+      uFlash.value = f * 2.4;
+      boltGroup.visible = f > 0.1;
+      boltMat.opacity = Math.min(1, f * 1.7);
+      renderer.toneMappingExposure = baseExposure + f * 0.75;
+    }
+
+    // ============ 太阳(变化后重新捕获天空反射 + 环境光)============
+    function updateSun() {
+      const phi = THREE.MathUtils.degToRad(90 - params.elevation);
+      const theta = THREE.MathUtils.degToRad(params.azimuth);
+      sun.setFromSphericalCoords(1, phi, theta);
+      sky.material.uniforms['sunPosition'].value.copy(sun);
+      sunLight.position.copy(sun).multiplyScalar(1000);
+      if (water) water.material.uniforms.sunDirection.value.copy(sun).normalize();
+      if (cloudDome) {
+        cloudDome.material.uniforms.sunDirection.value.copy(sun).normalize();
+        const warm = THREE.MathUtils.clamp(1.0 - params.elevation / 28, 0, 1); // 低太阳偏暖
+        cloudDome.material.uniforms.sunColor.value.setRGB(1.0, 0.95 - 0.22 * warm, 0.86 - 0.48 * warm);
+      }
+
+      // 用 sky 单独生成环境贴图(复用同一个 sky 对象,避免泄漏)
+      scene.remove(sky); skyScene.add(sky);
+      if (envRT) envRT.dispose();
+      envRT = pmrem.fromScene(skyScene);
+      scene.environment = envRT.texture;
+      skyScene.remove(sky); scene.add(sky);
+
+      needCubeUpdate = true;
+    }
+
+    function buildGUI() {
+      const gui = new GUI();
+      const f1 = gui.addFolder('太阳');
+      f1.add(params, 'elevation', 2, 80, 0.1).name('高度角').onChange(updateSun);
+      f1.add(params, 'azimuth', -180, 180, 0.1).name('方位角').onChange(updateSun);
+      const f2 = gui.addFolder('水');
+      f2.add(params, 'clarity', 0.03, 0.4, 0.005).name('清澈度(小=清)').onChange(v => water.material.uniforms.clarity.value = v);
+      f2.add(params, 'causticStrength', 0, 2, 0.05).name('焦散强度').onChange(v => uCaustic.value = v);
+      f2.add(params, 'waveHeight', 0, 1.5, 0.05).name('浪高').onChange(v => water.material.uniforms.waveHeight.value = v);
+      f2.add(params, 'foamWidth', 0, 8, 0.1).name('泡沫宽度').onChange(v => water.material.uniforms.foamWidth.value = v);
+      f2.add(params, 'reflection', 0, 1, 0.02).name('反射强度').onChange(v => water.material.uniforms.reflection.value = v);
+      f2.addColor(params, 'waterColor').name('远处浅水色').onChange(v => water.material.uniforms.waterColor.value.set(v));
+      const f3 = gui.addFolder('天空 / 闪电');
+      f3.add(cloudParams, 'coverage', 0, 1, 0.01).name('云量').onChange(v => cloudDome.material.uniforms.uCoverage.value = v);
+      f3.add(cloudParams, 'lightning').name('闪电开关');
+      f3.add(cloudParams, 'strikeEvery', 0.4, 8, 0.1).name('闪电间隔(秒)');
+      f1.open(); f2.open(); f3.open();
+    }
+
+    // 键盘平移:同时移动相机与目标点,保持视角方向不变
+    const _fwd = new THREE.Vector3(), _right = new THREE.Vector3(), _move = new THREE.Vector3();
+    function moveCamera(dt) {
+      const speed = (keys['ShiftLeft'] || keys['ShiftRight'] ? 240 : 95) * dt;
+      camera.getWorldDirection(_fwd).normalize();
+      _right.crossVectors(_fwd, camera.up).normalize();
+      _move.set(0, 0, 0);
+      if (keys['KeyW']) _move.add(_fwd);
+      if (keys['KeyS']) _move.addScaledVector(_fwd, -1);
+      if (keys['KeyD']) _move.add(_right);
+      if (keys['KeyA']) _move.addScaledVector(_right, -1);
+      if (keys['KeyE']) _move.y += 1;
+      if (keys['KeyQ']) _move.y -= 1;
+      if (_move.lengthSq() === 0) return;
+      _move.normalize().multiplyScalar(speed);
+      camera.position.add(_move);
+      controls.target.add(_move);
+      if (camera.position.y < 2.5) camera.position.y = 2.5; // 别钻到水下
+    }
+
+    function onResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      const db = new THREE.Vector2();
+      renderer.getDrawingBufferSize(db);
+      refractionRT.setSize(db.x, db.y);
+      water.material.uniforms.resolution.value.copy(db);
+    }
+
+    function animate() {
+      const dt = clock.getDelta();
+      uTime.value += dt;
+      uCaustic.value = params.causticStrength;
+
+      moveCamera(dt);
+      updateLightning();
+      controls.update();
+      camera.updateMatrixWorld();
+      water.material.uniforms.invProjection.value.copy(camera.projectionMatrixInverse);
+      water.material.uniforms.camWorld.value.copy(camera.matrixWorld);
+
+      // 反射 cube(含云,按需更新);折射(隐藏云,省性能)
+      water.visible = false;
+      if (needCubeUpdate) { cubeCamera.update(renderer, scene); needCubeUpdate = false; }
+      cloudDome.visible = false;
+      const boltVis = boltGroup.visible; boltGroup.visible = false;
+      renderer.setRenderTarget(refractionRT);
+      renderer.render(scene, camera);
+      renderer.setRenderTarget(null);
+      cloudDome.visible = true;
+      boltGroup.visible = boltVis;
+      water.visible = true;
+
+      renderer.render(scene, camera);
+    }
+  </script>
+</body>
+</html>

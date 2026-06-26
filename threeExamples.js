@@ -68,12 +68,19 @@ export default [
                 htmlUrl: HOST + 'three/CMAUtil.html',
                 image: HOST + 'three/CMAUtil.webp',
             },
-            {
+{
                 id: 'amber',
                 name: '琥珀效果',
                 name_en: 'amber_test',
                 codeUrl: HOST + 'three/amber.js',
                 image: HOST + 'three/amber.webp',
+            },
+            {
+                id: 'threesd',
+                name: '闪电',
+                name_en: 'threesd',
+                htmlUrl: HOST + 'three/threesd.html',
+                image: HOST + 'three/threesd.webp',
             },
         ]
     }
