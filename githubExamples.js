@@ -430,7 +430,7 @@ export default [
                 githubUrl: 'https://github.com/Braffolk/fable5-world-demo',
                 image: HOST + 'images/fable5world.webp',
             },
-            {
+{
                 id: 'cesium-player-controller',
                 name: 'cesium 第三人称控制器',
                 name_en: 'cesium-player-controller',
@@ -439,7 +439,7 @@ export default [
                 githubUrl: 'https://github.com/hh-hang/cesium-player-controller',
                 image: HOST + 'images/cesium-player-controller.webp',
             },
-            {
+{
                 id: 'GeoLibre',
                 name: 'GeoLibre',
                 name_en: 'GeoLibre',
@@ -448,7 +448,7 @@ export default [
                 githubUrl: 'https://github.com/opengeos/GeoLibre',
                 image: HOST + 'images/GeoLibre.webp',
             },
-            {
+{
                 id: 'ABot-Earth',
                 name: 'ABot-Earth',
                 name_en: 'ABot-Earth',
@@ -457,7 +457,7 @@ export default [
                 githubUrl: 'https://github.com/amap-cvlab/ABot-Earth-0.5',
                 image: HOST + 'images/ABot-Earth.webp',
             },
-            {
+{
                 id: 'cesium-ez-tree',
                 name: 'cesium-ez-tree',
                 name_en: 'cesium-ez-tree',
@@ -493,7 +493,7 @@ export default [
                 githubUrl: 'https://github.com/cyanfish-x/tellux',
                 image: HOST + 'images/tellux.webp',
             },
-            {
+{
                 id: 'de-bees',
                 name: 'de-bees',
                 name_en: 'de-bees',
@@ -501,6 +501,15 @@ export default [
                 openUrl: 'https://de-bees.vercel.app/',
                 githubUrl: 'https://github.com/snyderb-de/de-bees',
                 image: HOST + 'images/de-bees.jpg',
+            },
+            {
+                id: 'cyanfishcesium',
+                name: 'cyanfish-cesium',
+                name_en: 'cyanfish-cesium',
+                author: 'AUTO',
+                openUrl: 'https://demo.cyanfish.site/cesium',
+                githubUrl: 'https://github.com/cyanfish-x/tellux',
+                image: HOST + 'images/cyanfishcesium.webp',
             },
         ]
     }
