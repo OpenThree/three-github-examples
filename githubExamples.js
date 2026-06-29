@@ -511,6 +511,15 @@ export default [
                 githubUrl: 'https://github.com/cyanfish-x/tellux',
                 image: HOST + 'images/cyanfishcesium.webp',
             },
+            {
+                id: 'procedural-spider',
+                name: 'procedural-spider',
+                name_en: 'procedural-spider',
+                author: 'AUTO',
+                openUrl: 'https://proceduralspider.netlify.app/',
+                githubUrl: 'https://github.com/majidmanzarpour/threejs-procedural-spider',
+                image: HOST + 'images/procedural-spider.webp',
+            },
         ]
     }
 ]
