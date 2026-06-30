@@ -520,6 +520,24 @@ export default [
                 githubUrl: 'https://github.com/majidmanzarpour/threejs-procedural-spider',
                 image: HOST + 'images/procedural-spider.webp',
             },
+            {
+                id: 'ThreeJS_Portfolio',
+                name: 'ThreeJS_Portfolio',
+                name_en: 'ThreeJS_Portfolio',
+                author: 'AUTO',
+                openUrl: 'https://three-js-portfolio-rust-beta.vercel.app/',
+                githubUrl: 'https://github.com/Plattnericus/ThreeJS_Portfolio',
+                image: HOST + 'images/ThreeJS_Portfolio.webp',
+            },
+            {
+                id: 'lego-stylized-nature',
+                name: 'lego-stylized-nature',
+                name_en: 'lego-stylized-nature',
+                author: 'AUTO',
+                openUrl: 'https://lego-stylized-nature.vercel.app/',
+                githubUrl: 'https://github.com/hexianWeb/lego-stylized-nature',
+                image: HOST + 'images/lego-stylized-nature.webp',
+            },
         ]
     }
 ]
