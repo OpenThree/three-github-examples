@@ -538,6 +538,15 @@ export default [
                 githubUrl: 'https://github.com/hexianWeb/lego-stylized-nature',
                 image: HOST + 'images/lego-stylized-nature.webp',
             },
+            {
+                id: 'map3d-build',
+                name: '生成3D白膜',
+                name_en: 'map3d-build',
+                author: 'AUTO',
+                openUrl: 'https://map.fleet.im/',
+                githubUrl: 'https://github.com/cartesiancs/map3d',
+                image: HOST + 'images/map3d-build.webp',
+            },
         ]
     }
 ]
