@@ -547,6 +547,15 @@ export default [
                 githubUrl: 'https://github.com/cartesiancs/map3d',
                 image: HOST + 'images/map3d-build.webp',
             },
+            {
+                id: 'day-night-digital-twins',
+                name: '数字校园黑夜白天',
+                name_en: 'day-night-digital-twins',
+                author: 'AUTO',
+                openUrl: 'https://gcat.cc/demo/park',
+                githubUrl: 'https://github.com/GhostCatcg/day-night-digital-twins',
+                image: HOST + 'images/day-night-digital-twins.webp',
+            },
         ]
     }
 ]
