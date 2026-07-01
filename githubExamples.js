@@ -475,7 +475,7 @@ export default [
                 githubUrl: 'https://github.com/dgreenheck/webgpu-water',
                 image: HOST + 'images/threejswaterpro.webp',
             },
-            {
+{
                 id: 'messenger-copy',
                 name: 'messenger-copy',
                 name_en: 'messenger-copy',
@@ -484,7 +484,7 @@ export default [
                 githubUrl: 'https://github.com/arafays/messenger-copy',
                 image: HOST + 'images/messenger-copy.webp',
             },
-            {
+{
                 id: 'tellux',
                 name: 'tellux',
                 name_en: 'tellux',
@@ -502,7 +502,7 @@ export default [
                 githubUrl: 'https://github.com/snyderb-de/de-bees',
                 image: HOST + 'images/de-bees.jpg',
             },
-            {
+{
                 id: 'cyanfishcesium',
                 name: 'cyanfish-cesium',
                 name_en: 'cyanfish-cesium',
@@ -511,7 +511,7 @@ export default [
                 githubUrl: 'https://github.com/cyanfish-x/tellux',
                 image: HOST + 'images/cyanfishcesium.webp',
             },
-            {
+{
                 id: 'procedural-spider',
                 name: 'procedural-spider',
                 name_en: 'procedural-spider',
@@ -529,7 +529,7 @@ export default [
                 githubUrl: 'https://github.com/Plattnericus/ThreeJS_Portfolio',
                 image: HOST + 'images/ThreeJS_Portfolio.webp',
             },
-            {
+{
                 id: 'lego-stylized-nature',
                 name: 'lego-stylized-nature',
                 name_en: 'lego-stylized-nature',
@@ -538,7 +538,7 @@ export default [
                 githubUrl: 'https://github.com/hexianWeb/lego-stylized-nature',
                 image: HOST + 'images/lego-stylized-nature.webp',
             },
-            {
+{
                 id: 'map3d-build',
                 name: '生成3D白膜',
                 name_en: 'map3d-build',
@@ -547,7 +547,7 @@ export default [
                 githubUrl: 'https://github.com/cartesiancs/map3d',
                 image: HOST + 'images/map3d-build.webp',
             },
-            {
+{
                 id: 'day-night-digital-twins',
                 name: '数字校园黑夜白天',
                 name_en: 'day-night-digital-twins',
@@ -555,6 +555,15 @@ export default [
                 openUrl: 'https://gcat.cc/demo/park',
                 githubUrl: 'https://github.com/GhostCatcg/day-night-digital-twins',
                 image: HOST + 'images/day-night-digital-twins.webp',
+            },
+            {
+                id: 'ode-to-yosemite',
+                name: 'ode-to-yosemite',
+                name_en: 'ode-to-yosemite',
+                author: 'AUTO',
+                openUrl: 'https://ode-to-yosemite.vercel.app/',
+                githubUrl: 'https://github.com/shlokkhemani/ode-to-yosemite',
+                image: HOST + 'images/ode-to-yosemite.webp',
             },
         ]
     }
