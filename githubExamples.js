@@ -565,6 +565,24 @@ export default [
                 githubUrl: 'https://github.com/shlokkhemani/ode-to-yosemite',
                 image: HOST + 'images/ode-to-yosemite.webp',
             },
+            {
+                id: 'collectivetrajectories',
+                name: 'collectivetrajectories',
+                name_en: 'collectivetrajectories',
+                author: 'AUTO',
+                openUrl: 'https://jeonghopark.de/collectivetrajectories/',
+                githubUrl: 'https://github.com/jeonghopark/Collective-Trajectories',
+                image: HOST + 'images/collectivetrajectories.jpg',
+            },
+            {
+                id: 'threejsskypro',
+                name: 'threejsskypro',
+                name_en: 'threejsskypro',
+                author: 'AUTO',
+                openUrl: 'https://threejsskypro.com/',
+                githubUrl: 'https://github.com/threejsskypro/threejsskypro',
+                image: HOST + 'images/threejsskypro.webp',
+            },
         ]
     }
 ]
