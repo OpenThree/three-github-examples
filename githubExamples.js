@@ -583,6 +583,24 @@ export default [
                 githubUrl: 'https://github.com/threejsskypro/threejsskypro',
                 image: HOST + 'images/threejsskypro.webp',
             },
+            {
+                id: 'lius1314-china-map',
+                name: 'lius1314-china-map',
+                name_en: 'lius1314-china-map',
+                author: 'AUTO',
+                openUrl: 'https://www.npmjs.com/package/@lius1314/china-map-3d-designer',
+                githubUrl: 'https://github.com/z2586300277/three-cesium-examples',
+                image: HOST + 'images/lius1314-china-map.webp',
+            },
+            {
+                id: 'modkeys',
+                name: 'modkeys',
+                name_en: 'modkeys',
+                author: 'AUTO',
+                openUrl: 'https://modkeys.vercel.app/',
+                githubUrl: 'https://github.com/thebuggeddev/modkeys',
+                image: HOST + 'images/modkeys.webp',
+            },
         ]
     }
 ]
