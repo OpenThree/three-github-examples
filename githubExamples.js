@@ -610,6 +610,24 @@ export default [
                 githubUrl: 'https://github.com/SkyeShark/threejs-silhouette-pom',
                 image: HOST + 'images/silhouette-pom.webp',
             },
+            {
+                id: 'weisdevice-project',
+                name: 'weisdevice-project',
+                name_en: 'weisdevice-project',
+                author: 'AUTO',
+                openUrl: 'https://www.weisdevice.xyz/',
+                githubUrl: 'https://github.com/wehwayne2/weisdevice-project',
+                image: HOST + 'images/weisdevice-project.webp',
+            },
+            {
+                id: 'challenge-geo',
+                name: 'challenge-geo',
+                name_en: 'challenge-geo',
+                author: 'AUTO',
+                openUrl: 'https://x-challenge-geo.vercel.app/',
+                githubUrl: 'https://github.com/wehwayne2/x-challenge-geo',
+                image: HOST + 'images/challenge-geo.webp',
+            },
         ]
     }
 ]
