@@ -601,6 +601,15 @@ export default [
                 githubUrl: 'https://github.com/thebuggeddev/modkeys',
                 image: HOST + 'images/modkeys.webp',
             },
+            {
+                id: 'silhouette-pom',
+                name: 'silhouette-pom',
+                name_en: 'silhouette-pom',
+                author: 'AUTO',
+                openUrl: 'https://skyeshark.github.io/threejs-silhouette-pom/',
+                githubUrl: 'https://github.com/SkyeShark/threejs-silhouette-pom',
+                image: HOST + 'images/silhouette-pom.webp',
+            },
         ]
     }
 ]
