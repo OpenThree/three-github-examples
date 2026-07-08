@@ -628,6 +628,15 @@ export default [
                 githubUrl: 'https://github.com/wehwayne2/x-challenge-geo',
                 image: HOST + 'images/challenge-geo.webp',
             },
+            {
+                id: 'battlefield-editor',
+                name: 'battlefield-editor',
+                name_en: 'battlefield-editor',
+                author: 'AUTO',
+                openUrl: 'https://yazelin.github.io/battlefield-editor/',
+                githubUrl: 'https://github.com/yazelin/battlefield-editor',
+                image: HOST + 'images/battlefield-editor.webp',
+            },
         ]
     }
 ]
