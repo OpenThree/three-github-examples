@@ -637,6 +637,15 @@ export default [
                 githubUrl: 'https://github.com/yazelin/battlefield-editor',
                 image: HOST + 'images/battlefield-editor.webp',
             },
+            {
+                id: 'overpass-turbo',
+                name: '城市交通路网等geojson',
+                name_en: 'overpass-turbo',
+                author: 'AUTO',
+                openUrl: 'https://overpass-turbo.eu/',
+                githubUrl: 'https://github.com/overpass/overpass-turbo',
+                image: HOST + 'images/overpass-turbo.webp',
+            },
         ]
     }
 ]
