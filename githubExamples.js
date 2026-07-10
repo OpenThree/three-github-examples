@@ -646,6 +646,33 @@ export default [
                 githubUrl: 'https://github.com/overpass/overpass-turbo',
                 image: HOST + 'images/overpass-turbo.webp',
             },
+            {
+                id: 'texturesFree',
+                name: '免费贴图',
+                name_en: 'texturesFree',
+                author: 'AUTO',
+                openUrl: 'https://www.textures.com/free',
+                githubUrl: 'https://github.com/textures/textures',
+                image: HOST + 'images/texturesFree.webp',
+            },
+            {
+                id: 'geo-downloader',
+                name: '地区geo-下载器',
+                name_en: 'geo-downloader',
+                author: 'AUTO',
+                openUrl: 'https://geodownloader.pages.dev/',
+                githubUrl: 'https://github.com/gaopengbin/geo-downloader',
+                image: HOST + 'images/geo-downloader.webp',
+            },
+            {
+                id: 'TerrainStudio',
+                name: 'TerrainStudio',
+                name_en: 'TerrainStudio',
+                author: 'AUTO',
+                openUrl: 'https://terrains.zyfod.dev/',
+                githubUrl: 'https://github.com/nalbam/TerrainStudio',
+                image: HOST + 'images/TerrainStudio.webp',
+            },
         ]
     }
 ]
