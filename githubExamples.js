@@ -673,6 +673,15 @@ export default [
                 githubUrl: 'https://github.com/nalbam/TerrainStudio',
                 image: HOST + 'images/TerrainStudio.webp',
             },
+            {
+                id: 'china-heritage-3d',
+                name: 'china-heritage-3d',
+                name_en: 'china-heritage-3d',
+                author: 'AUTO',
+                openUrl: 'https://architecture-iota-khaki.vercel.app/',
+                githubUrl: 'https://github.com/xyiqq/china-heritage-3d',
+                image: HOST + 'images/china-heritage-3d.webp',
+            },
         ]
     }
 ]
