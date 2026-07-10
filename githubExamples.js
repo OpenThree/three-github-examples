@@ -682,6 +682,15 @@ export default [
                 githubUrl: 'https://github.com/xyiqq/china-heritage-3d',
                 image: HOST + 'images/china-heritage-3d.webp',
             },
+            {
+                id: 'RippleAquarium',
+                name: 'RippleAquarium',
+                name_en: 'RippleAquarium',
+                author: 'AUTO',
+                openUrl: 'https://seanwong17.github.io/RippleAquarium/',
+                githubUrl: 'https://github.com/SeanWong17/RippleAquarium',
+                image: HOST + 'images/RippleAquarium.webp',
+            },
         ]
     }
 ]
