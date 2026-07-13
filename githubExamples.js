@@ -106,7 +106,7 @@ export default [
                 githubUrl: 'https://github.com/Abdul-Wasay-008/Atlas26',
                 image: HOST + 'images/Abdul-Wasay-008.webp',
             },
-            {
+{
                 id: 'icraft',
                 name: 'icraft',
                 name_en: 'icraft',
@@ -466,7 +466,7 @@ export default [
                 githubUrl: 'https://github.com/Xiaobai-grow/cesium-ez-tree',
                 image: HOST + 'images/cesium-ez-tree.webp',
             },
-            {
+{
                 id: 'threejswaterpro',
                 name: 'threejswaterpro',
                 name_en: 'threejswaterpro',
@@ -520,7 +520,7 @@ export default [
                 githubUrl: 'https://github.com/majidmanzarpour/threejs-procedural-spider',
                 image: HOST + 'images/procedural-spider.webp',
             },
-            {
+{
                 id: 'ThreeJS_Portfolio',
                 name: 'ThreeJS_Portfolio',
                 name_en: 'ThreeJS_Portfolio',
@@ -556,7 +556,7 @@ export default [
                 githubUrl: 'https://github.com/GhostCatcg/day-night-digital-twins',
                 image: HOST + 'images/day-night-digital-twins.webp',
             },
-            {
+{
                 id: 'ode-to-yosemite',
                 name: 'ode-to-yosemite',
                 name_en: 'ode-to-yosemite',
@@ -565,7 +565,7 @@ export default [
                 githubUrl: 'https://github.com/shlokkhemani/ode-to-yosemite',
                 image: HOST + 'images/ode-to-yosemite.webp',
             },
-            {
+{
                 id: 'collectivetrajectories',
                 name: 'collectivetrajectories',
                 name_en: 'collectivetrajectories',
@@ -574,7 +574,7 @@ export default [
                 githubUrl: 'https://github.com/jeonghopark/Collective-Trajectories',
                 image: HOST + 'images/collectivetrajectories.jpg',
             },
-            {
+{
                 id: 'threejsskypro',
                 name: 'threejsskypro',
                 name_en: 'threejsskypro',
@@ -592,7 +592,7 @@ export default [
                 githubUrl: 'https://github.com/z2586300277/three-cesium-examples',
                 image: HOST + 'images/lius1314-china-map.webp',
             },
-            {
+{
                 id: 'modkeys',
                 name: 'modkeys',
                 name_en: 'modkeys',
@@ -601,7 +601,7 @@ export default [
                 githubUrl: 'https://github.com/thebuggeddev/modkeys',
                 image: HOST + 'images/modkeys.webp',
             },
-            {
+{
                 id: 'silhouette-pom',
                 name: 'silhouette-pom',
                 name_en: 'silhouette-pom',
@@ -610,7 +610,7 @@ export default [
                 githubUrl: 'https://github.com/SkyeShark/threejs-silhouette-pom',
                 image: HOST + 'images/silhouette-pom.webp',
             },
-            {
+{
                 id: 'weisdevice-project',
                 name: 'weisdevice-project',
                 name_en: 'weisdevice-project',
@@ -619,7 +619,7 @@ export default [
                 githubUrl: 'https://github.com/wehwayne2/weisdevice-project',
                 image: HOST + 'images/weisdevice-project.webp',
             },
-            {
+{
                 id: 'challenge-geo',
                 name: 'challenge-geo',
                 name_en: 'challenge-geo',
@@ -628,7 +628,7 @@ export default [
                 githubUrl: 'https://github.com/wehwayne2/x-challenge-geo',
                 image: HOST + 'images/challenge-geo.webp',
             },
-            {
+{
                 id: 'battlefield-editor',
                 name: 'battlefield-editor',
                 name_en: 'battlefield-editor',
@@ -637,7 +637,7 @@ export default [
                 githubUrl: 'https://github.com/yazelin/battlefield-editor',
                 image: HOST + 'images/battlefield-editor.webp',
             },
-            {
+{
                 id: 'overpass-turbo',
                 name: '城市交通路网等geojson',
                 name_en: 'overpass-turbo',
@@ -655,7 +655,7 @@ export default [
                 githubUrl: 'https://github.com/textures/textures',
                 image: HOST + 'images/texturesFree.webp',
             },
-            {
+{
                 id: 'geo-downloader',
                 name: '地区geo-下载器',
                 name_en: 'geo-downloader',
@@ -664,7 +664,7 @@ export default [
                 githubUrl: 'https://github.com/gaopengbin/geo-downloader',
                 image: HOST + 'images/geo-downloader.webp',
             },
-            {
+{
                 id: 'TerrainStudio',
                 name: 'TerrainStudio',
                 name_en: 'TerrainStudio',
@@ -673,7 +673,7 @@ export default [
                 githubUrl: 'https://github.com/nalbam/TerrainStudio',
                 image: HOST + 'images/TerrainStudio.webp',
             },
-            {
+{
                 id: 'china-heritage-3d',
                 name: 'china-heritage-3d',
                 name_en: 'china-heritage-3d',
@@ -682,7 +682,7 @@ export default [
                 githubUrl: 'https://github.com/xyiqq/china-heritage-3d',
                 image: HOST + 'images/china-heritage-3d.webp',
             },
-            {
+{
                 id: 'RippleAquarium',
                 name: 'RippleAquarium',
                 name_en: 'RippleAquarium',
@@ -690,6 +690,15 @@ export default [
                 openUrl: 'https://seanwong17.github.io/RippleAquarium/',
                 githubUrl: 'https://github.com/SeanWong17/RippleAquarium',
                 image: HOST + 'images/RippleAquarium.webp',
+            },
+            {
+                id: 'threejs-procedural-dungeon',
+                name: 'threejs-procedural-dungeon',
+                name_en: 'threejs-procedural-dungeon',
+                author: 'AUTO',
+                openUrl: 'https://procedural-dungeon.netlify.app/',
+                githubUrl: 'https://github.com/majidmanzarpour/threejs-procedural-dungeon',
+                image: HOST + 'images/threejs-procedural-dungeon.webp',
             },
         ]
     }
