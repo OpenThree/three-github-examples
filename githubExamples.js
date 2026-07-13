@@ -700,6 +700,15 @@ export default [
                 githubUrl: 'https://github.com/majidmanzarpour/threejs-procedural-dungeon',
                 image: HOST + 'images/threejs-procedural-dungeon.webp',
             },
+            {
+                id: 'storyai-3d-director-desk',
+                name: '3D导演台-Ai视频',
+                name_en: 'storyai-3d-director-desk',
+                author: 'AUTO',
+                openUrl: 'https://github.com/jiguang132/storyai-3d-director-desk',
+                githubUrl: 'https://github.com/jiguang132/storyai-3d-director-desk',
+                image: HOST + 'images/storyai-3d-director-desk.webp',
+            },
         ]
     }
 ]
