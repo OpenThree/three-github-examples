@@ -709,6 +709,24 @@ export default [
                 githubUrl: 'https://github.com/jiguang132/storyai-3d-director-desk',
                 image: HOST + 'images/storyai-3d-director-desk.webp',
             },
+            {
+                id: 'HiCAD',
+                name: 'HiCAD',
+                name_en: 'HiCAD',
+                author: 'AUTO',
+                openUrl: 'https://hicad.mvtable.com/',
+                githubUrl: 'https://github.com/MrXujiang/HiCAD',
+                image: HOST + 'images/HiCAD.webp',
+            },
+            {
+                id: 'my-virtual-world',
+                name: 'my-virtual-world',
+                name_en: 'my-virtual-world',
+                author: 'AUTO',
+                openUrl: 'https://myvirtualworld.ai/',
+                githubUrl: 'https://github.com/eliautobot/my-virtual-world',
+                image: HOST + 'images/my-virtual-world.webp',
+            },
         ]
     }
 ]
