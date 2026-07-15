@@ -727,6 +727,24 @@ export default [
                 githubUrl: 'https://github.com/eliautobot/my-virtual-world',
                 image: HOST + 'images/my-virtual-world.webp',
             },
+            {
+                id: 'fmhy',
+                name: '资源库',
+                name_en: 'fmhy',
+                author: 'AUTO',
+                openUrl: 'https://fmhy.net/',
+                githubUrl: 'https://github.com/fmhy/edit',
+                image: HOST + 'images/fmhy.webp',
+            },
+            {
+                id: 'ApexForge',
+                name: 'AI 建模',
+                name_en: 'ApexForge',
+                author: 'AUTO',
+                openUrl: 'http://apexforge.turntip.cn/',
+                githubUrl: 'https://github.com/MrXujiang/ApexForge',
+                image: HOST + 'images/ApexForge.webp',
+            },
         ]
     }
 ]
