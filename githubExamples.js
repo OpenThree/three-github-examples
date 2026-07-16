@@ -772,6 +772,15 @@ export default [
                 githubUrl: 'https://github.com/juunini/gltf-optimizer',
                 image: HOST + 'images/gltf-optimizer.webp',
             },
+            {
+                id: 'skyline-run',
+                name: 'skyline-run',
+                name_en: 'skyline-run',
+                author: 'AUTO',
+                openUrl: 'https://skyline-run.vercel.app',
+                githubUrl: 'https://github.com/anshaneja5/skyline-run',
+                image: HOST + 'images/skyline-run.webp',
+            },
         ]
     }
 ]
