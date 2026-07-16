@@ -745,6 +745,24 @@ export default [
                 githubUrl: 'https://github.com/MrXujiang/ApexForge',
                 image: HOST + 'images/ApexForge.webp',
             },
+            {
+                id: 'Three-Object-Sculptor',
+                name: 'codexthreejs 插件',
+                name_en: 'Three-Object-Sculptor',
+                author: 'AUTO',
+                openUrl: 'https://3dship.harrysoftware.com/',
+                githubUrl: 'https://github.com/vinhhien112/Three.js-Object-Sculptor-Codex-Plugin',
+                image: HOST + 'images/Three.js-Object-Sculptor-Codex-Plugin.webp',
+            },
+            {
+                id: 'lowpoly-tree-generator',
+                name: 'lowpoly-tree-generator',
+                name_en: 'lowpoly-tree-generator',
+                author: 'AUTO',
+                openUrl: 'https://rand.monster/editor/tree',
+                githubUrl: 'https://github.com/rand-monster/lowpoly-tree-generator',
+                image: HOST + 'images/lowpoly-tree-generator.webp',
+            },
         ]
     }
 ]
