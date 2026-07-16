@@ -763,6 +763,15 @@ export default [
                 githubUrl: 'https://github.com/rand-monster/lowpoly-tree-generator',
                 image: HOST + 'images/lowpoly-tree-generator.webp',
             },
+            {
+                id: 'gltf-optimizer',
+                name: '模型压缩',
+                name_en: 'gltf-optimizer',
+                author: 'AUTO',
+                openUrl: 'https://gltf-optimizer.simondev.io/',
+                githubUrl: 'https://github.com/juunini/gltf-optimizer',
+                image: HOST + 'images/gltf-optimizer.webp',
+            },
         ]
     }
 ]
