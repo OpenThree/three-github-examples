@@ -646,7 +646,7 @@ export default [
                 githubUrl: 'https://github.com/overpass/overpass-turbo',
                 image: HOST + 'images/overpass-turbo.webp',
             },
-            {
+{
                 id: 'texturesFree',
                 name: '免费贴图',
                 name_en: 'texturesFree',
@@ -691,7 +691,7 @@ export default [
                 githubUrl: 'https://github.com/SeanWong17/RippleAquarium',
                 image: HOST + 'images/RippleAquarium.webp',
             },
-            {
+{
                 id: 'threejs-procedural-dungeon',
                 name: 'threejs-procedural-dungeon',
                 name_en: 'threejs-procedural-dungeon',
@@ -709,7 +709,7 @@ export default [
                 githubUrl: 'https://github.com/jiguang132/storyai-3d-director-desk',
                 image: HOST + 'images/storyai-3d-director-desk.webp',
             },
-            {
+{
                 id: 'HiCAD',
                 name: 'HiCAD',
                 name_en: 'HiCAD',
@@ -718,7 +718,7 @@ export default [
                 githubUrl: 'https://github.com/MrXujiang/HiCAD',
                 image: HOST + 'images/HiCAD.webp',
             },
-            {
+{
                 id: 'my-virtual-world',
                 name: 'my-virtual-world',
                 name_en: 'my-virtual-world',
@@ -727,7 +727,7 @@ export default [
                 githubUrl: 'https://github.com/eliautobot/my-virtual-world',
                 image: HOST + 'images/my-virtual-world.webp',
             },
-            {
+{
                 id: 'fmhy',
                 name: '资源库',
                 name_en: 'fmhy',
@@ -736,7 +736,7 @@ export default [
                 githubUrl: 'https://github.com/fmhy/edit',
                 image: HOST + 'images/fmhy.webp',
             },
-            {
+{
                 id: 'ApexForge',
                 name: 'AI 建模',
                 name_en: 'ApexForge',
@@ -745,7 +745,7 @@ export default [
                 githubUrl: 'https://github.com/MrXujiang/ApexForge',
                 image: HOST + 'images/ApexForge.webp',
             },
-            {
+{
                 id: 'Three-Object-Sculptor',
                 name: 'codexthreejs 插件',
                 name_en: 'Three-Object-Sculptor',
@@ -754,7 +754,7 @@ export default [
                 githubUrl: 'https://github.com/vinhhien112/Three.js-Object-Sculptor-Codex-Plugin',
                 image: HOST + 'images/Three.js-Object-Sculptor-Codex-Plugin.webp',
             },
-            {
+{
                 id: 'lowpoly-tree-generator',
                 name: 'lowpoly-tree-generator',
                 name_en: 'lowpoly-tree-generator',
@@ -763,7 +763,7 @@ export default [
                 githubUrl: 'https://github.com/rand-monster/lowpoly-tree-generator',
                 image: HOST + 'images/lowpoly-tree-generator.webp',
             },
-            {
+{
                 id: 'gltf-optimizer',
                 name: '模型压缩',
                 name_en: 'gltf-optimizer',
@@ -772,7 +772,7 @@ export default [
                 githubUrl: 'https://github.com/juunini/gltf-optimizer',
                 image: HOST + 'images/gltf-optimizer.webp',
             },
-            {
+{
                 id: 'skyline-run',
                 name: 'skyline-run',
                 name_en: 'skyline-run',
@@ -780,6 +780,15 @@ export default [
                 openUrl: 'https://skyline-run.vercel.app',
                 githubUrl: 'https://github.com/anshaneja5/skyline-run',
                 image: HOST + 'images/skyline-run.webp',
+            },
+            {
+                id: 'SeedOcean',
+                name: 'SeedOcean',
+                name_en: 'SeedOcean',
+                author: 'AUTO',
+                openUrl: 'https://reed-soul.github.io/SeedOcean/',
+                githubUrl: 'https://github.com/reed-soul/SeedOcean',
+                image: HOST + 'images/SeedOcean.webp',
             },
         ]
     }
