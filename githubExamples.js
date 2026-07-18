@@ -583,7 +583,7 @@ export default [
                 githubUrl: 'https://github.com/threejsskypro/threejsskypro',
                 image: HOST + 'images/threejsskypro.webp',
             },
-            {
+{
                 id: 'lius1314-china-map',
                 name: 'lius1314-china-map',
                 name_en: 'lius1314-china-map',
@@ -700,7 +700,7 @@ export default [
                 githubUrl: 'https://github.com/majidmanzarpour/threejs-procedural-dungeon',
                 image: HOST + 'images/threejs-procedural-dungeon.webp',
             },
-            {
+{
                 id: 'storyai-3d-director-desk',
                 name: '3D导演台-Ai视频',
                 name_en: 'storyai-3d-director-desk',
@@ -781,7 +781,7 @@ export default [
                 githubUrl: 'https://github.com/anshaneja5/skyline-run',
                 image: HOST + 'images/skyline-run.webp',
             },
-            {
+{
                 id: 'SeedOcean',
                 name: 'SeedOcean',
                 name_en: 'SeedOcean',
@@ -789,6 +789,15 @@ export default [
                 openUrl: 'https://reed-soul.github.io/SeedOcean/',
                 githubUrl: 'https://github.com/reed-soul/SeedOcean',
                 image: HOST + 'images/SeedOcean.webp',
+            },
+            {
+                id: 'MisterPrada',
+                name: 'MisterPrada',
+                name_en: 'MisterPrada',
+                author: 'AUTO',
+                openUrl: 'https://github.com/MisterPrada',
+                githubUrl: 'https://github.com/MisterPrada/singularity',
+                image: HOST + 'images/MisterPrada.webp',
             },
         ]
     }
