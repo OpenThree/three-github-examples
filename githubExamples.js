@@ -790,7 +790,7 @@ export default [
                 githubUrl: 'https://github.com/reed-soul/SeedOcean',
                 image: HOST + 'images/SeedOcean.webp',
             },
-            {
+{
                 id: 'MisterPrada',
                 name: 'MisterPrada',
                 name_en: 'MisterPrada',
@@ -798,6 +798,15 @@ export default [
                 openUrl: 'https://github.com/MisterPrada',
                 githubUrl: 'https://github.com/MisterPrada/singularity',
                 image: HOST + 'images/MisterPrada.webp',
+            },
+            {
+                id: 'three-auto',
+                name: 'three-auto',
+                name_en: 'three-auto',
+                author: 'AUTO',
+                openUrl: 'https://three-auto.vercel.app/',
+                githubUrl: 'https://github.com/flowers-10/three-auto',
+                image: HOST + 'images/three-auto.webp',
             },
         ]
     }
