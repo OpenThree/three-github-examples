@@ -808,6 +808,15 @@ export default [
                 githubUrl: 'https://github.com/flowers-10/three-auto',
                 image: HOST + 'images/three-auto.webp',
             },
+            {
+                id: 'KallkaGoMy_website',
+                name: 'KallkaGoMy_website',
+                name_en: 'KallkaGoMy_website',
+                author: 'AUTO',
+                openUrl: 'https://my-website-kallka.vercel.app/#work',
+                githubUrl: 'https://github.com/KallkaGo/My_website',
+                image: HOST + 'images/KallkaGoMy_website.webp',
+            },
         ]
     }
 ]
