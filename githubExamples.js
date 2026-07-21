@@ -826,6 +826,24 @@ export default [
                 githubUrl: 'https://github.com/icurtis1/raycast-vehicle',
                 image: HOST + 'images/raycast-vehicle.webp',
             },
+            {
+                id: 'ThreejsGNM',
+                name: '头编辑器',
+                name_en: 'ThreejsGNM',
+                author: 'AUTO',
+                openUrl: 'https://threejs-gnm.vercel.app/',
+                githubUrl: 'https://github.com/ademola-lou/ThreejsGNM',
+                image: HOST + 'images/ThreejsGNM.webp',
+            },
+            {
+                id: 'GNM-Studio',
+                name: '人头编辑器',
+                name_en: 'GNM-Studio',
+                author: 'AUTO',
+                openUrl: 'https://drbaph.is-a.dev/GNM-Studio/',
+                githubUrl: 'https://github.com/Saganaki22/GNM-Studio',
+                image: HOST + 'images/GNM-Studio.webp',
+            },
         ]
     }
 ]
