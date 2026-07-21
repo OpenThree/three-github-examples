@@ -844,6 +844,15 @@ export default [
                 githubUrl: 'https://github.com/Saganaki22/GNM-Studio',
                 image: HOST + 'images/GNM-Studio.webp',
             },
+            {
+                id: 'img2threejs',
+                name: '图像转3D',
+                name_en: 'img2threejs',
+                author: 'AUTO',
+                openUrl: 'https://hoainho.github.io/img2threejs-showcase/',
+                githubUrl: 'https://github.com/hoainho/img2threejs',
+                image: HOST + 'images/img2threejs.webp',
+            },
         ]
     }
 ]
