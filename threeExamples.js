@@ -75,12 +75,19 @@ export default [
                 codeUrl: HOST + 'three/amber.js',
                 image: HOST + 'three/amber.webp',
             },
-            {
+{
                 id: 'threesd',
                 name: '闪电',
                 name_en: 'threesd',
                 htmlUrl: HOST + 'three/threesd.html',
                 image: HOST + 'three/threesd.webp',
+            },
+            {
+                id: 'VerityEngine',
+                name: 'Verity Engine',
+                name_en: 'Verity Engine',
+                htmlUrl: HOST + 'three/VerityEngine.html',
+                image: HOST + 'three/VerityEngine.webp',
             },
         ]
     }

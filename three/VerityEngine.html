@@ -1,0 +1,3394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Verity Engine v3</title>
+	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+	<style>
+		*,
+		*::before,
+		*::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box
+		}
+
+		html,
+		body {
+			height: 100%;
+			overflow: hidden
+		}
+
+		:root {
+			--bg-primary: #0a0a12;
+			--bg-secondary: #12121e;
+			--bg-glass: rgba(18, 18, 30, 0.75);
+			--border-glass: rgba(0, 240, 255, 0.08);
+			--color-true: #00f0ff;
+			--color-false: #1a1a2e;
+			--color-true-glow: 0 0 20px rgba(0, 240, 255, 0.4), 0 0 60px rgba(0, 240, 255, 0.1);
+			--color-accent: #7b61ff;
+			--color-accent-glow: 0 0 15px rgba(123, 97, 255, 0.3);
+			--color-danger: #ff4466;
+			--color-danger-glow: 0 0 12px rgba(255, 68, 102, 0.3);
+			--color-text: #e0e0e8;
+			--color-text-dim: #5a5a72;
+			--color-wire-true: #00f0ff;
+			--color-wire-false: #1e1e32;
+			--color-gate-bg: #16162a;
+			--color-gate-border: #2a2a44;
+			--font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+			--font-sans: 'Inter', 'SF Pro', system-ui, sans-serif;
+			--ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+			--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+			--ease-signal: cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		body {
+			font-family: var(--font-mono);
+			background: var(--bg-primary);
+			color: var(--color-text);
+			user-select: none
+		}
+
+		.top-bar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 1.5rem;
+			z-index: 200;
+			background: linear-gradient(180deg, var(--bg-primary) 60%, transparent);
+			pointer-events: none
+		}
+
+		.top-bar>* {
+			pointer-events: auto
+		}
+
+		.app-title {
+			font-family: var(--font-mono);
+			font-size: .7rem;
+			font-weight: 600;
+			letter-spacing: .2em;
+			text-transform: uppercase;
+			opacity: .4;
+			color: var(--color-text)
+		}
+
+		.top-actions {
+			display: flex;
+			gap: .5rem;
+			align-items: center
+		}
+
+		.action-btn {
+			font-family: var(--font-mono);
+			font-size: .6rem;
+			font-weight: 600;
+			letter-spacing: .08em;
+			text-transform: uppercase;
+			color: var(--color-text-dim);
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 8px;
+			padding: .45rem .9rem;
+			cursor: pointer;
+			transition: all .3s var(--ease-expo);
+			white-space: nowrap
+		}
+
+		.action-btn:hover {
+			color: var(--color-true);
+			border-color: rgba(0, 240, 255, 0.2);
+			box-shadow: var(--color-true-glow)
+		}
+
+		.action-btn:focus-visible {
+			outline: 2px solid var(--color-accent);
+			outline-offset: 2px
+		}
+
+		.action-btn.danger:hover {
+			color: var(--color-danger);
+			border-color: rgba(255, 68, 102, 0.2);
+			box-shadow: var(--color-danger-glow)
+		}
+
+		.action-btn:disabled {
+			opacity: .3;
+			pointer-events: none
+		}
+
+		.canvas-viewport {
+			width: 100%;
+			height: 100vh;
+			position: relative;
+			overflow: hidden;
+			cursor: grab
+		}
+
+		.canvas-viewport.panning {
+			cursor: grabbing
+		}
+
+		.canvas-world {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			top: 0;
+			left: 0;
+			transform-origin: 0 0;
+			will-change: transform;
+			overflow: visible
+		}
+
+		.canvas-world::before {
+			content: '';
+			position: absolute;
+			left: -50000px;
+			top: -50000px;
+			width: 100000px;
+			height: 100000px;
+			background-image: radial-gradient(circle at 1px 1px, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
+			background-size: 40px 40px;
+			pointer-events: none
+		}
+
+		.wire-canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			pointer-events: none;
+			z-index: 5
+		}
+
+		/* hit-test SVG layer for wire clicks — sits over the canvas */
+		.wire-hit-layer {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 1px;
+			height: 1px;
+			overflow: visible;
+			pointer-events: none;
+			z-index: 6
+		}
+
+		.wire-hit {
+			fill: none;
+			stroke: transparent;
+			stroke-width: 16;
+			stroke-linecap: round;
+			pointer-events: visibleStroke;
+			cursor: pointer
+		}
+
+		.wire-temp-layer {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 1px;
+			height: 1px;
+			overflow: visible;
+			pointer-events: none;
+			z-index: 7
+		}
+
+		.wire-temp {
+			fill: none;
+			stroke: var(--color-accent);
+			stroke-width: 2;
+			stroke-dasharray: 6 6;
+			opacity: .7;
+			pointer-events: none
+		}
+
+		.wire-temp.wire-invalid {
+			stroke: var(--color-danger);
+			opacity: .5
+		}
+
+		.circuit-node {
+			position: absolute;
+			cursor: grab;
+			z-index: 10;
+			transition: box-shadow .3s var(--ease-expo)
+		}
+
+		.circuit-node:active {
+			cursor: grabbing
+		}
+
+		.circuit-node:focus-visible {
+			outline: 2px solid var(--color-accent);
+			outline-offset: 3px;
+			z-index: 15
+		}
+
+		.circuit-node.selected {
+			z-index: 15
+		}
+
+		.circuit-node.selected::after {
+			content: '';
+			position: absolute;
+			inset: -4px;
+			border: 1.5px solid var(--color-accent);
+			border-radius: inherit;
+			pointer-events: none;
+			opacity: .6
+		}
+
+		@keyframes node-appear {
+			0% {
+				opacity: 0;
+				transform: scale(.5)
+			}
+
+			100% {
+				opacity: 1;
+				transform: scale(1)
+			}
+		}
+
+		@keyframes wire-reject {
+
+			0%,
+			100% {
+				transform: translateX(0)
+			}
+
+			25% {
+				transform: translateX(-4px)
+			}
+
+			75% {
+				transform: translateX(4px)
+			}
+		}
+
+		.circuit-node.wire-rejected {
+			animation: wire-reject .3s var(--ease-spring)
+		}
+
+		.node-input {
+			width: 90px;
+			height: 72px;
+			background: var(--color-gate-bg);
+			border: 1.5px solid var(--color-gate-border);
+			border-radius: 12px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 4px;
+			transition: border-color .3s var(--ease-expo), box-shadow .3s var(--ease-expo)
+		}
+
+		.node-input.state-true {
+			border-color: rgba(0, 240, 255, 0.25);
+			box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.06), var(--color-true-glow)
+		}
+
+		.node-input .node-label {
+			font-size: .7rem;
+			font-weight: 600;
+			color: var(--color-text-dim);
+			transition: color .3s var(--ease-expo)
+		}
+
+		.node-input.state-true .node-label {
+			color: var(--color-true)
+		}
+
+		.node-toggle {
+			width: 32px;
+			height: 18px;
+			background: var(--bg-secondary);
+			border: 1.5px solid var(--color-gate-border);
+			border-radius: 9px;
+			position: relative;
+			cursor: pointer;
+			transition: all .3s var(--ease-spring)
+		}
+
+		.node-toggle:focus-visible {
+			outline: 2px solid var(--color-accent);
+			outline-offset: 2px
+		}
+
+		.node-toggle::after {
+			content: '';
+			position: absolute;
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			background: var(--color-text-dim);
+			top: 1.5px;
+			left: 2px;
+			transition: all .3s var(--ease-spring)
+		}
+
+		.node-input.state-true .node-toggle {
+			background: rgba(0, 240, 255, 0.12);
+			border-color: var(--color-true)
+		}
+
+		.node-input.state-true .node-toggle::after {
+			left: 16px;
+			background: var(--color-true);
+			box-shadow: 0 0 8px rgba(0, 240, 255, 0.5)
+		}
+
+		.node-input .input-val-label {
+			font-size: .5rem;
+			font-weight: 600;
+			color: var(--color-text-dim);
+			transition: color .3s var(--ease-expo)
+		}
+
+		.node-input.state-true .input-val-label {
+			color: var(--color-true)
+		}
+
+		.state-icon {
+			display: inline-block;
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background: var(--color-text-dim);
+			margin-right: 2px;
+			vertical-align: middle;
+			transition: background .3s var(--ease-expo), box-shadow .3s var(--ease-expo)
+		}
+
+		.state-icon.active {
+			background: var(--color-true);
+			box-shadow: 0 0 6px rgba(0, 240, 255, 0.5)
+		}
+
+		.node-gate {
+			width: 120px;
+			height: 80px;
+			background: var(--color-gate-bg);
+			border: 1.5px solid var(--color-gate-border);
+			border-radius: 12px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 2px;
+			transition: border-color .3s var(--ease-expo), box-shadow .3s var(--ease-expo)
+		}
+
+		.node-gate.output-true {
+			border-color: rgba(0, 240, 255, 0.2);
+			box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.05), 0 0 15px rgba(0, 240, 255, 0.08)
+		}
+
+		.node-gate .gate-symbol {
+			width: 38px;
+			height: 26px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--color-text-dim);
+			transition: transform .3s var(--ease-spring), color .3s var(--ease-expo)
+		}
+
+		.node-gate.output-true .gate-symbol {
+			color: var(--color-true)
+		}
+
+		.node-gate .gate-symbol svg {
+			width: 100%;
+			height: 100%
+		}
+
+		.node-gate .gate-type-label {
+			font-size: .55rem;
+			font-weight: 600;
+			color: var(--color-text-dim);
+			letter-spacing: .1em;
+			transition: color .3s var(--ease-expo)
+		}
+
+		.node-gate.output-true .gate-type-label {
+			color: rgba(0, 240, 255, 0.5)
+		}
+
+		.gate-tooltip {
+			position: absolute;
+			bottom: calc(100% + 10px);
+			left: 50%;
+			transform: translateX(-50%) translateY(6px);
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 10px;
+			padding: .5rem .7rem;
+			font-size: .5rem;
+			color: var(--color-text-dim);
+			white-space: nowrap;
+			opacity: 0;
+			pointer-events: none;
+			transition: all .25s var(--ease-expo);
+			z-index: 50
+		}
+
+		.gate-tooltip::after {
+			content: '';
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			border: 5px solid transparent;
+			border-top-color: rgba(0, 240, 255, 0.08)
+		}
+
+		.node-gate:hover .gate-tooltip,
+		.node-gate:focus-within .gate-tooltip {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0)
+		}
+
+		.gate-tooltip table {
+			border-collapse: collapse
+		}
+
+		.gate-tooltip th,
+		.gate-tooltip td {
+			padding: 1px 5px;
+			text-align: center
+		}
+
+		.gate-tooltip th {
+			color: var(--color-true);
+			border-bottom: 1px solid var(--border-glass)
+		}
+
+		.gate-tooltip td.v1 {
+			color: var(--color-true)
+		}
+
+		.node-output {
+			width: 72px;
+			height: 72px;
+			background: var(--color-gate-bg);
+			border: 1.5px solid var(--color-gate-border);
+			border-radius: 50%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 2px;
+			transition: border-color .3s var(--ease-expo), box-shadow .4s var(--ease-expo), background .3s var(--ease-expo)
+		}
+
+		.node-output.state-true {
+			border-color: var(--color-true);
+			background: rgba(0, 240, 255, 0.06);
+			box-shadow: var(--color-true-glow);
+			animation: led-breathe 2.2s ease-in-out infinite
+		}
+
+		@keyframes led-breathe {
+
+			0%,
+			100% {
+				box-shadow: 0 0 20px rgba(0, 240, 255, 0.35), 0 0 50px rgba(0, 240, 255, 0.08)
+			}
+
+			50% {
+				box-shadow: 0 0 30px rgba(0, 240, 255, 0.5), 0 0 70px rgba(0, 240, 255, 0.12)
+			}
+		}
+
+		.node-output .node-label {
+			font-size: .7rem;
+			font-weight: 600;
+			color: var(--color-text-dim);
+			transition: color .3s var(--ease-expo)
+		}
+
+		.node-output.state-true .node-label {
+			color: var(--color-true)
+		}
+
+		.node-output .output-val {
+			font-size: 1rem;
+			font-weight: 600;
+			color: var(--color-text-dim);
+			transition: color .3s var(--ease-expo)
+		}
+
+		.node-output.state-true .output-val {
+			color: var(--color-true)
+		}
+
+		.node-output::before {
+			content: '';
+			position: absolute;
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.1), transparent);
+			top: 10px;
+			left: 16px;
+			pointer-events: none
+		}
+
+		.node-output.selected::after {
+			border-radius: 50%
+		}
+
+		.port {
+			position: absolute;
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: var(--bg-secondary);
+			border: 1.5px solid var(--color-gate-border);
+			cursor: crosshair;
+			z-index: 20;
+			transition: background .2s var(--ease-expo), border-color .2s var(--ease-expo), box-shadow .2s var(--ease-expo)
+		}
+
+		.port::after {
+			content: '';
+			position: absolute;
+			inset: -10px;
+			border-radius: 50%
+		}
+
+		.port:hover,
+		.port.highlight {
+			border-color: var(--color-accent);
+			background: rgba(123, 97, 255, 0.25);
+			box-shadow: var(--color-accent-glow)
+		}
+
+		.port.port-active {
+			background: var(--color-true);
+			border-color: var(--color-true);
+			box-shadow: 0 0 8px rgba(0, 240, 255, 0.5)
+		}
+
+		.node-input .port.port-out {
+			left: calc(100% - 5px);
+			top: calc(50% - 5px)
+		}
+
+		.node-output .port.port-in {
+			left: -5px;
+			top: calc(50% - 5px)
+		}
+
+		.node-gate .port.port-in-a {
+			left: -5px;
+			top: calc(22% - 5px)
+		}
+
+		.node-gate .port.port-in-b {
+			left: -5px;
+			top: calc(66% - 5px)
+		}
+
+		.node-gate .port.port-out {
+			left: calc(100% - 5px);
+			top: calc(50% - 5px)
+		}
+
+		.node-gate[data-type="NOT"] .port.port-in-b {
+			opacity: .12;
+			pointer-events: none
+		}
+
+		.delete-hint {
+			position: absolute;
+			top: -8px;
+			right: -8px;
+			width: 18px;
+			height: 18px;
+			background: var(--color-danger);
+			border-radius: 50%;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			z-index: 30;
+			font-size: .55rem;
+			color: white;
+			font-weight: 600;
+			line-height: 1;
+			box-shadow: var(--color-danger-glow);
+			border: none;
+			font-family: var(--font-mono)
+		}
+
+		.delete-hint:focus-visible {
+			outline: 2px solid white;
+			outline-offset: 2px
+		}
+
+		.circuit-node.selected .delete-hint {
+			display: flex
+		}
+
+		.toolbox {
+			position: fixed;
+			top: 50%;
+			left: 1rem;
+			transform: translateY(-50%);
+			z-index: 100;
+			display: flex;
+			flex-direction: column;
+			gap: .4rem;
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 14px;
+			padding: .6rem
+		}
+
+		.toolbox-label {
+			font-family: var(--font-sans);
+			font-size: .5rem;
+			font-weight: 500;
+			text-transform: uppercase;
+			letter-spacing: .15em;
+			color: var(--color-text-dim);
+			text-align: center;
+			padding-bottom: .3rem;
+			border-bottom: 1px solid var(--border-glass);
+			margin-bottom: .2rem
+		}
+
+		.tool-btn {
+			width: 48px;
+			height: 42px;
+			background: var(--color-gate-bg);
+			border: 1px solid var(--color-gate-border);
+			border-radius: 8px;
+			cursor: pointer;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 2px;
+			color: var(--color-text-dim);
+			transition: all .25s var(--ease-expo);
+			font-family: var(--font-mono)
+		}
+
+		.tool-btn:hover {
+			border-color: var(--color-accent);
+			color: var(--color-accent);
+			box-shadow: var(--color-accent-glow);
+			transform: scale(1.08)
+		}
+
+		.tool-btn:focus-visible {
+			outline: 2px solid var(--color-accent);
+			outline-offset: 2px
+		}
+
+		.tool-btn:active {
+			transform: scale(.95)
+		}
+
+		.tool-btn svg {
+			width: 22px;
+			height: 16px
+		}
+
+		.tool-btn .tool-label {
+			font-size: .4rem;
+			font-weight: 600;
+			letter-spacing: .06em
+		}
+
+		.truth-panel {
+			position: fixed;
+			bottom: 1rem;
+			right: 1rem;
+			z-index: 100;
+			max-width: 400px;
+			width: 92vw;
+			font-family: var(--font-mono)
+		}
+
+		.truth-panel summary {
+			font-family: var(--font-sans);
+			font-size: .65rem;
+			font-weight: 500;
+			text-transform: uppercase;
+			letter-spacing: .12em;
+			color: var(--color-text-dim);
+			cursor: pointer;
+			padding: .55rem .9rem;
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 12px;
+			list-style: none;
+			display: flex;
+			align-items: center;
+			gap: .5rem;
+			transition: all .3s var(--ease-expo)
+		}
+
+		.truth-panel summary::-webkit-details-marker {
+			display: none
+		}
+
+		.truth-panel summary::before {
+			content: '';
+			display: inline-block;
+			width: 5px;
+			height: 5px;
+			border-right: 1.5px solid var(--color-text-dim);
+			border-bottom: 1.5px solid var(--color-text-dim);
+			transform: rotate(-135deg);
+			transition: transform .3s var(--ease-spring)
+		}
+
+		.truth-panel[open] summary::before {
+			transform: rotate(45deg)
+		}
+
+		.truth-panel summary:hover {
+			color: var(--color-true);
+			border-color: rgba(0, 240, 255, 0.15)
+		}
+
+		.truth-panel summary:focus-visible {
+			outline: 2px solid var(--color-accent);
+			outline-offset: 2px
+		}
+
+		.truth-table-wrap {
+			margin-top: .4rem;
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 12px;
+			padding: .6rem;
+			max-height: 260px;
+			overflow-y: auto;
+			scrollbar-width: thin;
+			scrollbar-color: var(--color-gate-border) transparent
+		}
+
+		.truth-table-wrap::-webkit-scrollbar {
+			width: 4px
+		}
+
+		.truth-table-wrap::-webkit-scrollbar-track {
+			background: transparent
+		}
+
+		.truth-table-wrap::-webkit-scrollbar-thumb {
+			background: var(--color-gate-border);
+			border-radius: 2px
+		}
+
+		.truth-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: .55rem
+		}
+
+		.truth-table th {
+			color: var(--color-true);
+			font-weight: 600;
+			padding: 3px 6px;
+			text-align: center;
+			border-bottom: 1px solid var(--border-glass);
+			position: sticky;
+			top: 0;
+			background: var(--bg-secondary);
+			z-index: 2
+		}
+
+		.truth-table td {
+			padding: 2px 6px;
+			text-align: center;
+			color: var(--color-text-dim);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.015)
+		}
+
+		.truth-table td.v1 {
+			color: var(--color-true)
+		}
+
+		.truth-table tr.active-row {
+			background: rgba(0, 240, 255, 0.06)
+		}
+
+		.truth-table tr.active-row td {
+			color: var(--color-text)
+		}
+
+		.truth-table tr.active-row td.v1 {
+			color: var(--color-true);
+			text-shadow: 0 0 8px rgba(0, 240, 255, 0.4)
+		}
+
+		.truth-empty {
+			text-align: center;
+			padding: 1.5rem 0;
+			color: var(--color-text-dim);
+			font-size: .6rem;
+			font-style: italic
+		}
+
+		.inspector {
+			position: fixed;
+			bottom: 1rem;
+			left: 5rem;
+			z-index: 100;
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 12px;
+			padding: .6rem .9rem;
+			font-size: .55rem;
+			color: var(--color-text-dim);
+			min-width: 165px;
+			max-width: 240px;
+			transition: opacity .3s var(--ease-expo)
+		}
+
+		.inspector.hidden {
+			opacity: 0;
+			pointer-events: none
+		}
+
+		.inspector-title {
+			font-family: var(--font-sans);
+			font-size: .55rem;
+			font-weight: 500;
+			text-transform: uppercase;
+			letter-spacing: .12em;
+			color: var(--color-text-dim);
+			margin-bottom: .4rem
+		}
+
+		.inspector-row {
+			display: flex;
+			justify-content: space-between;
+			padding: 2px 0;
+			gap: .5rem
+		}
+
+		.inspector-key {
+			color: var(--color-text-dim)
+		}
+
+		.inspector-val {
+			color: var(--color-text);
+			font-weight: 600
+		}
+
+		.inspector-val.val-true {
+			color: var(--color-true)
+		}
+
+		.zoom-indicator {
+			position: fixed;
+			bottom: 1rem;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 100;
+			font-size: .55rem;
+			color: var(--color-text-dim);
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 8px;
+			padding: .3rem .7rem;
+			opacity: .5
+		}
+
+		.undo-toast {
+			position: fixed;
+			bottom: 3.5rem;
+			left: 50%;
+			transform: translateX(-50%) translateY(20px);
+			z-index: 300;
+			background: var(--bg-glass);
+			backdrop-filter: blur(20px) saturate(1.2);
+			border: 1px solid var(--border-glass);
+			border-radius: 10px;
+			padding: .5rem 1rem;
+			font-family: var(--font-mono);
+			font-size: .6rem;
+			color: var(--color-text-dim);
+			display: flex;
+			align-items: center;
+			gap: .7rem;
+			opacity: 0;
+			pointer-events: none;
+			transition: all .3s var(--ease-expo)
+		}
+
+		.undo-toast.visible {
+			opacity: 1;
+			pointer-events: auto;
+			transform: translateX(-50%) translateY(0)
+		}
+
+		.undo-toast-btn {
+			font-family: var(--font-mono);
+			font-size: .55rem;
+			font-weight: 600;
+			color: var(--color-accent);
+			background: none;
+			border: 1px solid rgba(123, 97, 255, 0.3);
+			border-radius: 6px;
+			padding: .25rem .6rem;
+			cursor: pointer;
+			transition: all .2s var(--ease-expo)
+		}
+
+		.undo-toast-btn:hover {
+			background: rgba(123, 97, 255, 0.1)
+		}
+
+		.undo-toast-btn:focus-visible {
+			outline: 2px solid var(--color-accent);
+			outline-offset: 2px
+		}
+
+		.context-menu {
+			position: fixed;
+			z-index: 300;
+			background: var(--bg-glass);
+			backdrop-filter: blur(24px) saturate(1.3);
+			border: 1px solid var(--border-glass);
+			border-radius: 10px;
+			padding: .4rem;
+			min-width: 150px;
+			display: none;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4)
+		}
+
+		.context-menu.visible {
+			display: block
+		}
+
+		.ctx-item {
+			font-family: var(--font-mono);
+			font-size: .6rem;
+			color: var(--color-text-dim);
+			padding: .4rem .7rem;
+			border-radius: 6px;
+			cursor: pointer;
+			transition: all .15s var(--ease-expo);
+			display: block;
+			width: 100%;
+			text-align: left;
+			background: none;
+			border: none
+		}
+
+		.ctx-item:hover {
+			background: rgba(123, 97, 255, 0.1);
+			color: var(--color-accent)
+		}
+
+		.ctx-item:focus-visible {
+			outline: 2px solid var(--color-accent);
+			outline-offset: -2px
+		}
+
+		.ctx-item.ctx-danger:hover {
+			background: rgba(255, 68, 102, 0.1);
+			color: var(--color-danger)
+		}
+
+		.ctx-sep {
+			height: 1px;
+			background: var(--border-glass);
+			margin: .3rem 0
+		}
+
+		@keyframes gate-morph {
+			0% {
+				transform: scale(1) rotate(0)
+			}
+
+			40% {
+				transform: scale(.78) rotate(-12deg)
+			}
+
+			100% {
+				transform: scale(1) rotate(0)
+			}
+		}
+
+		.gate-symbol.morphing {
+			animation: gate-morph .35s var(--ease-spring)
+		}
+
+		.sr-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0
+		}
+
+		.selection-box {
+			position: absolute;
+			border: 1.5px dashed var(--color-accent);
+			background: rgba(123, 97, 255, 0.06);
+			pointer-events: none;
+			z-index: 50;
+			border-radius: 2px
+		}
+
+		@media(max-width:768px) {
+			.toolbox {
+				top: auto;
+				bottom: 5rem;
+				left: 50%;
+				transform: translateX(-50%);
+				flex-direction: row
+			}
+
+			.toolbox-label {
+				display: none
+			}
+
+			.truth-panel {
+				max-width: 95vw;
+				right: .5rem
+			}
+
+			.inspector {
+				display: none
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header class="top-bar" role="banner">
+		<span class="app-title">Verity Engine</span>
+		<div class="top-actions">
+			<button class="action-btn" id="btn-undo" aria-label="Undo (Ctrl+Z)" disabled>Undo</button>
+			<button class="action-btn" id="btn-redo" aria-label="Redo (Ctrl+Y)" disabled>Redo</button>
+			<button class="action-btn" id="btn-save" aria-label="Save circuit to clipboard">Save</button>
+			<button class="action-btn" id="btn-load" aria-label="Load circuit from clipboard">Load</button>
+			<button class="action-btn" id="btn-randomize" aria-label="Randomize inputs">Randomize</button>
+			<button class="action-btn" id="btn-clear-wires" aria-label="Clear all wires">Clear Wires</button>
+			<button class="action-btn danger" id="btn-reset" aria-label="Reset circuit">Reset All</button>
+		</div>
+	</header>
+
+	<nav class="toolbox" id="toolbox" aria-label="Component palette" role="toolbar">
+		<span class="toolbox-label">Add</span>
+		<button class="tool-btn" data-spawn="INPUT" aria-label="Add input"><svg viewBox="0 0 22 16" aria-hidden="true">
+				<circle cx="7" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.2" />
+				<line x1="11" y1="8" x2="20" y2="8" stroke="currentColor" stroke-width="1.2" />
+			</svg><span class="tool-label">IN</span></button>
+		<button class="tool-btn" data-spawn="AND" aria-label="Add AND gate"><svg viewBox="0 0 22 16" aria-hidden="true">
+				<path d="M2 1H11A7 7 0 0 1 11 15H2Z" fill="none" stroke="currentColor" stroke-width="1.2" />
+			</svg><span class="tool-label">AND</span></button>
+		<button class="tool-btn" data-spawn="OR" aria-label="Add OR gate"><svg viewBox="0 0 22 16" aria-hidden="true">
+				<path d="M2 1Q6 8 2 15Q12 15 18 8Q12 1 2 1Z" fill="none" stroke="currentColor" stroke-width="1.2" />
+			</svg><span class="tool-label">OR</span></button>
+		<button class="tool-btn" data-spawn="XOR" aria-label="Add XOR gate"><svg viewBox="0 0 22 16" aria-hidden="true">
+				<path d="M4 1Q8 8 4 15Q14 15 20 8Q14 1 4 1Z" fill="none" stroke="currentColor" stroke-width="1.2" />
+				<path d="M1 1Q5 8 1 15" fill="none" stroke="currentColor" stroke-width="1.2" />
+			</svg><span class="tool-label">XOR</span></button>
+		<button class="tool-btn" data-spawn="NAND" aria-label="Add NAND gate"><svg viewBox="0 0 24 16" aria-hidden="true">
+				<path d="M2 1H10A7 7 0 0 1 10 15H2Z" fill="none" stroke="currentColor" stroke-width="1.2" />
+				<circle cx="19" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.2" />
+			</svg><span class="tool-label">NAND</span></button>
+		<button class="tool-btn" data-spawn="NOT" aria-label="Add NOT gate"><svg viewBox="0 0 22 16" aria-hidden="true">
+				<path d="M2 1L16 8L2 15Z" fill="none" stroke="currentColor" stroke-width="1.2" />
+				<circle cx="19" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.2" />
+			</svg><span class="tool-label">NOT</span></button>
+		<button class="tool-btn" data-spawn="OUTPUT" aria-label="Add output"><svg viewBox="0 0 22 16" aria-hidden="true">
+				<circle cx="11" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.2" />
+				<circle cx="11" cy="8" r="2.5" fill="currentColor" opacity=".4" />
+			</svg><span class="tool-label">OUT</span></button>
+	</nav>
+
+	<section class="canvas-viewport" id="viewport" role="application" aria-label="Circuit canvas">
+		<div class="canvas-world" id="world">
+			<canvas class="wire-canvas" id="wire-canvas"></canvas>
+			<svg class="wire-hit-layer" id="wire-hit-layer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+			<svg class="wire-temp-layer" id="wire-temp-layer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+		</div>
+	</section>
+
+	<div class="context-menu" id="context-menu" role="menu" aria-label="Node actions">
+		<button class="ctx-item" data-action="cycle" role="menuitem">Cycle Gate Type</button>
+		<button class="ctx-item" data-action="duplicate" role="menuitem">Duplicate</button>
+		<div class="ctx-sep" role="separator"></div>
+		<button class="ctx-item ctx-danger" data-action="delete" role="menuitem">Delete Node</button>
+	</div>
+
+	<aside class="inspector hidden" id="inspector" aria-live="polite" aria-label="Signal inspector">
+		<div class="inspector-title">Signal Inspector</div>
+		<div id="inspector-content"></div>
+	</aside>
+
+	<div class="zoom-indicator" id="zoom-indicator" aria-live="polite" aria-atomic="true">100%</div>
+	<div class="undo-toast" id="undo-toast" role="alert" aria-live="assertive">
+		<span id="undo-toast-msg">Action undone</span>
+		<button class="undo-toast-btn" id="undo-toast-btn">Undo</button>
+	</div>
+	<div id="sr-announce" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+	<details class="truth-panel" id="truth-panel" open>
+		<summary>Truth Table</summary>
+		<div class="truth-table-wrap" role="region" aria-label="Truth table results">
+			<div id="truth-table-container">
+				<p class="truth-empty">Add inputs and outputs to generate a truth table.</p>
+			</div>
+		</div>
+	</details>
+
+	<script>
+		(() => {
+			'use strict';
+			// ── Constants ──
+			const GATE_TYPES = Object.freeze(['AND', 'OR', 'XOR', 'NAND', 'NOT']);
+			const MAX_TT_INPUTS = 6;
+			const WIRE_CP_FACTOR = 0.45;
+			const WIRE_CP_MIN = 50;
+			const WIRE_COLORS = Object.freeze({
+				true: '#00f0ff',
+				false: '#1e1e32',
+				trueGlow: 'rgba(0,240,255,0.25)'
+			});
+			const WIRE_ANIM_SPEED = 0.4; // pixels per ms
+			const GATE_LOGIC = Object.freeze({
+				AND: (a, b) => a && b,
+				OR: (a, b) => a || b,
+				XOR: (a, b) => Boolean(a) !== Boolean(b),
+				NAND: (a, b) => !(a && b),
+				NOT: (a) => !a
+			});
+			const GATE_SVGS = Object.freeze({
+				AND: '<svg viewBox="0 0 40 28" aria-hidden="true"><path d="M4 2H20A14 14 0 0 1 20 26H4Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+				OR: '<svg viewBox="0 0 40 28" aria-hidden="true"><path d="M4 2Q12 14 4 26Q22 26 34 14Q22 2 4 2Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+				XOR: '<svg viewBox="0 0 40 28" aria-hidden="true"><path d="M6 2Q14 14 6 26Q24 26 36 14Q24 2 6 2Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2 2Q10 14 2 26" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+				NAND: '<svg viewBox="0 0 42 28" aria-hidden="true"><path d="M4 2H18A14 14 0 0 1 18 26H4Z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="35" cy="14" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+				NOT: '<svg viewBox="0 0 40 28" aria-hidden="true"><path d="M4 2L30 14L4 26Z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="34" cy="14" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
+			});
+			const GATE_TABLES = Object.freeze({
+				AND: [
+					[0, 0, 0],
+					[0, 1, 0],
+					[1, 0, 0],
+					[1, 1, 1]
+				],
+				OR: [
+					[0, 0, 0],
+					[0, 1, 1],
+					[1, 0, 1],
+					[1, 1, 1]
+				],
+				XOR: [
+					[0, 0, 0],
+					[0, 1, 1],
+					[1, 0, 1],
+					[1, 1, 0]
+				],
+				NAND: [
+					[0, 0, 1],
+					[0, 1, 1],
+					[1, 0, 1],
+					[1, 1, 0]
+				],
+				NOT: [
+					[0, 1],
+					[1, 0]
+				]
+			});
+			const _esc = document.createElement('div');
+
+			function escHTML(s) {
+				_esc.textContent = s || '';
+				return _esc.innerHTML;
+			}
+
+			function srAnnounce(m) {
+				const e = document.getElementById('sr-announce');
+				if (e) {
+					e.textContent = '';
+					requestAnimationFrame(() => {
+						e.textContent = m;
+					});
+				}
+			}
+			// ── Undo Manager (data-only commands) ──
+			class UndoManager {
+				constructor(max = 60) {
+					this._u = [];
+					this._r = [];
+					this._max = max;
+					this._listeners = [];
+				}
+				push(cmd) {
+					this._u.push(cmd);
+					if (this._u.length > this._max) this._u.shift();
+					this._r.length = 0;
+					this._notify();
+				}
+				undo() {
+					const c = this._u.pop();
+					if (!c) return null;
+					c.undo();
+					this._r.push(c);
+					this._notify();
+					return c;
+				}
+				redo() {
+					const c = this._r.pop();
+					if (!c) return null;
+					c.redo();
+					this._u.push(c);
+					this._notify();
+					return c;
+				}
+				get canUndo() {
+					return this._u.length > 0;
+				}
+				get canRedo() {
+					return this._r.length > 0;
+				}
+				clear() {
+					this._u.length = 0;
+					this._r.length = 0;
+					this._notify();
+				}
+				onChange(fn) {
+					this._listeners.push(fn);
+				}
+				_notify() {
+					for (const fn of this._listeners) fn();
+				}
+			}
+			// ── Circuit Graph with persistent adjacency ──
+			let _nid = 0,
+				_wid = 0;
+			class CircuitGraph {
+				constructor() {
+					this.nodes = new Map();
+					this.wires = new Map();
+					// Persistent adjacency indexes
+					this._incoming = new Map(); // nodeId -> Map<wireId, wire>
+					this._outgoing = new Map(); // nodeId -> Map<wireId, wire>
+					// Cached topology
+					this._topoCache = null;
+					this._topoEpoch = -1;
+					this._epoch = 0;
+					// Dirty set for incremental eval
+					this._dirtyNodes = new Set();
+				}
+				get epoch() {
+					return this._epoch;
+				}
+				addNode(n) {
+					this.nodes.set(n.id, n);
+					this._incoming.set(n.id, new Map());
+					this._outgoing.set(n.id, new Map());
+					this._invalidateTopo();
+				}
+				removeNode(id) {
+					// Collect and remove attached wires
+					const removed = [];
+					const inc = this._incoming.get(id);
+					if (inc)
+						for (const [wid] of inc) removed.push(this.removeWire(wid));
+					const out = this._outgoing.get(id);
+					if (out)
+						for (const [wid] of out) removed.push(this.removeWire(wid));
+					this._incoming.delete(id);
+					this._outgoing.delete(id);
+					this.nodes.delete(id);
+					this._invalidateTopo();
+					return removed.filter(Boolean);
+				}
+				addWire(w) {
+					if (w.srcNodeId === w.dstNodeId) return null;
+					const src = this.nodes.get(w.srcNodeId),
+						dst = this.nodes.get(w.dstNodeId);
+					if (!src || !dst) return null;
+					if (src.kind !== 'INPUT' && src.kind !== 'GATE') return null;
+					if (dst.kind !== 'GATE' && dst.kind !== 'OUTPUT') return null;
+					if (w.srcPort !== 'out') return null;
+					const vp = dst.kind === 'OUTPUT' ? ['in'] : ['in-a', 'in-b'];
+					if (!vp.includes(w.dstPort)) return null;
+					if (dst.kind === 'GATE' && dst.gateType === 'NOT' && w.dstPort === 'in-b') return null;
+					if (this._wouldCycle(w.srcNodeId, w.dstNodeId)) return null;
+					// Replace existing wire to same port
+					let replaced = null;
+					const incMap = this._incoming.get(w.dstNodeId);
+					if (incMap)
+						for (const [, ew] of incMap) {
+							if (ew.dstPort === w.dstPort) {
+								replaced = this._snapshotWire(ew);
+								this._removeWireInternal(ew.id);
+								break;
+							}
+						}
+					this.wires.set(w.id, w);
+					this._indexWire(w);
+					this._invalidateTopo();
+					return {
+						wire: w,
+						replacedWire: replaced
+					};
+				}
+				removeWire(id) {
+					const w = this.wires.get(id);
+					if (!w) return null;
+					const snap = this._snapshotWire(w);
+					this._removeWireInternal(id);
+					this._invalidateTopo();
+					return snap;
+				}
+				_removeWireInternal(id) {
+					const w = this.wires.get(id);
+					if (!w) return;
+					const inc = this._incoming.get(w.dstNodeId);
+					if (inc) inc.delete(id);
+					const out = this._outgoing.get(w.srcNodeId);
+					if (out) out.delete(id);
+					this.wires.delete(id);
+				}
+				_indexWire(w) {
+					let inc = this._incoming.get(w.dstNodeId);
+					if (!inc) {
+						inc = new Map();
+						this._incoming.set(w.dstNodeId, inc);
+					}
+					inc.set(w.id, w);
+					let out = this._outgoing.get(w.srcNodeId);
+					if (!out) {
+						out = new Map();
+						this._outgoing.set(w.srcNodeId, out);
+					}
+					out.set(w.id, w);
+				}
+				_snapshotWire(w) {
+					return {
+						id: w.id,
+						srcNodeId: w.srcNodeId,
+						srcPort: w.srcPort,
+						dstNodeId: w.dstNodeId,
+						dstPort: w.dstPort,
+						value: w.value
+					};
+				}
+				_invalidateTopo() {
+					this._epoch++;
+					this._topoCache = null;
+				}
+				_wouldCycle(srcId, dstId) {
+					if (srcId === dstId) return true;
+					const visited = new Set(),
+						q = [dstId];
+					while (q.length) {
+						const c = q.shift();
+						if (c === srcId) return true;
+						if (visited.has(c)) continue;
+						visited.add(c);
+						const out = this._outgoing.get(c);
+						if (out)
+							for (const [, w] of out)
+								if (!visited.has(w.dstNodeId)) q.push(w.dstNodeId);
+					}
+					return false;
+				}
+				_ensureTopo() {
+					if (this._topoCache && this._topoEpoch === this._epoch) return this._topoCache;
+					const inDeg = new Map(),
+						adj = new Map();
+					this.nodes.forEach((_, id) => {
+						inDeg.set(id, 0);
+						adj.set(id, []);
+					});
+					this.wires.forEach(w => {
+						if (!adj.has(w.srcNodeId) || !inDeg.has(w.dstNodeId)) return;
+						adj.get(w.srcNodeId).push(w.dstNodeId);
+						inDeg.set(w.dstNodeId, inDeg.get(w.dstNodeId) + 1);
+					});
+					const q = [];
+					inDeg.forEach((d, id) => {
+						if (d === 0) q.push(id);
+					});
+					const order = [];
+					while (q.length) {
+						const c = q.shift();
+						order.push(c);
+						for (const nb of (adj.get(c) || [])) {
+							const nd = inDeg.get(nb) - 1;
+							inDeg.set(nb, nd);
+							if (nd === 0) q.push(nb);
+						}
+					}
+					this._topoCache = order;
+					this._topoEpoch = this._epoch;
+					return order;
+				}
+				// Mark a node dirty for incremental propagation
+				markDirty(nodeId) {
+					this._dirtyNodes.add(nodeId);
+				}
+				// Full evaluation (used when structure changes)
+				evaluateFull() {
+					const order = this._ensureTopo();
+					this.nodes.forEach(n => {
+						if (n.kind === 'GATE') {
+							n.inputValues.a = false;
+							n.inputValues.b = false;
+						}
+						if (n.kind === 'OUTPUT') {
+							n.value = false;
+						}
+					});
+					for (const nid of order) {
+						const node = this.nodes.get(nid);
+						if (!node) continue;
+						const inc = this._incoming.get(nid);
+						if (inc)
+							for (const [, w] of inc) {
+								const sn = this.nodes.get(w.srcNodeId);
+								if (!sn) continue;
+								if (node.kind === 'GATE') {
+									if (w.dstPort === 'in-a') node.inputValues.a = sn.value;
+									else if (w.dstPort === 'in-b') node.inputValues.b = sn.value;
+								} else if (node.kind === 'OUTPUT') node.value = sn.value;
+							}
+						if (node.kind === 'GATE') {
+							const fn = GATE_LOGIC[node.gateType];
+							if (fn) node.value = Boolean(node.gateType === 'NOT' ? fn(node.inputValues.a) : fn(node.inputValues.a, node.inputValues.b));
+						}
+						const out = this._outgoing.get(nid);
+						if (out)
+							for (const [, w] of out) w.value = node.value;
+					}
+					this._dirtyNodes.clear();
+				}
+				// Incremental evaluation: only propagate from dirty nodes downstream
+				evaluateIncremental() {
+					if (this._dirtyNodes.size === 0) return;
+					const order = this._ensureTopo();
+					// Build position map for topo order
+					const posMap = new Map();
+					for (let i = 0; i < order.length; i++) posMap.set(order[i], i);
+					// Collect all affected nodes (dirty + all downstream)
+					const affected = new Set();
+					const queue = [...this._dirtyNodes];
+					while (queue.length) {
+						const c = queue.shift();
+						if (affected.has(c)) continue;
+						affected.add(c);
+						const out = this._outgoing.get(c);
+						if (out)
+							for (const [, w] of out)
+								if (!affected.has(w.dstNodeId)) queue.push(w.dstNodeId);
+					}
+					// Sort affected by topo position
+					const sorted = [...affected].sort((a, b) => (posMap.get(a) || 0) - (posMap.get(b) || 0));
+					for (const nid of sorted) {
+						const node = this.nodes.get(nid);
+						if (!node) continue;
+						if (node.kind === 'GATE') {
+							node.inputValues.a = false;
+							node.inputValues.b = false;
+						}
+						if (node.kind === 'OUTPUT') node.value = false;
+						const inc = this._incoming.get(nid);
+						if (inc)
+							for (const [, w] of inc) {
+								const sn = this.nodes.get(w.srcNodeId);
+								if (!sn) continue;
+								if (node.kind === 'GATE') {
+									if (w.dstPort === 'in-a') node.inputValues.a = sn.value;
+									else if (w.dstPort === 'in-b') node.inputValues.b = sn.value;
+								} else if (node.kind === 'OUTPUT') node.value = sn.value;
+							}
+						if (node.kind === 'GATE') {
+							const fn = GATE_LOGIC[node.gateType];
+							if (fn) node.value = Boolean(node.gateType === 'NOT' ? fn(node.inputValues.a) : fn(node.inputValues.a, node.inputValues.b));
+						}
+						const out = this._outgoing.get(nid);
+						if (out)
+							for (const [, w] of out) w.value = node.value;
+					}
+					this._dirtyNodes.clear();
+					return sorted; // return affected for targeted visual update
+				}
+				getIncoming(nid) {
+					return this._incoming.get(nid);
+				}
+				getOutgoing(nid) {
+					return this._outgoing.get(nid);
+				}
+				getWiresForNode(nid) {
+					const r = [];
+					const inc = this._incoming.get(nid);
+					if (inc)
+						for (const [, w] of inc) r.push(w);
+					const out = this._outgoing.get(nid);
+					if (out)
+						for (const [, w] of out) r.push(w);
+					return r;
+				}
+				getWireCount(nid) {
+					const inc = this._incoming.get(nid);
+					const out = this._outgoing.get(nid);
+					return {
+						inCount: inc ? inc.size : 0,
+						outCount: out ? out.size : 0
+					};
+				}
+				getNodesByKind(kind) {
+					return [...this.nodes.values()].filter(n => n.kind === kind).sort((a, b) => a.label.localeCompare(b.label));
+				}
+				clearAllWires() {
+					const snaps = [];
+					this.wires.forEach(w => snaps.push(this._snapshotWire(w)));
+					this.wires.clear();
+					this._incoming.forEach(m => m.clear());
+					this._outgoing.forEach(m => m.clear());
+					this._invalidateTopo();
+					return snaps;
+				}
+				clear() {
+					this.wires.clear();
+					this.nodes.clear();
+					this._incoming.clear();
+					this._outgoing.clear();
+					this._invalidateTopo();
+				}
+				// Snapshot for truth table
+				createSnapshot() {
+					const s = {
+						nodes: new Map(),
+						wires: new Map()
+					};
+					this.nodes.forEach((n, id) => s.nodes.set(id, {
+						value: n.value,
+						a: n.inputValues.a,
+						b: n.inputValues.b
+					}));
+					this.wires.forEach((w, id) => s.wires.set(id, {
+						value: w.value
+					}));
+					return s;
+				}
+				restoreSnapshot(s) {
+					s.nodes.forEach((d, id) => {
+						const n = this.nodes.get(id);
+						if (n) {
+							n.value = d.value;
+							n.inputValues.a = d.a;
+							n.inputValues.b = d.b;
+						}
+					});
+					s.wires.forEach((d, id) => {
+						const w = this.wires.get(id);
+						if (w) w.value = d.value;
+					});
+				}
+				// ── Serialization ──
+				toJSON() {
+					const nodes = [],
+						wires = [];
+					this.nodes.forEach(n => nodes.push({
+						id: n.id,
+						kind: n.kind,
+						gateType: n.gateType,
+						x: n.x,
+						y: n.y,
+						label: n.label,
+						value: n.value
+					}));
+					this.wires.forEach(w => wires.push({
+						id: w.id,
+						srcNodeId: w.srcNodeId,
+						srcPort: w.srcPort,
+						dstNodeId: w.dstNodeId,
+						dstPort: w.dstPort
+					}));
+					return JSON.stringify({
+						v: 3,
+						nodes,
+						wires
+					});
+				}
+				static fromJSON(json) {
+					const data = JSON.parse(json);
+					if (!data.v || !data.nodes || !data.wires) throw new Error('Invalid circuit data');
+					return data;
+				}
+			}
+			// ── Wire Canvas Renderer (Canvas2D) ──
+			class WireCanvasRenderer {
+				constructor(canvas) {
+					this.canvas = canvas;
+					this.ctx = canvas.getContext('2d');
+					this._wires = []; // [{srcX,srcY,dstX,dstY,value,id}]
+					this._wireMap = new Map(); // wireId -> index
+					this._dirty = true;
+					this._animOffset = 0;
+					this._lastTime = 0;
+					this._rafId = null;
+					this._running = false;
+				}
+				setSize(w, h) {
+					const dpr = window.devicePixelRatio || 1;
+					this.canvas.width = w * dpr;
+					this.canvas.height = h * dpr;
+					this.canvas.style.width = w + 'px';
+					this.canvas.style.height = h + 'px';
+					this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+					this._dirty = true;
+				}
+				updateWire(wireId, srcX, srcY, dstX, dstY, value) {
+					if (this._wireMap.has(wireId)) {
+						const idx = this._wireMap.get(wireId);
+						const e = this._wires[idx];
+						if (e.srcX === srcX && e.srcY === srcY && e.dstX === dstX && e.dstY === dstY && e.value === value) return;
+						e.srcX = srcX;
+						e.srcY = srcY;
+						e.dstX = dstX;
+						e.dstY = dstY;
+						e.value = value;
+					} else {
+						this._wireMap.set(wireId, this._wires.length);
+						this._wires.push({
+							id: wireId,
+							srcX,
+							srcY,
+							dstX,
+							dstY,
+							value
+						});
+					}
+					this._dirty = true;
+				}
+				removeWire(wireId) {
+					if (!this._wireMap.has(wireId)) return;
+					const idx = this._wireMap.get(wireId);
+					this._wires.splice(idx, 1);
+					this._wireMap.clear();
+					this._wires.forEach((w, i) => this._wireMap.set(w.id, i));
+					this._dirty = true;
+				}
+				clear() {
+					this._wires.length = 0;
+					this._wireMap.clear();
+					this._dirty = true;
+				}
+				start() {
+					if (this._running) return;
+					this._running = true;
+					this._lastTime = performance.now();
+					this._tick(this._lastTime);
+				}
+				stop() {
+					this._running = false;
+					if (this._rafId) {
+						cancelAnimationFrame(this._rafId);
+						this._rafId = null;
+					}
+				}
+				_tick(now) {
+					if (!this._running) return;
+					const dt = now - this._lastTime;
+					this._lastTime = now;
+					// Advance animation
+					let hasTrue = false;
+					for (const w of this._wires)
+						if (w.value) {
+							hasTrue = true;
+							break;
+						}
+					if (hasTrue) {
+						this._animOffset = (this._animOffset + dt * WIRE_ANIM_SPEED) % 20;
+						this._dirty = true;
+					}
+					if (this._dirty) {
+						this._render();
+						this._dirty = false;
+					}
+					this._rafId = requestAnimationFrame(t => this._tick(t));
+				}
+				_render() {
+					const ctx = this.ctx;
+					const w = this.canvas.width / (window.devicePixelRatio || 1);
+					const h = this.canvas.height / (window.devicePixelRatio || 1);
+					ctx.clearRect(0, 0, w, h);
+					// Draw false wires first, then true wires on top
+					for (let pass = 0; pass < 2; pass++) {
+						const drawTrue = pass === 1;
+						for (const wire of this._wires) {
+							if (wire.value !== drawTrue) continue;
+							const {
+								srcX,
+								srcY,
+								dstX,
+								dstY
+							} = wire;
+							const dx = dstX - srcX;
+							const cp = Math.max(Math.abs(dx) * WIRE_CP_FACTOR, WIRE_CP_MIN);
+							ctx.beginPath();
+							ctx.moveTo(srcX, srcY);
+							ctx.bezierCurveTo(srcX + cp, srcY, dstX - cp, dstY, dstX, dstY);
+							if (drawTrue) {
+								ctx.strokeStyle = WIRE_COLORS.true;
+								ctx.lineWidth = 2.5;
+								ctx.setLineDash([8, 12]);
+								ctx.lineDashOffset = -this._animOffset;
+								ctx.shadowColor = WIRE_COLORS.trueGlow;
+								ctx.shadowBlur = 8;
+							} else {
+								ctx.strokeStyle = WIRE_COLORS.false;
+								ctx.lineWidth = 2.5;
+								ctx.setLineDash([3, 8]);
+								ctx.lineDashOffset = 0;
+								ctx.shadowColor = 'transparent';
+								ctx.shadowBlur = 0;
+							}
+							ctx.lineCap = 'round';
+							ctx.stroke();
+						}
+					}
+					ctx.setLineDash([]);
+					ctx.shadowColor = 'transparent';
+					ctx.shadowBlur = 0;
+				}
+			}
+			// ── DOM Renderer ──
+			class Renderer {
+				constructor(graph, worldEl, hitSvg, tempSvg, wireCanvas) {
+					this.graph = graph;
+					this.world = worldEl;
+					this.hitSvg = hitSvg;
+					this.tempSvg = tempSvg;
+					this.wireCanvas = wireCanvas;
+					this.nodeElements = new Map();
+					this.hitElements = new Map(); // wireId -> SVG path for click detection
+					this._portOffsetCache = new Map();
+				}
+				_portCacheKey(node, pt) {
+					return `${node.kind}:${node.gateType||''}:${pt}`;
+				}
+				_computePortOffset(el, pt) {
+					const p = el.querySelector(`[data-port-type="${pt}"]`);
+					if (!p) return null;
+					return {
+						dx: p.offsetLeft + p.offsetWidth / 2,
+						dy: p.offsetTop + p.offsetHeight / 2
+					};
+				}
+				_getPortOffset(node, pt) {
+					const key = this._portCacheKey(node, pt);
+					if (this._portOffsetCache.has(key)) return this._portOffsetCache.get(key);
+					const el = this.nodeElements.get(node.id);
+					if (!el) return null;
+					const off = this._computePortOffset(el, pt);
+					if (off) this._portOffsetCache.set(key, off);
+					return off;
+				}
+				invalidatePortCache(node) {
+					for (const pt of ['out', 'in', 'in-a', 'in-b'])
+						this._portOffsetCache.delete(this._portCacheKey(node, pt));
+				}
+				getPortWorldCenter(nid, pt) {
+					const node = this.graph.nodes.get(nid);
+					if (!node) return null;
+					const off = this._getPortOffset(node, pt);
+					if (!off) return null;
+					return {
+						x: node.x + off.dx,
+						y: node.y + off.dy
+					};
+				}
+				computeWireBezier(srcX, srcY, dstX, dstY) {
+					const dx = dstX - srcX;
+					const cp = Math.max(Math.abs(dx) * WIRE_CP_FACTOR, WIRE_CP_MIN);
+					return `M ${srcX} ${srcY} C ${srcX+cp} ${srcY}, ${dstX-cp} ${dstY}, ${dstX} ${dstY}`;
+				}
+				createNodeElement(node) {
+					const el = document.createElement('div');
+					el.classList.add('circuit-node');
+					el.setAttribute('data-node-id', node.id);
+					el.setAttribute('tabindex', '0');
+					el.style.left = `${node.x}px`;
+					el.style.top = `${node.y}px`;
+					el.style.animation = 'node-appear 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards';
+					el.addEventListener('animationend', () => {
+						el.style.animation = '';
+					}, {
+						once: true
+					});
+					const del = `<button class="delete-hint" data-action="delete-node" aria-label="Delete ${escHTML(node.label)}" tabindex="0">×</button>`;
+					if (node.kind === 'INPUT') {
+						el.classList.add('node-input');
+						if (node.value) el.classList.add('state-true');
+						el.setAttribute('role', 'switch');
+						el.setAttribute('aria-checked', String(node.value));
+						el.setAttribute('aria-label', `Input ${escHTML(node.label)}, value ${node.value?'1':'0'}`);
+						el.innerHTML =
+							`<span class="node-label">${escHTML(node.label)}</span>` +
+							`<div class="node-toggle" data-action="toggle" role="presentation"></div>` +
+							`<span class="input-val-label"><span class="state-icon ${node.value?'active':''}" aria-hidden="true"></span>${node.value?'1':'0'}</span>` +
+							`<div class="port port-out" data-port-type="out" data-node-id="${node.id}" role="button" aria-label="Output port" tabindex="-1"></div>` + del;
+					} else if (node.kind === 'GATE') {
+						el.classList.add('node-gate');
+						el.setAttribute('data-type', node.gateType);
+						el.setAttribute('role', 'group');
+						el.setAttribute('aria-label', `${node.gateType} gate, output ${node.value?'1':'0'}`);
+						el.innerHTML =
+							`<div class="port port-in-a" data-port-type="in-a" data-node-id="${node.id}" role="button" aria-label="Input A" tabindex="-1"></div>` +
+							`<div class="port port-in-b" data-port-type="in-b" data-node-id="${node.id}" role="button" aria-label="Input B" tabindex="-1"></div>` +
+							`<div class="gate-symbol">${GATE_SVGS[node.gateType]||''}</div>` +
+							`<span class="gate-type-label">${escHTML(node.gateType)}</span>` +
+							`<div class="port port-out" data-port-type="out" data-node-id="${node.id}" role="button" aria-label="Output port" tabindex="-1"></div>` +
+							del + `<div class="gate-tooltip" role="tooltip">${this._tooltipHTML(node.gateType)}</div>`;
+					} else if (node.kind === 'OUTPUT') {
+						el.classList.add('node-output');
+						el.setAttribute('role', 'status');
+						el.setAttribute('aria-label', `Output ${escHTML(node.label)}, value ${node.value?'1':'0'}`);
+						el.innerHTML =
+							`<div class="port port-in" data-port-type="in" data-node-id="${node.id}" role="button" aria-label="Input port" tabindex="-1"></div>` +
+							`<span class="node-label">${escHTML(node.label)}</span>` +
+							`<span class="output-val"><span class="state-icon ${node.value?'active':''}" aria-hidden="true"></span>${node.value?'1':'0'}</span>` + del;
+					}
+					this.nodeElements.set(node.id, el);
+					this.world.appendChild(el);
+					requestAnimationFrame(() => this.invalidatePortCache(node));
+					return el;
+				}
+				removeNodeElement(id) {
+					const el = this.nodeElements.get(id);
+					if (el) {
+						el.remove();
+						this.nodeElements.delete(id);
+					}
+				}
+				_tooltipHTML(type) {
+					const t = GATE_TABLES[type];
+					if (!t) return '';
+					const isNot = type === 'NOT';
+					let h = '<table>';
+					if (isNot) {
+						h += '<tr><th>In</th><th>Out</th></tr>';
+						for (const r of t) h += `<tr><td class="${r[0]?'v1':''}">${r[0]}</td><td class="${r[1]?'v1':''}">${r[1]}</td></tr>`;
+					} else {
+						h += '<tr><th>A</th><th>B</th><th>Out</th></tr>';
+						for (const r of t) h += `<tr><td class="${r[0]?'v1':''}">${r[0]}</td><td class="${r[1]?'v1':''}">${r[1]}</td><td class="${r[2]?'v1':''}">${r[2]}</td></tr>`;
+					}
+					return h + '</table>';
+				}
+				updateNodeVisuals(node) {
+					const el = this.nodeElements.get(node.id);
+					if (!el) return;
+					if (node.kind === 'INPUT') {
+						el.classList.toggle('state-true', node.value);
+						el.setAttribute('aria-checked', String(node.value));
+						el.setAttribute('aria-label', `Input ${node.label}, value ${node.value?'1':'0'}`);
+						const p = el.querySelector('.port-out');
+						if (p) p.classList.toggle('port-active', node.value);
+						const vl = el.querySelector('.input-val-label');
+						if (vl) {
+							const ic = vl.querySelector('.state-icon');
+							if (ic) ic.classList.toggle('active', node.value);
+							vl.lastChild.textContent = node.value ? '1' : '0';
+						}
+					} else if (node.kind === 'GATE') {
+						el.classList.toggle('output-true', node.value);
+						el.setAttribute('data-type', node.gateType);
+						el.setAttribute('aria-label', `${node.gateType} gate, output ${node.value?'1':'0'}`);
+						const sym = el.querySelector('.gate-symbol');
+						if (sym) sym.innerHTML = GATE_SVGS[node.gateType] || '';
+						const lbl = el.querySelector('.gate-type-label');
+						if (lbl) lbl.textContent = node.gateType;
+						const tip = el.querySelector('.gate-tooltip');
+						if (tip) tip.innerHTML = this._tooltipHTML(node.gateType);
+						const pA = el.querySelector('.port-in-a'),
+							pB = el.querySelector('.port-in-b'),
+							pO = el.querySelector('.port-out');
+						if (pA) pA.classList.toggle('port-active', node.inputValues.a);
+						if (pB) pB.classList.toggle('port-active', node.inputValues.b);
+						if (pO) pO.classList.toggle('port-active', node.value);
+					} else if (node.kind === 'OUTPUT') {
+						el.classList.toggle('state-true', node.value);
+						el.setAttribute('aria-label', `Output ${node.label}, value ${node.value?'1':'0'}`);
+						const vl = el.querySelector('.output-val');
+						if (vl) {
+							const ic = vl.querySelector('.state-icon');
+							if (ic) ic.classList.toggle('active', node.value);
+							vl.lastChild.textContent = node.value ? '1' : '0';
+						}
+						const p = el.querySelector('.port-in');
+						if (p) p.classList.toggle('port-active', node.value);
+					}
+				}
+				updateWireVisuals(wire) {
+					const src = this.getPortWorldCenter(wire.srcNodeId, wire.srcPort);
+					const dst = this.getPortWorldCenter(wire.dstNodeId, wire.dstPort);
+					if (!src || !dst) return;
+					// Update canvas wire
+					this.wireCanvas.updateWire(wire.id, src.x, src.y, dst.x, dst.y, wire.value);
+					// Update SVG hit area
+					const d = this.computeWireBezier(src.x, src.y, dst.x, dst.y);
+					let hit = this.hitElements.get(wire.id);
+					if (!hit) {
+						hit = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+						hit.classList.add('wire-hit');
+						hit.setAttribute('data-wire-id', wire.id);
+						this.hitSvg.appendChild(hit);
+						this.hitElements.set(wire.id, hit);
+					}
+					hit.setAttribute('d', d);
+				}
+				removeWireVisuals(wireId) {
+					this.wireCanvas.removeWire(wireId);
+					const hit = this.hitElements.get(wireId);
+					if (hit) {
+						hit.remove();
+						this.hitElements.delete(wireId);
+					}
+				}
+				removeAllWireVisuals() {
+					this.wireCanvas.clear();
+					this.hitElements.forEach(h => h.remove());
+					this.hitElements.clear();
+				}
+				removeAllElements() {
+					this.removeAllWireVisuals();
+					this.nodeElements.forEach(el => el.remove());
+					this.nodeElements.clear();
+					this._portOffsetCache.clear();
+				}
+				updateWiresForNode(nid) {
+					const wires = this.graph.getWiresForNode(nid);
+					for (const w of wires) this.updateWireVisuals(w);
+				}
+				updateAllVisuals() {
+					this.graph.nodes.forEach(n => this.updateNodeVisuals(n));
+					this.graph.wires.forEach(w => this.updateWireVisuals(w));
+				}
+				// Update only specific nodes and their wires
+				updateNodesAndWires(nodeIds) {
+					const wiresDone = new Set();
+					for (const nid of nodeIds) {
+						const node = this.graph.nodes.get(nid);
+						if (node) this.updateNodeVisuals(node);
+						const wires = this.graph.getWiresForNode(nid);
+						for (const w of wires) {
+							if (!wiresDone.has(w.id)) {
+								this.updateWireVisuals(w);
+								wiresDone.add(w.id);
+							}
+						}
+					}
+				}
+				resizeCanvas(viewW, viewH, zoom, panX, panY) {
+					// Calculate visible world bounds and size canvas accordingly
+					const worldW = viewW / zoom + 2000;
+					const worldH = viewH / zoom + 2000;
+					const offX = -panX / zoom - 1000;
+					const offY = -panY / zoom - 1000;
+					this.wireCanvas.canvas.style.left = offX + 'px';
+					this.wireCanvas.canvas.style.top = offY + 'px';
+					this.wireCanvas.setSize(worldW, worldH);
+					// Re-render with offset
+					this._canvasOffset = {
+						x: offX,
+						y: offY
+					};
+					// Update all wire positions relative to canvas origin
+					this.graph.wires.forEach(w => {
+						const src = this.getPortWorldCenter(w.srcNodeId, w.srcPort);
+						const dst = this.getPortWorldCenter(w.dstNodeId, w.dstPort);
+						if (src && dst) this.wireCanvas.updateWire(w.id, src.x - offX, src.y - offY, dst.x - offX, dst.y - offY, w.value);
+					});
+				}
+			}
+			// ── Truth Table Generator ──
+			class TruthTableGenerator {
+				constructor(graph) {
+					this.graph = graph;
+				}
+				render(containerId) {
+					const c = document.getElementById(containerId);
+					if (!c) return;
+					const inputs = this.graph.getNodesByKind('INPUT');
+					const outputs = this.graph.getNodesByKind('OUTPUT');
+					if (!inputs.length || !outputs.length) {
+						c.innerHTML = '<p class="truth-empty">Add inputs and outputs to see the truth table.</p>';
+						return;
+					}
+					if (inputs.length > MAX_TT_INPUTS) {
+						c.innerHTML = `<p class="truth-empty">Too many inputs (max ${MAX_TT_INPUTS}).</p>`;
+						return;
+					}
+					const snap = this.graph.createSnapshot();
+					const curVals = inputs.map(n => n.value);
+					const rows = 1 << inputs.length;
+					const data = [];
+					let activeRow = -1;
+					for (let i = 0; i < rows; i++) {
+						const iv = [];
+						for (let b = 0; b < inputs.length; b++) {
+							const v = Boolean(i & (1 << (inputs.length - 1 - b)));
+							inputs[b].value = v;
+							iv.push(v);
+						}
+						this.graph.evaluateFull();
+						data.push({
+							iv,
+							ov: outputs.map(n => n.value)
+						});
+						if (iv.every((v, j) => v === curVals[j])) activeRow = i;
+					}
+					this.graph.restoreSnapshot(snap);
+					let h = '<table class="truth-table" role="table"><thead><tr>';
+					for (const inp of inputs) h += `<th scope="col">${escHTML(inp.label)}</th>`;
+					for (const out of outputs) h += `<th scope="col">${escHTML(out.label)}</th>`;
+					h += '</tr></thead><tbody>';
+					for (let i = 0; i < data.length; i++) {
+						const r = data[i];
+						h += i === activeRow ? '<tr class="active-row">' : '<tr>';
+						for (const v of r.iv) {
+							const n = v ? 1 : 0;
+							h += `<td class="${n?'v1':''}">${n}</td>`;
+						}
+						for (const v of r.ov) {
+							const n = v ? 1 : 0;
+							h += `<td class="${n?'v1':''}">${n}</td>`;
+						}
+						h += '</tr>';
+					}
+					c.innerHTML = h + '</tbody></table>';
+				}
+			}
+			// ── Inspector ──
+			class Inspector {
+				constructor(graph) {
+					this.graph = graph;
+					this.el = document.getElementById('inspector');
+					this.content = document.getElementById('inspector-content');
+					this.nodeId = null;
+				}
+				inspect(id) {
+					this.nodeId = id;
+					this.update();
+					this.el.classList.remove('hidden');
+				}
+				hide() {
+					this.nodeId = null;
+					this.el.classList.add('hidden');
+				}
+				update() {
+					if (!this.nodeId) return;
+					const n = this.graph.nodes.get(this.nodeId);
+					if (!n) {
+						this.hide();
+						return;
+					}
+					const r = (k, v, t) => `<div class="inspector-row"><span class="inspector-key">${escHTML(k)}</span><span class="inspector-val ${t?'val-true':''}">${escHTML(String(v))}</span></div>`;
+					let h = r('ID', n.id, false) + r('Type', n.kind === 'GATE' ? n.gateType : n.kind, false) + r('Label', n.label, false);
+					if (n.kind === 'INPUT') h += r('Value', n.value ? 'TRUE' : 'FALSE', n.value);
+					else if (n.kind === 'GATE') {
+						h += r('Input A', n.inputValues.a ? 'TRUE' : 'FALSE', n.inputValues.a);
+						if (n.gateType !== 'NOT') h += r('Input B', n.inputValues.b ? 'TRUE' : 'FALSE', n.inputValues.b);
+						h += r('Output', n.value ? 'TRUE' : 'FALSE', n.value);
+					} else h += r('Value', n.value ? 'TRUE' : 'FALSE', n.value);
+					const wc = this.graph.getWireCount(n.id);
+					h += r('Wires In', wc.inCount, false) + r('Wires Out', wc.outCount, false);
+					this.content.innerHTML = h;
+				}
+			}
+			// ── App Controller ──
+			class App {
+				constructor() {
+					this.graph = new CircuitGraph();
+					this.worldEl = document.getElementById('world');
+					this.hitSvg = document.getElementById('wire-hit-layer');
+					this.tempSvg = document.getElementById('wire-temp-layer');
+					this.viewport = document.getElementById('viewport');
+					this.ctxMenu = document.getElementById('context-menu');
+					this.undoToast = document.getElementById('undo-toast');
+					this.undoToastMsg = document.getElementById('undo-toast-msg');
+					this.undoToastBtn = document.getElementById('undo-toast-btn');
+					const wireCanvasEl = document.getElementById('wire-canvas');
+					this.wireCanvasRenderer = new WireCanvasRenderer(wireCanvasEl);
+					this.renderer = new Renderer(this.graph, this.worldEl, this.hitSvg, this.tempSvg, this.wireCanvasRenderer);
+					this.truthGen = new TruthTableGenerator(this.graph);
+					this.inspector = new Inspector(this.graph);
+					this.undoMgr = new UndoManager();
+					this.zoom = 1;
+					this.panX = 0;
+					this.panY = 0;
+					this.isDragging = false;
+					this.dragNodeId = null;
+					this.dragStartPos = null;
+					this.dragOffset = {
+						x: 0,
+						y: 0
+					};
+					this.isPanning = false;
+					this.panStart = {
+						x: 0,
+						y: 0
+					};
+					this.isWiring = false;
+					this.wireStartNodeId = null;
+					this.wireStartPortType = null;
+					this.tempWirePath = null;
+					this.selectedNodes = new Set(); // multi-select
+					this.ctxNodeId = null;
+					this.pendingEval = null;
+					this.activePointerId = null;
+					this._toastTimer = null;
+					this._usedInputLabels = new Set();
+					this._usedOutputLabels = new Set();
+					// Selection box
+					this._selBoxStart = null;
+					this._selBoxEl = null;
+					this._structuralChange = false; // tracks if eval needs full or incremental
+					this.undoMgr.onChange(() => this._updateUndoButtons());
+					this._bindEvents();
+					this.centerView();
+					this._resizeWireCanvas();
+					this.wireCanvasRenderer.start();
+					this.buildDefaultCircuit();
+				}
+				// ── Camera ──
+				updateCamera() {
+					this.worldEl.style.transform = `translate(${this.panX}px,${this.panY}px) scale(${this.zoom})`;
+					document.getElementById('zoom-indicator').textContent = `${Math.round(this.zoom*100)}%`;
+					this._resizeWireCanvas();
+				}
+				centerView() {
+					this.panX = this.viewport.clientWidth / 2 - 600;
+					this.panY = this.viewport.clientHeight / 2 - 300;
+					this.updateCamera();
+				}
+				screenToWorld(sx, sy) {
+					const r = this.viewport.getBoundingClientRect();
+					return {
+						x: (sx - r.left - this.panX) / this.zoom,
+						y: (sy - r.top - this.panY) / this.zoom
+					};
+				}
+				_resizeWireCanvas() {
+					this.renderer.resizeCanvas(this.viewport.clientWidth, this.viewport.clientHeight, this.zoom, this.panX, this.panY);
+				}
+				// ── Labels ──
+				_genLabel(kind) {
+					if (kind === 'INPUT') {
+						for (let i = 0;; i++) {
+							const l = i < 26 ? String.fromCharCode(65 + i) : `${String.fromCharCode(65+i%26)}${Math.floor(i/26)+1}`;
+							if (!this._usedInputLabels.has(l)) {
+								this._usedInputLabels.add(l);
+								return l;
+							}
+						}
+					}
+					if (kind === 'OUTPUT') {
+						for (let i = 0;; i++) {
+							const l = i < 3 ? String.fromCharCode(88 + i) : `O${i+1}`;
+							if (!this._usedOutputLabels.has(l)) {
+								this._usedOutputLabels.add(l);
+								return l;
+							}
+						}
+					}
+					return '';
+				}
+				_recycleLabel(n) {
+					if (n.kind === 'INPUT') this._usedInputLabels.delete(n.label);
+					else if (n.kind === 'OUTPUT') this._usedOutputLabels.delete(n.label);
+				}
+				_claimLabel(n) {
+					if (n.kind === 'INPUT') this._usedInputLabels.add(n.label);
+					else if (n.kind === 'OUTPUT') this._usedOutputLabels.add(n.label);
+				}
+				// ── Toast ──
+				_showToast(msg, undoFn) {
+					if (this._toastTimer) clearTimeout(this._toastTimer);
+					this.undoToastMsg.textContent = msg;
+					this.undoToast.classList.add('visible');
+					const clone = this.undoToastBtn.cloneNode(true);
+					this.undoToastBtn.replaceWith(clone);
+					this.undoToastBtn = clone;
+					clone.addEventListener('click', () => {
+						if (undoFn) undoFn();
+						this.undoToast.classList.remove('visible');
+					});
+					this._toastTimer = setTimeout(() => this.undoToast.classList.remove('visible'), 5000);
+				}
+				_updateUndoButtons() {
+					document.getElementById('btn-undo').disabled = !this.undoMgr.canUndo;
+					document.getElementById('btn-redo').disabled = !this.undoMgr.canRedo;
+				}
+				// ── CRUD ──
+				spawnNode(kind, gateType, x, y, initialValue = false, existingLabel = null, existingId = null) {
+					const label = existingLabel || ((kind === 'INPUT' || kind === 'OUTPUT') ? this._genLabel(kind) : (gateType || 'GATE'));
+					if (existingLabel) this._claimLabel({
+						kind,
+						label: existingLabel
+					});
+					const node = {
+						id: existingId || `n${_nid++}`,
+						kind,
+						gateType,
+						x,
+						y,
+						label,
+						value: Boolean(initialValue),
+						inputValues: {
+							a: false,
+							b: false
+						}
+					};
+					node.cycleType = function() {
+						if (this.kind !== 'GATE') return this.gateType;
+						const i = GATE_TYPES.indexOf(this.gateType);
+						this.gateType = GATE_TYPES[(i + 1) % GATE_TYPES.length];
+						return this.gateType;
+					};
+					this.graph.addNode(node);
+					this.renderer.createNodeElement(node);
+					this._structuralChange = true;
+					this.scheduleEvaluation();
+					return node;
+				}
+				_restoreNode(snap) {
+					const node = {
+						id: snap.id,
+						kind: snap.kind,
+						gateType: snap.gateType,
+						x: snap.x,
+						y: snap.y,
+						label: snap.label,
+						value: snap.value,
+						inputValues: {
+							a: snap.inputA,
+							b: snap.inputB
+						}
+					};
+					node.cycleType = function() {
+						if (this.kind !== 'GATE') return this.gateType;
+						const i = GATE_TYPES.indexOf(this.gateType);
+						this.gateType = GATE_TYPES[(i + 1) % GATE_TYPES.length];
+						return this.gateType;
+					};
+					this._claimLabel(node);
+					this.graph.addNode(node);
+					this.renderer.createNodeElement(node);
+					return node;
+				}
+				deleteNode(nodeId, recordUndo = true) {
+					const node = this.graph.nodes.get(nodeId);
+					if (!node) return;
+					const snap = {
+						id: node.id,
+						kind: node.kind,
+						gateType: node.gateType,
+						x: node.x,
+						y: node.y,
+						label: node.label,
+						value: node.value,
+						inputA: node.inputValues.a,
+						inputB: node.inputValues.b
+					};
+					const connWires = this.graph.getWiresForNode(nodeId).map(w => this.graph._snapshotWire(w));
+					for (const ws of connWires) this.renderer.removeWireVisuals(ws.id);
+					this.graph.removeNode(nodeId);
+					this.renderer.removeNodeElement(nodeId);
+					this._recycleLabel(node);
+					this.selectedNodes.delete(nodeId);
+					if (this.selectedNodes.size === 0) this.inspector.hide();
+					if (recordUndo) {
+						const desc = `Delete ${node.kind==='GATE'?node.gateType:node.kind} "${node.label}"`;
+						this.undoMgr.push({
+							description: desc,
+							undo: () => {
+								this._restoreNode(snap);
+								for (const ws of connWires) {
+									if (this.graph.nodes.has(ws.srcNodeId) && this.graph.nodes.has(ws.dstNodeId)) {
+										const w = {
+											id: ws.id,
+											srcNodeId: ws.srcNodeId,
+											srcPort: ws.srcPort,
+											dstNodeId: ws.dstNodeId,
+											dstPort: ws.dstPort,
+											value: ws.value
+										};
+										this.graph.wires.set(w.id, w);
+										this.graph._indexWire(w);
+										this.graph._invalidateTopo();
+										this.renderer.updateWireVisuals(w);
+									}
+								}
+								this._structuralChange = true;
+								this.scheduleEvaluation();
+							},
+							redo: () => {
+								this.deleteNode(snap.id, false);
+								this._structuralChange = true;
+								this.scheduleEvaluation();
+							}
+						});
+						this._showToast(desc, () => this.undoMgr.undo());
+						srAnnounce(`Deleted ${node.label}`);
+					}
+					this._structuralChange = true;
+					this.scheduleEvaluation();
+				}
+				selectNode(nodeId, additive = false) {
+					if (!additive) {
+						for (const id of this.selectedNodes) {
+							const el = this.renderer.nodeElements.get(id);
+							if (el) el.classList.remove('selected');
+						}
+						this.selectedNodes.clear();
+					}
+					if (nodeId) {
+						this.selectedNodes.add(nodeId);
+						const el = this.renderer.nodeElements.get(nodeId);
+						if (el) el.classList.add('selected');
+						this.inspector.inspect(nodeId);
+					} else {
+						this.inspector.hide();
+					}
+				}
+				deselectNode(nodeId) {
+					this.selectedNodes.delete(nodeId);
+					const el = this.renderer.nodeElements.get(nodeId);
+					if (el) el.classList.remove('selected');
+					if (this.selectedNodes.size === 0) this.inspector.hide();
+					else this.inspector.inspect([...this.selectedNodes][this.selectedNodes.size - 1]);
+				}
+				// ── Evaluation ──
+				scheduleEvaluation() {
+					if (this.pendingEval) return;
+					this.pendingEval = requestAnimationFrame(() => {
+						this.pendingEval = null;
+						if (this._structuralChange) {
+							this.graph.evaluateFull();
+							this.renderer.updateAllVisuals();
+							this._structuralChange = false;
+						} else {
+							const affected = this.graph.evaluateIncremental();
+							if (affected && affected.length > 0) {
+								this.renderer.updateNodesAndWires(affected);
+							} else {
+								// No dirty nodes, but wires may need visual update
+								this.graph.evaluateFull();
+								this.renderer.updateAllVisuals();
+							}
+						}
+						this._resizeWireCanvas();
+						this.truthGen.render('truth-table-container');
+						this.inspector.update();
+					});
+				}
+				// ── Wiring ──
+				startWiring(nodeId, portType) {
+					const node = this.graph.nodes.get(nodeId);
+					if (!node) return;
+					const isOut = portType === 'out';
+					if (isOut && node.kind === 'OUTPUT') return;
+					if (!isOut && node.kind === 'INPUT') return;
+					this.isWiring = true;
+					this.wireStartNodeId = nodeId;
+					this.wireStartPortType = portType;
+					this.tempWirePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+					this.tempWirePath.classList.add('wire-temp');
+					this.tempSvg.appendChild(this.tempWirePath);
+					this._highlightPorts(nodeId, portType);
+				}
+				_updateTempWire(wx, wy) {
+					if (!this.tempWirePath) return;
+					const src = this.renderer.getPortWorldCenter(this.wireStartNodeId, this.wireStartPortType);
+					if (!src) return;
+					const isOut = this.wireStartPortType === 'out';
+					const d = isOut ? this.renderer.computeWireBezier(src.x, src.y, wx, wy) : this.renderer.computeWireBezier(wx, wy, src.x, src.y);
+					this.tempWirePath.setAttribute('d', d);
+				}
+				finishWiring(targetNodeId, targetPortType) {
+					if (!this.isWiring) return;
+					const startIsOut = this.wireStartPortType === 'out';
+					const targetIsOut = targetPortType === 'out';
+					if (startIsOut === targetIsOut) {
+						this._rejectWire(targetNodeId);
+						this.cancelWiring();
+						return;
+					}
+					let srcId, dstId, dstPort;
+					if (startIsOut) {
+						srcId = this.wireStartNodeId;
+						dstId = targetNodeId;
+						dstPort = targetPortType;
+					} else {
+						srcId = targetNodeId;
+						dstId = this.wireStartNodeId;
+						dstPort = this.wireStartPortType;
+					}
+					if (srcId === dstId) {
+						this._rejectWire(targetNodeId);
+						this.cancelWiring();
+						return;
+					}
+					const w = {
+						id: `w${_wid++}`,
+						srcNodeId: srcId,
+						srcPort: 'out',
+						dstNodeId: dstId,
+						dstPort,
+						value: false
+					};
+					const result = this.graph.addWire(w);
+					if (!result) {
+						this._rejectWire(targetNodeId);
+						this.cancelWiring();
+						return;
+					}
+					if (result.replacedWire) this.renderer.removeWireVisuals(result.replacedWire.id);
+					this.cancelWiring();
+					this.renderer.updateWireVisuals(w);
+					this.undoMgr.push({
+						description: 'Add wire',
+						undo: () => {
+							this.graph.removeWire(w.id);
+							this.renderer.removeWireVisuals(w.id);
+							if (result.replacedWire) {
+								const rw = result.replacedWire;
+								const rwo = {
+									id: rw.id,
+									srcNodeId: rw.srcNodeId,
+									srcPort: rw.srcPort,
+									dstNodeId: rw.dstNodeId,
+									dstPort: rw.dstPort,
+									value: rw.value
+								};
+								this.graph.wires.set(rwo.id, rwo);
+								this.graph._indexWire(rwo);
+								this.graph._invalidateTopo();
+								this.renderer.updateWireVisuals(rwo);
+							}
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						},
+						redo: () => {
+							if (result.replacedWire) {
+								this.graph.removeWire(result.replacedWire.id);
+								this.renderer.removeWireVisuals(result.replacedWire.id);
+							}
+							const rw = {
+								id: w.id,
+								srcNodeId: w.srcNodeId,
+								srcPort: w.srcPort,
+								dstNodeId: w.dstNodeId,
+								dstPort: w.dstPort,
+								value: false
+							};
+							this.graph.wires.set(rw.id, rw);
+							this.graph._indexWire(rw);
+							this.graph._invalidateTopo();
+							this.renderer.updateWireVisuals(rw);
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						}
+					});
+					srAnnounce('Wire connected');
+					this._structuralChange = true;
+					this.scheduleEvaluation();
+				}
+				_rejectWire(targetNodeId) {
+					if (targetNodeId) {
+						const el = this.renderer.nodeElements.get(targetNodeId);
+						if (el) {
+							el.classList.remove('wire-rejected');
+							void el.offsetWidth;
+							el.classList.add('wire-rejected');
+							el.addEventListener('animationend', () => el.classList.remove('wire-rejected'), {
+								once: true
+							});
+						}
+					}
+					if (this.tempWirePath) this.tempWirePath.classList.add('wire-invalid');
+					srAnnounce('Connection rejected');
+				}
+				cancelWiring() {
+					this.isWiring = false;
+					this.wireStartNodeId = null;
+					this.wireStartPortType = null;
+					if (this.tempWirePath) {
+						this.tempWirePath.remove();
+						this.tempWirePath = null;
+					}
+					this._clearHighlights();
+				}
+				_highlightPorts(srcId, srcPt) {
+					const isOut = srcPt === 'out';
+					this.graph.nodes.forEach(node => {
+						if (node.id === srcId) return;
+						const el = this.renderer.nodeElements.get(node.id);
+						if (!el) return;
+						if (isOut) {
+							if (node.kind === 'GATE') {
+								el.querySelector('.port-in-a')?.classList.add('highlight');
+								if (node.gateType !== 'NOT') el.querySelector('.port-in-b')?.classList.add('highlight');
+							} else if (node.kind === 'OUTPUT') el.querySelector('.port-in')?.classList.add('highlight');
+						} else {
+							if (node.kind === 'INPUT' || node.kind === 'GATE') el.querySelector('.port-out')?.classList.add('highlight');
+						}
+					});
+				}
+				_clearHighlights() {
+					this.worldEl.querySelectorAll('.port.highlight').forEach(p => p.classList.remove('highlight'));
+				}
+				// ── Events ──
+				_bindEvents() {
+					const vp = this.viewport;
+					vp.addEventListener('pointerdown', this._onPointerDown.bind(this));
+					vp.addEventListener('pointermove', this._onPointerMove.bind(this));
+					vp.addEventListener('pointerup', this._onPointerUp.bind(this));
+					vp.addEventListener('pointercancel', this._onPointerUp.bind(this));
+					vp.addEventListener('wheel', this._onWheel.bind(this), {
+						passive: false
+					});
+					vp.addEventListener('dblclick', this._onDblClick.bind(this));
+					vp.addEventListener('contextmenu', this._onCtxMenu.bind(this));
+					document.addEventListener('keydown', this._onKeyDown.bind(this));
+					document.addEventListener('pointerdown', e => {
+						if (!e.target.closest('.context-menu') && !e.target.closest('.circuit-node')) this.ctxMenu.classList.remove('visible');
+					});
+					document.getElementById('toolbox').addEventListener('click', this._onToolbox.bind(this));
+					this.ctxMenu.addEventListener('click', this._onCtxClick.bind(this));
+					document.getElementById('btn-undo').addEventListener('click', () => {
+						const a = this.undoMgr.undo();
+						if (a) srAnnounce(`Undone: ${a.description}`);
+					});
+					document.getElementById('btn-redo').addEventListener('click', () => {
+						const a = this.undoMgr.redo();
+						if (a) srAnnounce(`Redone: ${a.description}`);
+					});
+					document.getElementById('btn-save').addEventListener('click', () => this._saveCircuit());
+					document.getElementById('btn-load').addEventListener('click', () => this._loadCircuit());
+					document.getElementById('btn-randomize').addEventListener('click', () => this._randomize());
+					document.getElementById('btn-clear-wires').addEventListener('click', () => this._clearWiresUndo());
+					document.getElementById('btn-reset').addEventListener('click', () => this._reset());
+					window.addEventListener('resize', () => {
+						this._resizeWireCanvas();
+					});
+				}
+				_onPointerDown(e) {
+					const port = e.target.closest('.port');
+					const toggle = e.target.closest('[data-action="toggle"]');
+					const delBtn = e.target.closest('[data-action="delete-node"]');
+					const nodeEl = e.target.closest('.circuit-node');
+					const wireHit = e.target.closest('.wire-hit');
+					if (port) {
+						e.preventDefault();
+						e.stopPropagation();
+						const nid = port.getAttribute('data-node-id'),
+							pt = port.getAttribute('data-port-type');
+						if (nid && pt) this.startWiring(nid, pt);
+						return;
+					}
+					if (toggle && nodeEl) {
+						e.preventDefault();
+						e.stopPropagation();
+						const nid = nodeEl.getAttribute('data-node-id'),
+							node = this.graph.nodes.get(nid);
+						if (node && node.kind === 'INPUT') {
+							const old = node.value;
+							node.value = !node.value;
+							this.graph.markDirty(nid);
+							this.undoMgr.push({
+								description: `Toggle ${node.label}`,
+								undo: () => {
+									node.value = old;
+									this.graph.markDirty(nid);
+									this.scheduleEvaluation();
+								},
+								redo: () => {
+									node.value = !old;
+									this.graph.markDirty(nid);
+									this.scheduleEvaluation();
+								}
+							});
+							this.scheduleEvaluation();
+						}
+						return;
+					}
+					if (delBtn && nodeEl) {
+						e.preventDefault();
+						e.stopPropagation();
+						this.deleteNode(nodeEl.getAttribute('data-node-id'));
+						return;
+					}
+					if (wireHit) {
+						e.preventDefault();
+						e.stopPropagation();
+						const wid = wireHit.getAttribute('data-wire-id');
+						if (wid && this.graph.wires.has(wid)) this._deleteWireUndo(wid);
+						return;
+					}
+					if (nodeEl) {
+						e.preventDefault();
+						e.stopPropagation();
+						const nid = nodeEl.getAttribute('data-node-id');
+						const node = this.graph.nodes.get(nid);
+						if (!node) return;
+						if (e.shiftKey) {
+							if (this.selectedNodes.has(nid)) this.deselectNode(nid);
+							else this.selectNode(nid, true);
+						} else this.selectNode(nid, false);
+						this.isDragging = true;
+						this.dragNodeId = nid;
+						this.dragStartPos = {
+							x: node.x,
+							y: node.y
+						};
+						this.activePointerId = e.pointerId;
+						const wp = this.screenToWorld(e.clientX, e.clientY);
+						this.dragOffset.x = wp.x - node.x;
+						this.dragOffset.y = wp.y - node.y;
+						// If multi-selected, compute offsets for all selected nodes
+						this._multiDragOffsets = new Map();
+						if (this.selectedNodes.size > 1 && this.selectedNodes.has(nid)) {
+							for (const sid of this.selectedNodes) {
+								const sn = this.graph.nodes.get(sid);
+								if (sn) this._multiDragOffsets.set(sid, {
+									x: wp.x - sn.x,
+									y: wp.y - sn.y
+								});
+							}
+						}
+						this._multiDragStarts = new Map();
+						for (const sid of this.selectedNodes) {
+							const sn = this.graph.nodes.get(sid);
+							if (sn) this._multiDragStarts.set(sid, {
+								x: sn.x,
+								y: sn.y
+							});
+						}
+						this.viewport.setPointerCapture(e.pointerId);
+						return;
+					}
+					// Start selection box or pan
+					if (e.shiftKey) {
+						e.preventDefault();
+						this._selBoxStart = this.screenToWorld(e.clientX, e.clientY);
+						this._selBoxEl = document.createElement('div');
+						this._selBoxEl.classList.add('selection-box');
+						this.worldEl.appendChild(this._selBoxEl);
+						this.activePointerId = e.pointerId;
+						this.viewport.setPointerCapture(e.pointerId);
+						return;
+					}
+					this.selectNode(null);
+					this.isPanning = true;
+					this.activePointerId = e.pointerId;
+					this.panStart.x = e.clientX - this.panX;
+					this.panStart.y = e.clientY - this.panY;
+					this.viewport.classList.add('panning');
+					this.viewport.setPointerCapture(e.pointerId);
+				}
+				_onPointerMove(e) {
+					if (this.isWiring) {
+						this._updateTempWire(...Object.values(this.screenToWorld(e.clientX, e.clientY)));
+						return;
+					}
+					if (this._selBoxStart) {
+						const wp = this.screenToWorld(e.clientX, e.clientY);
+						const x1 = Math.min(this._selBoxStart.x, wp.x),
+							y1 = Math.min(this._selBoxStart.y, wp.y);
+						const x2 = Math.max(this._selBoxStart.x, wp.x),
+							y2 = Math.max(this._selBoxStart.y, wp.y);
+						if (this._selBoxEl) {
+							this._selBoxEl.style.left = x1 + 'px';
+							this._selBoxEl.style.top = y1 + 'px';
+							this._selBoxEl.style.width = (x2 - x1) + 'px';
+							this._selBoxEl.style.height = (y2 - y1) + 'px';
+						}
+						return;
+					}
+					if (this.isDragging && this.dragNodeId) {
+						const wp = this.screenToWorld(e.clientX, e.clientY);
+						if (this._multiDragOffsets.size > 1) {
+							// Multi-drag
+							for (const [sid, off] of this._multiDragOffsets) {
+								const sn = this.graph.nodes.get(sid);
+								if (!sn) continue;
+								sn.x = wp.x - off.x;
+								sn.y = wp.y - off.y;
+								const el = this.renderer.nodeElements.get(sid);
+								if (el) {
+									el.style.left = `${sn.x}px`;
+									el.style.top = `${sn.y}px`;
+								}
+								this.renderer.updateWiresForNode(sid);
+							}
+						} else {
+							const node = this.graph.nodes.get(this.dragNodeId);
+							if (!node) return;
+							node.x = wp.x - this.dragOffset.x;
+							node.y = wp.y - this.dragOffset.y;
+							const el = this.renderer.nodeElements.get(this.dragNodeId);
+							if (el) {
+								el.style.left = `${node.x}px`;
+								el.style.top = `${node.y}px`;
+							}
+							this.renderer.updateWiresForNode(this.dragNodeId);
+						}
+						this._resizeWireCanvas();
+						return;
+					}
+					if (this.isPanning) {
+						this.panX = e.clientX - this.panStart.x;
+						this.panY = e.clientY - this.panStart.y;
+						this.updateCamera();
+					}
+				}
+				_onPointerUp(e) {
+					if (this.isWiring) {
+						const els = document.elementsFromPoint(e.clientX, e.clientY);
+						let found = null;
+						for (const el of els) {
+							const p = el.closest('.port');
+							if (p) {
+								const nid = p.getAttribute('data-node-id');
+								if (nid && nid !== this.wireStartNodeId) {
+									found = p;
+									break;
+								}
+							}
+						}
+						if (found) this.finishWiring(found.getAttribute('data-node-id'), found.getAttribute('data-port-type'));
+						else this.cancelWiring();
+						return;
+					}
+					if (this._selBoxStart) {
+						// Select nodes inside box
+						const wp = this.screenToWorld(e.clientX, e.clientY);
+						const x1 = Math.min(this._selBoxStart.x, wp.x),
+							y1 = Math.min(this._selBoxStart.y, wp.y);
+						const x2 = Math.max(this._selBoxStart.x, wp.x),
+							y2 = Math.max(this._selBoxStart.y, wp.y);
+						this.graph.nodes.forEach(n => {
+							const el = this.renderer.nodeElements.get(n.id);
+							if (!el) return;
+							const nw = el.offsetWidth,
+								nh = el.offsetHeight;
+							const cx = n.x + nw / 2,
+								cy = n.y + nh / 2;
+							if (cx >= x1 && cx <= x2 && cy >= y1 && cy <= y2) this.selectNode(n.id, true);
+						});
+						if (this._selBoxEl) {
+							this._selBoxEl.remove();
+							this._selBoxEl = null;
+						}
+						this._selBoxStart = null;
+						try {
+							this.viewport.releasePointerCapture(this.activePointerId);
+						} catch (_) {}
+						this.activePointerId = null;
+						return;
+					}
+					// Record drag undo
+					if (this.isDragging && this.dragNodeId && this._multiDragStarts) {
+						const moves = [];
+						for (const [sid, start] of this._multiDragStarts) {
+							const n = this.graph.nodes.get(sid);
+							if (n && (Math.abs(n.x - start.x) > 2 || Math.abs(n.y - start.y) > 2)) {
+								moves.push({
+									id: sid,
+									sx: start.x,
+									sy: start.y,
+									ex: n.x,
+									ey: n.y
+								});
+							}
+						}
+						if (moves.length > 0) {
+							this.undoMgr.push({
+								description: `Move ${moves.length} node(s)`,
+								undo: () => {
+									for (const m of moves) {
+										const n = this.graph.nodes.get(m.id);
+										if (!n) continue;
+										n.x = m.sx;
+										n.y = m.sy;
+										const el = this.renderer.nodeElements.get(m.id);
+										if (el) {
+											el.style.left = `${n.x}px`;
+											el.style.top = `${n.y}px`;
+										}
+										this.renderer.updateWiresForNode(m.id);
+									}
+									this._resizeWireCanvas();
+								},
+								redo: () => {
+									for (const m of moves) {
+										const n = this.graph.nodes.get(m.id);
+										if (!n) continue;
+										n.x = m.ex;
+										n.y = m.ey;
+										const el = this.renderer.nodeElements.get(m.id);
+										if (el) {
+											el.style.left = `${n.x}px`;
+											el.style.top = `${n.y}px`;
+										}
+										this.renderer.updateWiresForNode(m.id);
+									}
+									this._resizeWireCanvas();
+								}
+							});
+						}
+						this._multiDragStarts = null;
+						this._multiDragOffsets = new Map();
+					}
+					try {
+						this.viewport.releasePointerCapture(this.activePointerId);
+					} catch (_) {}
+					this.isDragging = false;
+					this.dragNodeId = null;
+					this.dragStartPos = null;
+					this.isPanning = false;
+					this.activePointerId = null;
+					this.viewport.classList.remove('panning');
+				}
+				_onWheel(e) {
+					e.preventDefault();
+					const factor = e.deltaY > 0 ? 0.92 : 1.08;
+					const newZoom = Math.max(0.15, Math.min(4, this.zoom * factor));
+					const r = this.viewport.getBoundingClientRect();
+					const mx = e.clientX - r.left,
+						my = e.clientY - r.top;
+					this.panX = mx - (mx - this.panX) * (newZoom / this.zoom);
+					this.panY = my - (my - this.panY) * (newZoom / this.zoom);
+					this.zoom = newZoom;
+					this.updateCamera();
+				}
+				_onDblClick(e) {
+					const nodeEl = e.target.closest('.node-gate');
+					if (!nodeEl) return;
+					const nid = nodeEl.getAttribute('data-node-id');
+					const node = this.graph.nodes.get(nid);
+					if (!node || node.kind !== 'GATE') return;
+					const oldType = node.gateType;
+					node.cycleType();
+					this.renderer.invalidatePortCache(node);
+					const sym = nodeEl.querySelector('.gate-symbol');
+					if (sym) {
+						sym.classList.remove('morphing');
+						void sym.offsetWidth;
+						sym.classList.add('morphing');
+					}
+					this.undoMgr.push({
+						description: `Cycle ${oldType} → ${node.gateType}`,
+						undo: () => {
+							node.gateType = oldType;
+							this.renderer.invalidatePortCache(node);
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						},
+						redo: () => {
+							node.cycleType();
+							this.renderer.invalidatePortCache(node);
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						}
+					});
+					this._structuralChange = true;
+					this.scheduleEvaluation();
+				}
+				_onCtxMenu(e) {
+					e.preventDefault();
+					const nodeEl = e.target.closest('.circuit-node');
+					if (!nodeEl) {
+						this.ctxMenu.classList.remove('visible');
+						return;
+					}
+					this.ctxNodeId = nodeEl.getAttribute('data-node-id');
+					const node = this.graph.nodes.get(this.ctxNodeId);
+					if (!node) return;
+					this.ctxMenu.querySelector('[data-action="cycle"]').style.display = node.kind === 'GATE' ? 'block' : 'none';
+					this.ctxMenu.style.left = '0';
+					this.ctxMenu.style.top = '0';
+					this.ctxMenu.classList.add('visible');
+					const mr = this.ctxMenu.getBoundingClientRect();
+					this.ctxMenu.style.left = `${Math.max(0,Math.min(e.clientX,innerWidth-mr.width-4))}px`;
+					this.ctxMenu.style.top = `${Math.max(0,Math.min(e.clientY,innerHeight-mr.height-4))}px`;
+				}
+				_onCtxClick(e) {
+					const action = e.target.getAttribute('data-action');
+					if (!action || !this.ctxNodeId) return;
+					const node = this.graph.nodes.get(this.ctxNodeId);
+					if (node) {
+						if (action === 'cycle' && node.kind === 'GATE') {
+							const old = node.gateType;
+							node.cycleType();
+							this.renderer.invalidatePortCache(node);
+							const sym = this.renderer.nodeElements.get(node.id)?.querySelector('.gate-symbol');
+							if (sym) {
+								sym.classList.remove('morphing');
+								void sym.offsetWidth;
+								sym.classList.add('morphing');
+							}
+							this.undoMgr.push({
+								description: `Cycle gate`,
+								undo: () => {
+									node.gateType = old;
+									this.renderer.invalidatePortCache(node);
+									this._structuralChange = true;
+									this.scheduleEvaluation();
+								},
+								redo: () => {
+									node.cycleType();
+									this.renderer.invalidatePortCache(node);
+									this._structuralChange = true;
+									this.scheduleEvaluation();
+								}
+							});
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						} else if (action === 'duplicate') {
+							const nn = this.spawnNode(node.kind, node.gateType, node.x + 40, node.y + 40, node.kind === 'INPUT' ? node.value : false);
+							this.undoMgr.push({
+								description: `Duplicate`,
+								undo: () => this.deleteNode(nn.id, false),
+								redo: () => this.spawnNode(nn.kind, nn.gateType, nn.x, nn.y, nn.kind === 'INPUT' ? nn.value : false)
+							});
+							srAnnounce(`Duplicated ${node.label}`);
+						} else if (action === 'delete') this.deleteNode(this.ctxNodeId);
+					}
+					this.ctxMenu.classList.remove('visible');
+					this.ctxNodeId = null;
+				}
+				_onKeyDown(e) {
+					if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+						e.preventDefault();
+						const a = this.undoMgr.undo();
+						if (a) srAnnounce(`Undone: ${a.description}`);
+						return;
+					}
+					if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+						e.preventDefault();
+						const a = this.undoMgr.redo();
+						if (a) srAnnounce(`Redone: ${a.description}`);
+						return;
+					}
+					if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+						e.preventDefault();
+						this._saveCircuit();
+						return;
+					}
+					if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+						e.preventDefault();
+						this.graph.nodes.forEach(n => this.selectNode(n.id, true));
+						return;
+					}
+					const focused = document.activeElement;
+					const focusedNode = focused?.closest('.circuit-node');
+					if (focusedNode) {
+						const nid = focusedNode.getAttribute('data-node-id');
+						const node = nid ? this.graph.nodes.get(nid) : null;
+						if ((e.key === 'Enter' || e.key === ' ') && node) {
+							e.preventDefault();
+							if (node.kind === 'INPUT') {
+								const old = node.value;
+								node.value = !node.value;
+								this.graph.markDirty(nid);
+								this.undoMgr.push({
+									description: `Toggle ${node.label}`,
+									undo: () => {
+										node.value = old;
+										this.graph.markDirty(nid);
+										this.scheduleEvaluation();
+									},
+									redo: () => {
+										node.value = !old;
+										this.graph.markDirty(nid);
+										this.scheduleEvaluation();
+									}
+								});
+								this.scheduleEvaluation();
+								srAnnounce(`${node.label} set to ${node.value?'1':'0'}`);
+							} else if (node.kind === 'GATE') {
+								const old = node.gateType;
+								node.cycleType();
+								this.renderer.invalidatePortCache(node);
+								this.undoMgr.push({
+									description: `Cycle gate`,
+									undo: () => {
+										node.gateType = old;
+										this.renderer.invalidatePortCache(node);
+										this._structuralChange = true;
+										this.scheduleEvaluation();
+									},
+									redo: () => {
+										node.cycleType();
+										this.renderer.invalidatePortCache(node);
+										this._structuralChange = true;
+										this.scheduleEvaluation();
+									}
+								});
+								this._structuralChange = true;
+								this.scheduleEvaluation();
+								srAnnounce(`Gate changed to ${node.gateType}`);
+							}
+							return;
+						}
+						if ((e.key === 'Delete' || e.key === 'Backspace') && node) {
+							e.preventDefault();
+							this.deleteNode(nid);
+							return;
+						}
+						if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) && node) {
+							e.preventDefault();
+							const all = [...this.graph.nodes.values()];
+							if (all.length <= 1) return;
+							let best = null,
+								bestD = Infinity;
+							for (const o of all) {
+								if (o.id === node.id) continue;
+								const dx = o.x - node.x,
+									dy = o.y - node.y;
+								let s = Infinity;
+								if (e.key === 'ArrowRight' && dx > 20) s = Math.abs(dy) + dx * .5;
+								else if (e.key === 'ArrowLeft' && dx < -20) s = Math.abs(dy) + Math.abs(dx) * .5;
+								else if (e.key === 'ArrowDown' && dy > 20) s = Math.abs(dx) + dy * .5;
+								else if (e.key === 'ArrowUp' && dy < -20) s = Math.abs(dx) + Math.abs(dy) * .5;
+								if (s < bestD) {
+									bestD = s;
+									best = o;
+								}
+							}
+							if (best) {
+								const tel = this.renderer.nodeElements.get(best.id);
+								if (tel) {
+									tel.focus();
+									this.selectNode(best.id, e.shiftKey);
+								}
+							}
+							return;
+						}
+					}
+					if (e.target !== document.body && !focusedNode) return;
+					if ((e.key === 'Delete' || e.key === 'Backspace') && this.selectedNodes.size > 0) {
+						e.preventDefault();
+						const ids = [...this.selectedNodes];
+						for (const id of ids) this.deleteNode(id);
+					}
+					if (e.key === 'Escape') {
+						if (this.isWiring) this.cancelWiring();
+						this.selectNode(null);
+						this.ctxMenu.classList.remove('visible');
+					}
+				}
+				_onToolbox(e) {
+					const btn = e.target.closest('.tool-btn');
+					if (!btn) return;
+					const type = btn.getAttribute('data-spawn');
+					const center = this.screenToWorld(this.viewport.clientWidth / 2, this.viewport.clientHeight / 2);
+					const ox = (Math.random() - .5) * 100,
+						oy = (Math.random() - .5) * 100;
+					let nn;
+					if (type === 'INPUT') nn = this.spawnNode('INPUT', null, center.x + ox, center.y + oy);
+					else if (type === 'OUTPUT') nn = this.spawnNode('OUTPUT', null, center.x + ox, center.y + oy);
+					else nn = this.spawnNode('GATE', type, center.x + ox, center.y + oy);
+					if (nn) {
+						this.undoMgr.push({
+							description: `Add ${nn.kind==='GATE'?nn.gateType:nn.kind}`,
+							undo: () => this.deleteNode(nn.id, false),
+							redo: () => this.spawnNode(nn.kind, nn.gateType, nn.x, nn.y, nn.kind === 'INPUT' ? nn.value : false)
+						});
+						srAnnounce(`Added ${nn.kind==='GATE'?nn.gateType+' gate':nn.kind.toLowerCase()} ${nn.label}`);
+						requestAnimationFrame(() => {
+							const el = this.renderer.nodeElements.get(nn.id);
+							if (el) el.focus();
+						});
+					}
+				}
+				_deleteWireUndo(wid) {
+					const snap = this.graph._snapshotWire(this.graph.wires.get(wid));
+					if (!snap) return;
+					this.graph.removeWire(wid);
+					this.renderer.removeWireVisuals(wid);
+					this.undoMgr.push({
+						description: 'Delete wire',
+						undo: () => {
+							if (this.graph.nodes.has(snap.srcNodeId) && this.graph.nodes.has(snap.dstNodeId)) {
+								const w = {
+									id: snap.id,
+									srcNodeId: snap.srcNodeId,
+									srcPort: snap.srcPort,
+									dstNodeId: snap.dstNodeId,
+									dstPort: snap.dstPort,
+									value: snap.value
+								};
+								this.graph.wires.set(w.id, w);
+								this.graph._indexWire(w);
+								this.graph._invalidateTopo();
+								this.renderer.updateWireVisuals(w);
+							}
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						},
+						redo: () => {
+							this.graph.removeWire(snap.id);
+							this.renderer.removeWireVisuals(snap.id);
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						}
+					});
+					this._showToast('Wire deleted', () => this.undoMgr.undo());
+					srAnnounce('Wire deleted');
+					this._structuralChange = true;
+					this.scheduleEvaluation();
+				}
+				_clearWiresUndo() {
+					const snaps = this.graph.clearAllWires();
+					if (!snaps.length) return;
+					this.renderer.removeAllWireVisuals();
+					this.undoMgr.push({
+						description: `Clear ${snaps.length} wires`,
+						undo: () => {
+							for (const s of snaps) {
+								if (this.graph.nodes.has(s.srcNodeId) && this.graph.nodes.has(s.dstNodeId)) {
+									const w = {
+										id: s.id,
+										srcNodeId: s.srcNodeId,
+										srcPort: s.srcPort,
+										dstNodeId: s.dstNodeId,
+										dstPort: s.dstPort,
+										value: s.value
+									};
+									this.graph.wires.set(w.id, w);
+									this.graph._indexWire(w);
+									this.graph._invalidateTopo();
+									this.renderer.updateWireVisuals(w);
+								}
+							}
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						},
+						redo: () => {
+							this.graph.clearAllWires();
+							this.renderer.removeAllWireVisuals();
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+						}
+					});
+					srAnnounce(`Cleared ${snaps.length} wires`);
+					this._structuralChange = true;
+					this.scheduleEvaluation();
+				}
+				_randomize() {
+					const inputs = this.graph.getNodesByKind('INPUT');
+					if (!inputs.length) return;
+					const old = inputs.map(n => ({
+						id: n.id,
+						v: n.value
+					}));
+					const nv = inputs.map(() => Math.random() > .5);
+					inputs.forEach((n, i) => {
+						n.value = nv[i];
+						this.graph.markDirty(n.id);
+					});
+					this.undoMgr.push({
+						description: 'Randomize',
+						undo: () => {
+							for (const o of old) {
+								const n = this.graph.nodes.get(o.id);
+								if (n) {
+									n.value = o.v;
+									this.graph.markDirty(o.id);
+								}
+							}
+							this.scheduleEvaluation();
+						},
+						redo: () => {
+							inputs.forEach((n, i) => {
+								n.value = nv[i];
+								this.graph.markDirty(n.id);
+							});
+							this.scheduleEvaluation();
+						}
+					});
+					srAnnounce('Inputs randomized');
+					this.scheduleEvaluation();
+				}
+				// ── Serialization ──
+				_saveCircuit() {
+					try {
+						const json = this.graph.toJSON();
+						navigator.clipboard.writeText(json).then(() => {
+							this._showToast('Circuit copied to clipboard');
+							srAnnounce('Circuit saved to clipboard');
+						}).catch(() => {
+							// Fallback: prompt
+							prompt('Copy this circuit data:', json);
+						});
+					} catch (e) {
+						srAnnounce('Save failed');
+					}
+				}
+				_loadCircuit() {
+					navigator.clipboard.readText().then(text => {
+						try {
+							const data = CircuitGraph.fromJSON(text);
+							this._reset(true);
+							// Rebuild
+							for (const nd of data.nodes) {
+								this.spawnNode(nd.kind, nd.gateType, nd.x, nd.y, nd.value, nd.label, nd.id);
+							}
+							for (const wd of data.wires) {
+								const w = {
+									id: wd.id || `w${_wid++}`,
+									srcNodeId: wd.srcNodeId,
+									srcPort: wd.srcPort,
+									dstNodeId: wd.dstNodeId,
+									dstPort: wd.dstPort,
+									value: false
+								};
+								const result = this.graph.addWire(w);
+								if (result) this.renderer.updateWireVisuals(w);
+							}
+							this.undoMgr.clear();
+							this._structuralChange = true;
+							this.scheduleEvaluation();
+							srAnnounce('Circuit loaded from clipboard');
+							this._showToast('Circuit loaded');
+						} catch (e) {
+							this._showToast('Invalid circuit data');
+							srAnnounce('Load failed: invalid data');
+						}
+					}).catch(() => {
+						const text = prompt('Paste circuit data:');
+						if (text) {
+							try {
+								const data = CircuitGraph.fromJSON(text);
+								this._reset(true);
+								for (const nd of data.nodes) this.spawnNode(nd.kind, nd.gateType, nd.x, nd.y, nd.value, nd.label, nd.id);
+								for (const wd of data.wires) {
+									const w = {
+										id: wd.id || `w${_wid++}`,
+										srcNodeId: wd.srcNodeId,
+										srcPort: wd.srcPort,
+										dstNodeId: wd.dstNodeId,
+										dstPort: wd.dstPort,
+										value: false
+									};
+									const result = this.graph.addWire(w);
+									if (result) this.renderer.updateWireVisuals(w);
+								}
+								this.undoMgr.clear();
+								this._structuralChange = true;
+								this.scheduleEvaluation();
+								srAnnounce('Circuit loaded');
+							} catch (e) {
+								srAnnounce('Load failed');
+							}
+						}
+					});
+				}
+				_reset(skipDefault = false) {
+					this.cancelWiring();
+					this.isDragging = false;
+					this.isPanning = false;
+					this.selectedNodes.clear();
+					this.inspector.hide();
+					this.renderer.removeAllElements();
+					this.graph.clear();
+					this._usedInputLabels.clear();
+					this._usedOutputLabels.clear();
+					_nid = 0;
+					_wid = 0;
+					this.undoMgr.clear();
+					if (this.pendingEval) {
+						cancelAnimationFrame(this.pendingEval);
+						this.pendingEval = null;
+					}
+					srAnnounce('Circuit reset');
+					if (!skipDefault) this.buildDefaultCircuit();
+				}
+				buildDefaultCircuit() {
+					const bx = 400,
+						by = 150;
+					const inA = this.spawnNode('INPUT', null, bx, by, true);
+					const inB = this.spawnNode('INPUT', null, bx, by + 110, false);
+					const inC = this.spawnNode('INPUT', null, bx, by + 220, true);
+					const inD = this.spawnNode('INPUT', null, bx, by + 330, false);
+					const g0 = this.spawnNode('GATE', 'AND', bx + 200, by + 30);
+					const g1 = this.spawnNode('GATE', 'OR', bx + 200, by + 150);
+					const g2 = this.spawnNode('GATE', 'NAND', bx + 200, by + 270);
+					const g3 = this.spawnNode('GATE', 'OR', bx + 420, by + 80);
+					const g4 = this.spawnNode('GATE', 'XOR', bx + 420, by + 200);
+					const g5 = this.spawnNode('GATE', 'NOT', bx + 420, by + 320);
+					const outX = this.spawnNode('OUTPUT', null, bx + 620, by + 110);
+					const outY = this.spawnNode('OUTPUT', null, bx + 620, by + 280);
+					const conns = [
+						[inA.id, 'out', g0.id, 'in-a'],
+						[inB.id, 'out', g0.id, 'in-b'],
+						[inB.id, 'out', g1.id, 'in-a'],
+						[inC.id, 'out', g1.id, 'in-b'],
+						[inC.id, 'out', g2.id, 'in-a'],
+						[inD.id, 'out', g2.id, 'in-b'],
+						[g0.id, 'out', g3.id, 'in-a'],
+						[g1.id, 'out', g3.id, 'in-b'],
+						[g1.id, 'out', g4.id, 'in-a'],
+						[g2.id, 'out', g4.id, 'in-b'],
+						[g4.id, 'out', g5.id, 'in-a'],
+						[g3.id, 'out', outX.id, 'in'],
+						[g5.id, 'out', outY.id, 'in']
+					];
+					for (const [s, sp, d, dp] of conns) {
+						const w = {
+							id: `w${_wid++}`,
+							srcNodeId: s,
+							srcPort: sp,
+							dstNodeId: d,
+							dstPort: dp,
+							value: false
+						};
+						const result = this.graph.addWire(w);
+						if (result) this.renderer.updateWireVisuals(w);
+					}
+					this.undoMgr.clear();
+					this._structuralChange = true;
+					this.scheduleEvaluation();
+				}
+			}
+			new App();
+		})();
+	</script>
+</body>
+
+</html>
