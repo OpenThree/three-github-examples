@@ -826,7 +826,7 @@ export default [
                 githubUrl: 'https://github.com/icurtis1/raycast-vehicle',
                 image: HOST + 'images/raycast-vehicle.webp',
             },
-            {
+{
                 id: 'ThreejsGNM',
                 name: '头编辑器',
                 name_en: 'ThreejsGNM',
@@ -835,7 +835,7 @@ export default [
                 githubUrl: 'https://github.com/ademola-lou/ThreejsGNM',
                 image: HOST + 'images/ThreejsGNM.webp',
             },
-            {
+{
                 id: 'GNM-Studio',
                 name: '人头编辑器',
                 name_en: 'GNM-Studio',
@@ -844,7 +844,7 @@ export default [
                 githubUrl: 'https://github.com/Saganaki22/GNM-Studio',
                 image: HOST + 'images/GNM-Studio.webp',
             },
-            {
+{
                 id: 'img2threejs',
                 name: '图像转3D',
                 name_en: 'img2threejs',
@@ -852,6 +852,15 @@ export default [
                 openUrl: 'https://hoainho.github.io/img2threejs-showcase/',
                 githubUrl: 'https://github.com/hoainho/img2threejs',
                 image: HOST + 'images/img2threejs.webp',
+            },
+            {
+                id: 'paper-roll',
+                name: 'paper-roll',
+                name_en: 'paper-roll',
+                author: 'AUTO',
+                openUrl: 'https://paper-roll-nine.vercel.app/',
+                githubUrl: 'https://github.com/thebuggeddev/paper-roll',
+                image: HOST + 'images/paper-roll.webp',
             },
         ]
     }
