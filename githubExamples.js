@@ -862,6 +862,24 @@ export default [
                 githubUrl: 'https://github.com/thebuggeddev/paper-roll',
                 image: HOST + 'images/paper-roll.webp',
             },
+            {
+                id: 'utsuwa',
+                name: 'LLM 数字人',
+                name_en: 'utsuwa',
+                author: 'AUTO',
+                openUrl: 'https://www.utsuwa.ai/',
+                githubUrl: 'https://github.com/The-Lab-by-Ordinary-Company/utsuwa',
+                image: HOST + 'images/utsuwa.webp',
+            },
+            {
+                id: 'little-city',
+                name: 'little-city',
+                name_en: 'little-city',
+                author: 'AUTO',
+                openUrl: 'https://antics.gg/world/little-taipei',
+                githubUrl: 'https://github.com/craftmygame/little-city',
+                image: HOST + 'images/little-city.webp',
+            },
         ]
     }
 ]
