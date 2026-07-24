@@ -1,11 +1,11 @@
-const HOST = (window.origin + window.location.pathname).replace(/\/index.html$/, '/')
+const HOST = new URL('.', import.meta.url).href
 
 export default [
     {
         pid: 'RecentlySubmitted',
         name: '最近提交',
         name_en: 'Recently Submitted',
-        order: 0,
+        order: 1000,
         children: [
 {
                 id: 'LearningCell',
