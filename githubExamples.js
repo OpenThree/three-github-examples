@@ -898,6 +898,15 @@ export default [
                 githubUrl: 'https://github.com/ZyFou/ProceduralTerrains',
                 image: HOST + 'images/ProceduralTerrains.webp',
             },
+            {
+                id: 'three-low-poly',
+                name: 'three-low-poly',
+                name_en: 'three-low-poly',
+                author: 'AUTO',
+                openUrl: 'https://jasonsturges.com/three-low-poly/',
+                githubUrl: 'https://github.com/jasonsturges/three-low-poly',
+                image: HOST + 'images/three-low-poly.webp',
+            },
         ]
     }
 ]
