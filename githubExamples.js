@@ -889,6 +889,15 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/WaterThreeJS',
                 image: HOST + 'images/waterProThree.webp',
             },
+            {
+                id: 'ProceduralTerrains',
+                name: '地形生成',
+                name_en: 'ProceduralTerrains',
+                author: 'AUTO',
+                openUrl: 'https://terrains.zyfod.dev/',
+                githubUrl: 'https://github.com/ZyFou/ProceduralTerrains',
+                image: HOST + 'images/ProceduralTerrains.webp',
+            },
         ]
     }
 ]
