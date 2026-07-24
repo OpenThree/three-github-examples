@@ -880,6 +880,15 @@ export default [
                 githubUrl: 'https://github.com/craftmygame/little-city',
                 image: HOST + 'images/little-city.webp',
             },
+            {
+                id: 'waterProThree',
+                name: 'waterProThree',
+                name_en: 'waterProThree',
+                author: 'AUTO',
+                openUrl: 'https://g2657.github.io/examples-server/waterPro/',
+                githubUrl: 'https://github.com/achrefelouafi/WaterThreeJS',
+                image: HOST + 'images/waterProThree.webp',
+            },
         ]
     }
 ]
