@@ -916,6 +916,15 @@ export default [
                 githubUrl: 'https://github.com/StarKnightt/operation-ironhold',
                 image: HOST + 'images/operation-ironhold.webp',
             },
+            {
+                id: 'Repolis',
+                name: 'github 仓库 3D',
+                name_en: 'Repolis',
+                author: 'AUTO',
+                openUrl: 'https://hyeonsangjeon.github.io/Repolis/',
+                githubUrl: 'https://github.com/hyeonsangjeon/Repolis',
+                image: HOST + 'images/Repolis.webp',
+            },
         ]
     }
 ]
