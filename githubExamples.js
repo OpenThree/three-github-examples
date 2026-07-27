@@ -817,7 +817,7 @@ export default [
                 githubUrl: 'https://github.com/KallkaGo/My_website',
                 image: HOST + 'images/KallkaGoMy_website.webp',
             },
-            {
+{
                 id: 'raycast-vehicle',
                 name: 'raycast-vehicle',
                 name_en: 'raycast-vehicle',
@@ -853,7 +853,7 @@ export default [
                 githubUrl: 'https://github.com/hoainho/img2threejs',
                 image: HOST + 'images/img2threejs.webp',
             },
-            {
+{
                 id: 'paper-roll',
                 name: 'paper-roll',
                 name_en: 'paper-roll',
@@ -862,7 +862,7 @@ export default [
                 githubUrl: 'https://github.com/thebuggeddev/paper-roll',
                 image: HOST + 'images/paper-roll.webp',
             },
-            {
+{
                 id: 'utsuwa',
                 name: 'LLM 数字人',
                 name_en: 'utsuwa',
@@ -871,7 +871,7 @@ export default [
                 githubUrl: 'https://github.com/The-Lab-by-Ordinary-Company/utsuwa',
                 image: HOST + 'images/utsuwa.webp',
             },
-            {
+{
                 id: 'little-city',
                 name: 'little-city',
                 name_en: 'little-city',
@@ -880,7 +880,7 @@ export default [
                 githubUrl: 'https://github.com/craftmygame/little-city',
                 image: HOST + 'images/little-city.webp',
             },
-            {
+{
                 id: 'waterProThree',
                 name: 'waterProThree',
                 name_en: 'waterProThree',
@@ -889,7 +889,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/WaterThreeJS',
                 image: HOST + 'images/waterProThree.webp',
             },
-            {
+{
                 id: 'ProceduralTerrains',
                 name: '地形生成',
                 name_en: 'ProceduralTerrains',
@@ -898,7 +898,7 @@ export default [
                 githubUrl: 'https://github.com/ZyFou/ProceduralTerrains',
                 image: HOST + 'images/ProceduralTerrains.webp',
             },
-            {
+{
                 id: 'three-low-poly',
                 name: 'three-low-poly',
                 name_en: 'three-low-poly',
@@ -906,6 +906,15 @@ export default [
                 openUrl: 'https://jasonsturges.com/three-low-poly/',
                 githubUrl: 'https://github.com/jasonsturges/three-low-poly',
                 image: HOST + 'images/three-low-poly.webp',
+            },
+            {
+                id: 'operation-ironhold',
+                name: 'operation-ironhold',
+                name_en: 'operation-ironhold',
+                author: 'AUTO',
+                openUrl: 'https://starknightt.github.io/operation-ironhold/',
+                githubUrl: 'https://github.com/StarKnightt/operation-ironhold',
+                image: HOST + 'images/operation-ironhold.webp',
             },
         ]
     }
