@@ -925,6 +925,15 @@ export default [
                 githubUrl: 'https://github.com/hyeonsangjeon/Repolis',
                 image: HOST + 'images/Repolis.webp',
             },
+            {
+                id: 'TheLongSilence',
+                name: 'TheLongSilence',
+                name_en: 'TheLongSilence',
+                author: 'AUTO',
+                openUrl: 'https://www.3dgenstudio.com/',
+                githubUrl: 'https://github.com/achimala/TheLongSilence',
+                image: HOST + 'images/TheLongSilence.webp',
+            },
         ]
     }
 ]
