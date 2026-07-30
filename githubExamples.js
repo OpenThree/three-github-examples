@@ -952,6 +952,33 @@ export default [
                 githubUrl: 'https://github.com/nikonikoCW/Meteor3DEditor',
                 image: HOST + 'images/meteor3D.webp',
             },
+            {
+                id: 'GrassSystemThreeJS',
+                name: 'GrassSystemThreeJS',
+                name_en: 'GrassSystemThreeJS',
+                author: 'AUTO',
+                openUrl: 'https://github.com/achrefelouafi/GrassSystemThreeJS',
+                githubUrl: 'https://github.com/achrefelouafi/GrassSystemThreeJS',
+                image: HOST + 'images/GrassSystemThreeJS.webp',
+            },
+            {
+                id: 'SnowSystemThreeJS',
+                name: 'SnowSystemThreeJS',
+                name_en: 'SnowSystemThreeJS',
+                author: 'AUTO',
+                openUrl: 'https://github.com/achrefelouafi/SnowSystemThreeJS',
+                githubUrl: 'https://github.com/achrefelouafi/SnowSystemThreeJS',
+                image: HOST + 'images/SnowSystemThreeJS.webp',
+            },
+            {
+                id: 'BuildingGeneratorThreeJS',
+                name: 'BuildingGeneratorThreeJS',
+                name_en: 'BuildingGeneratorThreeJS',
+                author: 'AUTO',
+                openUrl: 'https://github.com/achrefelouafi/BuildingGeneratorThreeJS',
+                githubUrl: 'https://github.com/achrefelouafi/BuildingGeneratorThreeJS',
+                image: HOST + 'images/BuildingGeneratorThreeJS.webp',
+            },
         ]
     }
 ]
