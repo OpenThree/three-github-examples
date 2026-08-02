@@ -916,7 +916,7 @@ export default [
                 githubUrl: 'https://github.com/StarKnightt/operation-ironhold',
                 image: HOST + 'images/operation-ironhold.webp',
             },
-            {
+{
                 id: 'Repolis',
                 name: 'github 仓库 3D',
                 name_en: 'Repolis',
@@ -925,7 +925,7 @@ export default [
                 githubUrl: 'https://github.com/hyeonsangjeon/Repolis',
                 image: HOST + 'images/Repolis.webp',
             },
-            {
+{
                 id: 'TheLongSilence',
                 name: 'TheLongSilence',
                 name_en: 'TheLongSilence',
@@ -934,7 +934,7 @@ export default [
                 githubUrl: 'https://github.com/achimala/TheLongSilence',
                 image: HOST + 'images/TheLongSilence.webp',
             },
-            {
+{
                 id: 'vinyl',
                 name: 'vinyl',
                 name_en: 'vinyl',
@@ -961,7 +961,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/GrassSystemThreeJS',
                 image: HOST + 'images/GrassSystemThreeJS.webp',
             },
-            {
+{
                 id: 'SnowSystemThreeJS',
                 name: 'SnowSystemThreeJS',
                 name_en: 'SnowSystemThreeJS',
@@ -970,7 +970,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/SnowSystemThreeJS',
                 image: HOST + 'images/SnowSystemThreeJS.webp',
             },
-            {
+{
                 id: 'BuildingGeneratorThreeJS',
                 name: 'BuildingGeneratorThreeJS',
                 name_en: 'BuildingGeneratorThreeJS',
@@ -978,6 +978,24 @@ export default [
                 openUrl: 'https://github.com/achrefelouafi/BuildingGeneratorThreeJS',
                 githubUrl: 'https://github.com/achrefelouafi/BuildingGeneratorThreeJS',
                 image: HOST + 'images/BuildingGeneratorThreeJS.webp',
+            },
+            {
+                id: 'three-stylized',
+                name: 'three-stylized',
+                name_en: 'three-stylized',
+                author: 'AUTO',
+                openUrl: 'https://steve245270533.github.io/three-stylized/',
+                githubUrl: 'https://github.com/Steve245270533/three-stylized',
+                image: HOST + 'images/three-stylized.webp',
+            },
+            {
+                id: 'jifangDaPing',
+                name: '机房大屏',
+                name_en: 'jifangDaPing',
+                author: 'AUTO',
+                openUrl: 'https://stevenfeng.cn/threejs-demo/',
+                githubUrl: 'https://github.com/fh332393900/threejs-demo',
+                image: HOST + 'images/jifangDaPing.webp',
             },
         ]
     }
