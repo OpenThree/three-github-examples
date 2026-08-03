@@ -952,7 +952,7 @@ export default [
                 githubUrl: 'https://github.com/nikonikoCW/Meteor3DEditor',
                 image: HOST + 'images/meteor3D.webp',
             },
-            {
+{
                 id: 'GrassSystemThreeJS',
                 name: 'GrassSystemThreeJS',
                 name_en: 'GrassSystemThreeJS',
@@ -979,7 +979,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/BuildingGeneratorThreeJS',
                 image: HOST + 'images/BuildingGeneratorThreeJS.webp',
             },
-            {
+{
                 id: 'three-stylized',
                 name: 'three-stylized',
                 name_en: 'three-stylized',
@@ -988,7 +988,7 @@ export default [
                 githubUrl: 'https://github.com/Steve245270533/three-stylized',
                 image: HOST + 'images/three-stylized.webp',
             },
-            {
+{
                 id: 'jifangDaPing',
                 name: '机房大屏',
                 name_en: 'jifangDaPing',
@@ -996,6 +996,15 @@ export default [
                 openUrl: 'https://stevenfeng.cn/threejs-demo/',
                 githubUrl: 'https://github.com/fh332393900/threejs-demo',
                 image: HOST + 'images/jifangDaPing.webp',
+            },
+            {
+                id: 'threejs-sculpt-dna',
+                name: 'threejs-sculpt-dna',
+                name_en: 'threejs-sculpt-dna',
+                author: 'AUTO',
+                openUrl: 'https://hyeonsangjeon.github.io/threejs-sculpt-dna/',
+                githubUrl: 'https://github.com/hyeonsangjeon/threejs-sculpt-dna',
+                image: HOST + 'images/threejs-sculpt-dna.webp',
             },
         ]
     }
