@@ -1006,6 +1006,15 @@ export default [
                 githubUrl: 'https://github.com/hyeonsangjeon/threejs-sculpt-dna',
                 image: HOST + 'images/threejs-sculpt-dna.webp',
             },
+            {
+                id: 'anatomy-atelier',
+                name: 'anatomy-atelier',
+                name_en: 'anatomy-atelier',
+                author: 'AUTO',
+                openUrl: 'https://anatomy-livid.vercel.app/',
+                githubUrl: 'https://github.com/cwsyym4/anatomy-atelier-clone',
+                image: HOST + 'images/anatomy-atelier.webp',
+            },
         ]
     }
 ]
