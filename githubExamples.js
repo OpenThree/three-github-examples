@@ -1012,7 +1012,7 @@ export default [
                 name_en: 'anatomy-atelier',
                 author: 'AUTO',
                 openUrl: 'https://anatomy-livid.vercel.app/',
-                githubUrl: 'https://github.com/cwsyym4/anatomy-atelier-clone',
+                githubUrl: 'https://github.com/thebuggeddev/anatomy',
                 image: HOST + 'images/anatomy-atelier.webp',
             },
         ]
