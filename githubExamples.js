@@ -1015,6 +1015,15 @@ export default [
                 githubUrl: 'https://github.com/thebuggeddev/anatomy',
                 image: HOST + 'images/anatomy-atelier.webp',
             },
+            {
+                id: 'complete-shelf',
+                name: 'complete-shelf',
+                name_en: 'complete-shelf',
+                author: 'AUTO',
+                openUrl: 'https://mengto.github.io/complete-shelf/',
+                githubUrl: 'https://github.com/MengTo/complete-shelf',
+                image: HOST + 'images/complete-shelf.webp',
+            },
         ]
     }
 ]
