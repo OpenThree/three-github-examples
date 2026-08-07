@@ -997,7 +997,7 @@ export default [
                 githubUrl: 'https://github.com/fh332393900/threejs-demo',
                 image: HOST + 'images/jifangDaPing.webp',
             },
-            {
+{
                 id: 'threejs-sculpt-dna',
                 name: 'threejs-sculpt-dna',
                 name_en: 'threejs-sculpt-dna',
@@ -1015,7 +1015,7 @@ export default [
                 githubUrl: 'https://github.com/thebuggeddev/anatomy',
                 image: HOST + 'images/anatomy-atelier.webp',
             },
-            {
+{
                 id: 'complete-shelf',
                 name: 'complete-shelf',
                 name_en: 'complete-shelf',
@@ -1023,6 +1023,24 @@ export default [
                 openUrl: 'https://mengto.github.io/complete-shelf/',
                 githubUrl: 'https://github.com/MengTo/complete-shelf',
                 image: HOST + 'images/complete-shelf.webp',
+            },
+            {
+                id: 'jungle-trail',
+                name: 'jungle-trail',
+                name_en: 'jungle-trail',
+                author: 'AUTO',
+                openUrl: 'https://starknightt.github.io/jungle-trail/',
+                githubUrl: 'https://github.com/StarKnightt/jungle-trail',
+                image: HOST + 'images/jungle-trail.webp',
+            },
+            {
+                id: 'pallet-town-3d',
+                name: 'pallet-town-3d',
+                name_en: 'pallet-town-3d',
+                author: 'AUTO',
+                openUrl: 'https://pallet-town-3d-one.vercel.app/',
+                githubUrl: 'https://github.com/PauliusOS/pallet-town-3d',
+                image: HOST + 'images/pallet-town-3d.webp',
             },
         ]
     }
