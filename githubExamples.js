@@ -1213,6 +1213,15 @@ export default [
                 githubUrl: 'https://github.com/doggy8088/chinese-chess',
                 image: HOST + 'images/chinese-chess.webp',
             },
+            {
+                id: 'grassMisterPrada',
+                name: 'grassMisterPrada',
+                name_en: 'grassMisterPrada',
+                author: 'AUTO',
+                openUrl: 'https://grass.misterprada.com/',
+                githubUrl: 'https://github.com/MisterPrada/grass',
+                image: HOST + 'images/grassMisterPrada.jpg',
+            },
         ]
     }
 ]
