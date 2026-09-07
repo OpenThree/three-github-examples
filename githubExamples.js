@@ -1249,6 +1249,15 @@ export default [
                 githubUrl: 'https://github.com/ashemag/model-x-studio',
                 image: HOST + 'images/model-x-studio.webp',
             },
+            {
+                id: 'Ai-three-ui',
+                name: '复制提示词生成3D',
+                name_en: 'Ai-three-ui',
+                author: 'AUTO',
+                openUrl: 'https://threeui.com/browse',
+                githubUrl: 'https://github.com/MengTo/threeui',
+                image: HOST + 'images/Ai-three-ui.webp',
+            },
         ]
     }
 ]
