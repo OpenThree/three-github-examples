@@ -421,7 +421,7 @@ export default [
                 githubUrl: 'https://github.com/pixijs/pixijs',
                 image: HOST + 'images/pixijs.webp',
             },
-            {
+{
                 id: 'fable5world',
                 name: 'fable5world',
                 name_en: 'fable5world',
@@ -1168,7 +1168,7 @@ export default [
                 githubUrl: 'https://github.com/qzz0518/locker-folio',
                 image: HOST + 'images/locker-folio.webp',
             },
-            {
+{
                 id: 'gogh-strike',
                 name: 'gogh-strike',
                 name_en: 'gogh-strike',
@@ -1177,7 +1177,7 @@ export default [
                 githubUrl: 'https://github.com/petergpt/gogh-strike',
                 image: HOST + 'images/gogh-strike.webp',
             },
-            {
+{
                 id: 'blacksite_fps',
                 name: 'blacksite_fps',
                 name_en: 'blacksite_fps',
@@ -1195,7 +1195,7 @@ export default [
                 githubUrl: 'https://github.com/alesha-pro/bench-portal/tree/main/games/voidrunner-astra',
                 image: HOST + 'images/voidrunner-astra.webp',
             },
-            {
+{
                 id: 'bench-portal',
                 name: 'ai 浏览器游戏',
                 name_en: 'bench-portal',
@@ -1213,7 +1213,7 @@ export default [
                 githubUrl: 'https://github.com/doggy8088/chinese-chess',
                 image: HOST + 'images/chinese-chess.webp',
             },
-            {
+{
                 id: 'grassMisterPrada',
                 name: 'grassMisterPrada',
                 name_en: 'grassMisterPrada',
@@ -1221,6 +1221,33 @@ export default [
                 openUrl: 'https://grass.misterprada.com/',
                 githubUrl: 'https://github.com/MisterPrada/grass',
                 image: HOST + 'images/grassMisterPrada.jpg',
+            },
+            {
+                id: 'beautiful-water',
+                name: 'beautiful-water',
+                name_en: 'beautiful-water',
+                author: 'AUTO',
+                openUrl: 'https://victorzakharov.github.io/beautiful-water/',
+                githubUrl: 'https://github.com/VictorZakharov/beautiful-water',
+                image: HOST + 'images/beautiful-water.webp',
+            },
+            {
+                id: 'human-atlas',
+                name: 'human-atlas',
+                name_en: 'human-atlas',
+                author: 'AUTO',
+                openUrl: 'https://human-atlas-seven.vercel.app/',
+                githubUrl: 'https://github.com/ashemag/human-atlas',
+                image: HOST + 'images/human-atlas.webp',
+            },
+            {
+                id: 'model-x-studio',
+                name: 'model-x-studio',
+                name_en: 'model-x-studio',
+                author: 'AUTO',
+                openUrl: 'https://model-x-studio.vercel.app/',
+                githubUrl: 'https://github.com/ashemag/model-x-studio',
+                image: HOST + 'images/model-x-studio.webp',
             },
         ]
     }
