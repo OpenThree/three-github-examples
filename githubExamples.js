@@ -1321,6 +1321,33 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/LinearAbiltyCastingExtendedThreeJS',
                 image: HOST + 'images/LinearAbiltyCastingExtendedThreeJS.webp',
             },
+            {
+                id: 'tihuqiche',
+                name: 'tihuqiche',
+                name_en: 'tihuqiche',
+                author: 'AUTO',
+                openUrl: 'https://tihuqiche.com/',
+                githubUrl: 'https://github.com/Licoy/tihuqiche',
+                image: HOST + 'images/tihuqiche.webp',
+            },
+            {
+                id: 'gxu-campus-3d',
+                name: 'gxu-campus-3d',
+                name_en: 'gxu-campus-3d',
+                author: 'AUTO',
+                openUrl: 'https://wcqqq1214.github.io/gxu-campus-3d/',
+                githubUrl: 'https://github.com/wcqqq1214/gxu-campus-3d',
+                image: HOST + 'images/gxu-campus-3d.webp',
+            },
+            {
+                id: 'qingmingshanghetu',
+                name: 'qingmingshanghetu',
+                name_en: 'qingmingshanghetu',
+                author: 'AUTO',
+                openUrl: 'https://rising1234sun.github.io/qingmingshanghetu/',
+                githubUrl: 'https://github.com/Rising1234Sun/qingmingshanghetu',
+                image: HOST + 'images/qingmingshanghetu.webp',
+            },
         ]
     }
 ]
