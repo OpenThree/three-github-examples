@@ -1069,7 +1069,7 @@ export default [
                 githubUrl: 'https://github.com/winchxyz/moon-rover',
                 image: HOST + 'images/moon-rover.webp',
             },
-            {
+{
                 id: 'prehistoric-animal-museum',
                 name: 'prehistoric-animal-museum',
                 name_en: 'prehistoric-animal-museum',
@@ -1078,7 +1078,7 @@ export default [
                 githubUrl: 'https://github.com/s010s/prehistoric-animal-museum',
                 image: HOST + 'images/prehistoric-animal-museum.jpg',
             },
-            {
+{
                 id: 'SamuraiThirdPersonTemplateThreeJS',
                 name: 'SamuraiThirdPersonTemplateThreeJS',
                 name_en: 'SamuraiThirdPersonTemplateThreeJS',
@@ -1159,7 +1159,7 @@ export default [
                 githubUrl: 'https://github.com/Kevin-Liu-01/Claude-of-Tanks',
                 image: HOST + 'images/Claude-of-Tanks.webp',
             },
-            {
+{
                 id: 'locker-folio',
                 name: 'locker-folio',
                 name_en: 'locker-folio',
@@ -1186,7 +1186,7 @@ export default [
                 githubUrl: 'https://github.com/Hiraeth010/blacksite',
                 image: HOST + 'images/blacksite_fps.webp',
             },
-            {
+{
                 id: 'voidrunner-astra',
                 name: 'voidrunner-astra',
                 name_en: 'voidrunner-astra',
@@ -1204,7 +1204,7 @@ export default [
                 githubUrl: 'https://github.com/alesha-pro/bench-portal',
                 image: HOST + 'images/bench-portal.webp',
             },
-            {
+{
                 id: 'chinese-chess',
                 name: 'chinese-chess',
                 name_en: 'chinese-chess',
@@ -1222,7 +1222,7 @@ export default [
                 githubUrl: 'https://github.com/MisterPrada/grass',
                 image: HOST + 'images/grassMisterPrada.jpg',
             },
-            {
+{
                 id: 'beautiful-water',
                 name: 'beautiful-water',
                 name_en: 'beautiful-water',
@@ -1231,7 +1231,7 @@ export default [
                 githubUrl: 'https://github.com/VictorZakharov/beautiful-water',
                 image: HOST + 'images/beautiful-water.webp',
             },
-            {
+{
                 id: 'human-atlas',
                 name: 'human-atlas',
                 name_en: 'human-atlas',
@@ -1249,7 +1249,7 @@ export default [
                 githubUrl: 'https://github.com/ashemag/model-x-studio',
                 image: HOST + 'images/model-x-studio.webp',
             },
-            {
+{
                 id: 'Ai-three-ui',
                 name: '复制提示词生成3D',
                 name_en: 'Ai-three-ui',
@@ -1258,7 +1258,7 @@ export default [
                 githubUrl: 'https://github.com/MengTo/threeui',
                 image: HOST + 'images/Ai-three-ui.webp',
             },
-            {
+{
                 id: 'awesome-gpt-6-dav',
                 name: 'awesome-gpt-6-dav',
                 name_en: 'awesome-gpt-6-dav',
@@ -1267,7 +1267,7 @@ export default [
                 githubUrl: 'https://github.com/archorfight/awesome-gpt-6-astra#viral-demos',
                 image: HOST + 'images/awesome-gpt-6-dav.webp',
             },
-            {
+{
                 id: 'gpt6-Astra',
                 name: 'gpt6-Astra',
                 name_en: 'gpt6-Astra',
@@ -1276,7 +1276,7 @@ export default [
                 githubUrl: 'https://github.com/XinyuWang250428/gpt6-Astra_3.js',
                 image: HOST + 'images/gpt6-Astra.webp',
             },
-            {
+{
                 id: 'mosswing-quiet-flight',
                 name: 'mosswing-quiet-flight',
                 name_en: 'mosswing-quiet-flight',
@@ -1285,7 +1285,7 @@ export default [
                 githubUrl: 'https://github.com/Ayi1337/gpt6-astra-one-shot-games',
                 image: HOST + 'images/mosswing-quiet-flight.webp',
             },
-            {
+{
                 id: 'melon-game',
                 name: 'melon-game.jack',
                 name_en: 'melon-game',
@@ -1294,7 +1294,7 @@ export default [
                 githubUrl: 'https://github.com/Ayi1337/gpt6-astra-one-shot-games',
                 image: HOST + 'images/melon-game.jack.webp',
             },
-            {
+{
                 id: 'Othello',
                 name: 'Othello',
                 name_en: 'Othello',
@@ -1303,7 +1303,7 @@ export default [
                 githubUrl: 'https://github.com/deifos/Othello',
                 image: HOST + 'images/Othello.webp',
             },
-            {
+{
                 id: 'hit-and-run-web',
                 name: 'hit-and-run-web',
                 name_en: 'hit-and-run-web',
@@ -1321,7 +1321,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/LinearAbiltyCastingExtendedThreeJS',
                 image: HOST + 'images/LinearAbiltyCastingExtendedThreeJS.webp',
             },
-            {
+{
                 id: 'tihuqiche',
                 name: 'tihuqiche',
                 name_en: 'tihuqiche',
@@ -1330,7 +1330,7 @@ export default [
                 githubUrl: 'https://github.com/Licoy/tihuqiche',
                 image: HOST + 'images/tihuqiche.webp',
             },
-            {
+{
                 id: 'gxu-campus-3d',
                 name: 'gxu-campus-3d',
                 name_en: 'gxu-campus-3d',
@@ -1357,7 +1357,7 @@ export default [
                 githubUrl: 'https://github.com/mike007jd/qingming',
                 image: HOST + 'images/qingmingsa.webp',
             },
-            {
+{
                 id: 'iphone-duo',
                 name: 'iphone-duo',
                 name_en: 'iphone-duo',
@@ -1366,7 +1366,7 @@ export default [
                 githubUrl: 'https://github.com/chuspeeism/iphone-duo',
                 image: HOST + 'images/iphone-duo.webp',
             },
-            {
+{
                 id: 'steel-defense',
                 name: 'steel-defense',
                 name_en: 'steel-defense',
@@ -1375,7 +1375,7 @@ export default [
                 githubUrl: 'https://github.com/kingkk469/steel-defense',
                 image: HOST + 'images/steel-defense.webp',
             },
-            {
+{
                 id: 'city-roads',
                 name: 'city-roads',
                 name_en: 'city-roads',
@@ -1384,7 +1384,7 @@ export default [
                 githubUrl: 'https://github.com/anvaka/city-roads',
                 image: HOST + 'images/city-roads.webp',
             },
-            {
+{
                 id: 'gods-eye-view',
                 name: 'gods-eye-view',
                 name_en: 'gods-eye-view',
@@ -1392,6 +1392,51 @@ export default [
                 openUrl: 'https://maptheworld.ai/',
                 githubUrl: 'https://github.com/bilawalsidhu/gods-eye-view',
                 image: HOST + 'images/gods-eye-view.webp',
+            },
+            {
+                id: 'zork-underground-empire',
+                name: 'zork-underground-empire',
+                name_en: 'zork-underground-empire',
+                author: 'AUTO',
+                openUrl: 'https://zork-underground-empire.netlify.app/',
+                githubUrl: 'https://github.com/emollick/zork-underground-empire',
+                image: HOST + 'images/zork-underground-empire.webp',
+            },
+            {
+                id: 'mixamo-llm-mocap',
+                name: 'mixamo-llm-mocap',
+                name_en: 'mixamo-llm-mocap',
+                author: 'AUTO',
+                openUrl: 'https://github.com/squall01337/mixamo-llm-mocap',
+                githubUrl: 'https://github.com/squall01337/mixamo-llm-mocap',
+                image: HOST + 'images/mixamo-llm-mocap.webp',
+            },
+            {
+                id: 'paper-aquarium',
+                name: 'paper-aquarium',
+                name_en: 'paper-aquarium',
+                author: 'AUTO',
+                openUrl: 'https://aquarium.mrmot9i.com/',
+                githubUrl: 'https://github.com/MrMoT9I/paper-aquarium',
+                image: HOST + 'images/paper-aquarium.webp',
+            },
+            {
+                id: 'seed-westlake',
+                name: 'seed-westlake',
+                name_en: 'seed-westlake',
+                author: 'AUTO',
+                openUrl: 'https://ruanyf.github.io/seed-westlake/',
+                githubUrl: 'https://github.com/ruanyf/seed-westlake',
+                image: HOST + 'images/seed-westlake.webp',
+            },
+            {
+                id: 'insect-world',
+                name: 'insect-world',
+                name_en: 'insect-world',
+                author: 'AUTO',
+                openUrl: 'https://insect-world.pages.dev/s/monarch-butterfly/',
+                githubUrl: 'https://github.com/xr843/insect-world',
+                image: HOST + 'images/insect-world.webp',
             },
         ]
     }
