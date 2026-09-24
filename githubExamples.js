@@ -1438,6 +1438,42 @@ export default [
                 githubUrl: 'https://github.com/xr843/insect-world',
                 image: HOST + 'images/insect-world.webp',
             },
+            {
+                id: 'campus-twin',
+                name: 'campus-twin',
+                name_en: 'campus-twin',
+                author: 'AUTO',
+                openUrl: 'https://g2657.github.io/campus-twin/',
+                githubUrl: 'https://github.com/5758703/campus-twin',
+                image: HOST + 'images/campus-twin.webp',
+            },
+            {
+                id: 'pelican-bike',
+                name: 'pelican-bike',
+                name_en: 'pelican-bike',
+                author: 'AUTO',
+                openUrl: 'https://claude-opus-5-5.riba2534.cn/',
+                githubUrl: 'https://github.com/riba2534/claude-opus-5-5-demo',
+                image: HOST + 'images/pelican-bike.webp',
+            },
+            {
+                id: 'tidewater',
+                name: 'tidewater',
+                name_en: 'tidewater',
+                author: 'AUTO',
+                openUrl: 'https://dgreenheck.github.io/tidewater/',
+                githubUrl: 'https://github.com/dgreenheck/tidewater',
+                image: HOST + 'images/tidewater.webp',
+            },
+            {
+                id: 'grand-atelier',
+                name: 'grand-atelier',
+                name_en: 'grand-atelier',
+                author: 'AUTO',
+                openUrl: 'https://piano.anionex.me/',
+                githubUrl: 'https://github.com/Anionex/grand-atelier',
+                image: HOST + 'images/grand-atelier.webp',
+            },
         ]
     }
 ]
