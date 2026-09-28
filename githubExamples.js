@@ -907,7 +907,7 @@ export default [
                 githubUrl: 'https://github.com/jasonsturges/three-low-poly',
                 image: HOST + 'images/three-low-poly.webp',
             },
-            {
+{
                 id: 'operation-ironhold',
                 name: 'operation-ironhold',
                 name_en: 'operation-ironhold',
@@ -1096,7 +1096,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/AvatarCastingAbilitiesThreeJS',
                 image: HOST + 'images/AvatarCastingAbilitiesThreeJS.webp',
             },
-            {
+{
                 id: 'LinearAbiltyCastingThreeJS',
                 name: 'LinearAbiltyCastingThreeJS',
                 name_en: 'LinearAbiltyCastingThreeJS',
@@ -1150,7 +1150,7 @@ export default [
                 githubUrl: 'https://github.com/MengTo/threeui',
                 image: HOST + 'images/threeui.webp',
             },
-            {
+{
                 id: 'Claude-of-Tanks',
                 name: 'Claude-of-Tanks',
                 name_en: 'Claude-of-Tanks',
@@ -1312,7 +1312,7 @@ export default [
                 githubUrl: 'https://github.com/Vheissu/hit-and-run-web',
                 image: HOST + 'images/hit-and-run-web.webp',
             },
-            {
+{
                 id: 'LinearAbiltyCastingExtendedThreeJS',
                 name: 'LinearAbiltyCastingExtendedThreeJS',
                 name_en: 'LinearAbiltyCastingExtendedThreeJS',
@@ -1339,7 +1339,7 @@ export default [
                 githubUrl: 'https://github.com/wcqqq1214/gxu-campus-3d',
                 image: HOST + 'images/gxu-campus-3d.webp',
             },
-            {
+{
                 id: 'qingmingshanghetu',
                 name: 'qingmingshanghetu',
                 name_en: 'qingmingshanghetu',
@@ -1402,7 +1402,7 @@ export default [
                 githubUrl: 'https://github.com/emollick/zork-underground-empire',
                 image: HOST + 'images/zork-underground-empire.webp',
             },
-            {
+{
                 id: 'mixamo-llm-mocap',
                 name: 'mixamo-llm-mocap',
                 name_en: 'mixamo-llm-mocap',
@@ -1473,6 +1473,60 @@ export default [
                 openUrl: 'https://piano.anionex.me/',
                 githubUrl: 'https://github.com/Anionex/grand-atelier',
                 image: HOST + 'images/grand-atelier.webp',
+            },
+            {
+                id: 'sylva',
+                name: 'sylva',
+                name_en: 'sylva',
+                author: 'AUTO',
+                openUrl: 'https://mengto.github.io/sylva/',
+                githubUrl: 'https://github.com/MengTo/sylva',
+                image: HOST + 'images/sylva.webp',
+            },
+            {
+                id: 'voxel-musou',
+                name: 'voxel-musou',
+                name_en: 'voxel-musou',
+                author: 'AUTO',
+                openUrl: 'https://voxel-musou.vercel.app/',
+                githubUrl: 'https://github.com/mike007jd/voxel-musou',
+                image: HOST + 'images/voxel-musou.webp',
+            },
+            {
+                id: 'Transformers',
+                name: 'Transformers',
+                name_en: 'Transformers',
+                author: 'AUTO',
+                openUrl: 'https://transformer.scottsun.io/',
+                githubUrl: 'https://github.com/scottstts/Transformers',
+                image: HOST + 'images/Transformers.webp',
+            },
+            {
+                id: 'inkwaveThree',
+                name: 'inkwaveThree',
+                name_en: 'inkwaveThree',
+                author: 'AUTO',
+                openUrl: 'https://inkwave-aah.pages.dev/',
+                githubUrl: 'https://github.com/jaydendavisnc/inkwave',
+                image: HOST + 'images/inkwaveThree.webp',
+            },
+            {
+                id: 'MengTokage',
+                name: 'MengTokage',
+                name_en: 'MengTokage',
+                author: 'AUTO',
+                openUrl: 'https://mengto.github.io/kage/',
+                githubUrl: 'https://github.com/MengTo/kage',
+                image: HOST + 'images/MengTokage.webp',
+            },
+            {
+                id: 'endless-train',
+                name: 'endless-train',
+                name_en: 'endless-train',
+                author: 'AUTO',
+                openUrl: 'https://endless-train.wasmer.app/',
+                githubUrl: 'https://github.com/thebuggeddev/endless-train',
+                image: HOST + 'images/endless-train.jpg',
             },
         ]
     }
