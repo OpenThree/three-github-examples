@@ -1240,7 +1240,7 @@ export default [
                 githubUrl: 'https://github.com/ashemag/human-atlas',
                 image: HOST + 'images/human-atlas.webp',
             },
-            {
+{
                 id: 'model-x-studio',
                 name: 'model-x-studio',
                 name_en: 'model-x-studio',
@@ -1474,7 +1474,7 @@ export default [
                 githubUrl: 'https://github.com/Anionex/grand-atelier',
                 image: HOST + 'images/grand-atelier.webp',
             },
-            {
+{
                 id: 'sylva',
                 name: 'sylva',
                 name_en: 'sylva',
@@ -1519,7 +1519,7 @@ export default [
                 githubUrl: 'https://github.com/MengTo/kage',
                 image: HOST + 'images/MengTokage.webp',
             },
-            {
+{
                 id: 'endless-train',
                 name: 'endless-train',
                 name_en: 'endless-train',
@@ -1527,6 +1527,33 @@ export default [
                 openUrl: 'https://endless-train.wasmer.app/',
                 githubUrl: 'https://github.com/thebuggeddev/endless-train',
                 image: HOST + 'images/endless-train.jpg',
+            },
+            {
+                id: 'little-flock',
+                name: 'little-flock',
+                name_en: 'little-flock',
+                author: 'AUTO',
+                openUrl: 'https://sharpherd.song.work/',
+                githubUrl: 'https://github.com/songkeys/little-flock',
+                image: HOST + 'images/little-flock.webp',
+            },
+            {
+                id: 'pc-anatomy',
+                name: 'pc-anatomy',
+                name_en: 'pc-anatomy',
+                author: 'AUTO',
+                openUrl: 'https://pc-anatomy.com/',
+                githubUrl: 'https://github.com/Yoosseph/pc-anatomy',
+                image: HOST + 'images/pc-anatomy.webp',
+            },
+            {
+                id: 'AbilityCastingThreeJS',
+                name: 'AbilityCastingThreeJS',
+                name_en: 'AbilityCastingThreeJS',
+                author: 'AUTO',
+                openUrl: 'https://abilitycastingthreejs.chirostudio.xyz/',
+                githubUrl: 'https://github.com/achrefelouafi/AbilityCastingThreeJS',
+                image: HOST + 'images/AbilityCastingThreeJS.jpg',
             },
         ]
     }
