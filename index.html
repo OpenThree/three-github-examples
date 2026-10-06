@@ -9,11 +9,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml"
         href="https://z2586300277.github.io/three-cesium-examples/files/site/logo.svg" />
+    <style>
+        #github-view-toggle{position:fixed;left:24px;bottom:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:11px 16px;border:1px solid #ffffff30;border-radius:999px;background:#0b1730ed;color:#fff;box-shadow:0 8px 24px #06102566;font:600 14px "Segoe UI",sans-serif;cursor:pointer;backdrop-filter:blur(10px);transition:transform .18s,background .18s}
+        #github-view-toggle:hover{transform:translateY(-2px);background:#172749}
+        #github-view-toggle:focus-visible{outline:2px solid #38a2ff;outline-offset:3px}
+        #github-view-toggle svg{width:17px;height:17px;fill:none;stroke:#38a2ff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    </style>
     <script type="module">
         import GITHUB_EXAMPLES from './githubExamples.js';
+        import GITHUB_GROUPS from './githubGroups.js';
         import THREE_EXAMPLES from './threeExamples.js';
         window.THREE_EXAMPLES = THREE_EXAMPLES;
         window.GITHUB_EXAMPLES = GITHUB_EXAMPLES;
+        window.GITHUB_GROUPS = GITHUB_GROUPS;
         window.FIX_HOST = 'https://z2586300277.github.io/three-cesium-examples/'
     </script>
     <script type="module" src="https://z2586300277.github.io/three-cesium-examples/config/config.js"></script>
@@ -21,6 +29,13 @@
 
 <body>
     <div id="app"></div>
+    <button id="github-view-toggle" type="button" aria-label="切换 GitHub 案例展示方式">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 7h13l-3-3M17 17H4l3 3" />
+            <path d="M20 7a8 8 0 0 1-8 8M4 17a8 8 0 0 1 8-8" />
+        </svg>
+        <span></span>
+    </button>
     <script type="module">
         window.THREE_CESIUM_NAVIGATION.reverse();
         const threeExamples = window.THREE_CESIUM_NAVIGATION.find(i => i.name === 'ThreeJS');
@@ -30,7 +45,15 @@
         if (index2 !== -1) window.THREE_CESIUM_NAVIGATION.splice(index2, 1);
 
         const githubExamples = window.THREE_CESIUM_NAVIGATION.find(i => i.name === 'Github');
-        if (githubExamples) githubExamples.examples = window.GITHUB_EXAMPLES;
+        const githubViewMode = localStorage.getItem('githubViewMode') || 'list';
+        if (githubExamples) {
+            githubExamples.examples = githubViewMode === 'groups'
+                ? window.GITHUB_GROUPS
+                : window.GITHUB_EXAMPLES.map(group => ({
+                    ...group,
+                    children: [...group.children].reverse(),
+                }));
+        }
 
         /* 语言切换 */
         if (localStorage.getItem('langEn') === 'true') {
@@ -49,7 +72,14 @@
             })
 
         }
-
+        const githubViewToggle = document.querySelector('#github-view-toggle');
+        githubViewToggle.querySelector('span').textContent = githubViewMode === 'groups'
+            ? '切换列表'
+            : '切换分类';
+        githubViewToggle.addEventListener('click', () => {
+            localStorage.setItem('githubViewMode', githubViewMode === 'groups' ? 'list' : 'groups');
+            window.location.reload();
+        });
     </script>
 </body>
 
