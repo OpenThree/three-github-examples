@@ -1555,6 +1555,15 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/AbilityCastingThreeJS',
                 image: HOST + 'images/AbilityCastingThreeJS.jpg',
             },
+            {
+                id: 'tokyoThree3d',
+                name: 'tokyoThree3d',
+                name_en: 'tokyoThree3d',
+                author: 'AUTO',
+                openUrl: 'https://jeantimex.github.io/tokyo/',
+                githubUrl: 'https://github.com/jeantimex/tokyo',
+                image: HOST + 'images/tokyoThree3d.webp',
+            },
         ]
     }
 ]
