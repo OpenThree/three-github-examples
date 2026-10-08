@@ -1573,6 +1573,24 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/ProceduralBuildingsThreeJS',
                 image: HOST + 'images/ProceduralBuildingsThreeJS.webp',
             },
+            {
+                id: 'image-blaster',
+                name: 'image-blaster',
+                name_en: 'image-blaster',
+                author: 'AUTO',
+                openUrl: 'https://github.com/neilsonnn/image-blaster',
+                githubUrl: 'https://github.com/neilsonnn/image-blaster',
+                image: HOST + 'images/image-blaster.webp',
+            },
+            {
+                id: '3dviz-pro-max',
+                name: '3dviz-pro-max',
+                name_en: '3dviz-pro-max',
+                author: 'AUTO',
+                openUrl: 'https://3dviz.dev/',
+                githubUrl: 'https://github.com/viettranx/3dviz-pro-max',
+                image: HOST + 'images/3dviz-pro-max.webp',
+            },
         ]
     }
 ]
