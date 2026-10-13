@@ -1591,6 +1591,42 @@ export default [
                 githubUrl: 'https://github.com/viettranx/3dviz-pro-max',
                 image: HOST + 'images/3dviz-pro-max.webp',
             },
+            {
+                id: 'duo-swat',
+                name: 'duo-swat',
+                name_en: 'duo-swat',
+                author: 'AUTO',
+                openUrl: 'https://erayyavuz.github.io/duo-swat/',
+                githubUrl: 'https://github.com/erayyavuz/duo-swat',
+                image: HOST + 'images/duo-swat.webp',
+            },
+            {
+                id: 'dental-scope',
+                name: 'dental-scope',
+                name_en: 'dental-scope',
+                author: 'AUTO',
+                openUrl: 'https://dental-scope.com/',
+                githubUrl: 'https://github.com/Yoosseph/dental-scope',
+                image: HOST + 'images/dental-scope.webp',
+            },
+            {
+                id: 'awesome-opus5-5-videos',
+                name: 'awesome-opus5-5-videos',
+                name_en: 'awesome-opus5-5-videos',
+                author: 'AUTO',
+                openUrl: 'https://skillry.dev/ai-videos/opus-5-5',
+                githubUrl: 'https://github.com/yihui-dev/awesome-opus5-5-videos',
+                image: HOST + 'images/awesome-opus5-5-videos.webp',
+            },
+            {
+                id: 'DeepMonkey-Studio',
+                name: 'DeepMonkey-Studio',
+                name_en: 'DeepMonkey-Studio',
+                author: 'AUTO',
+                openUrl: 'https://fatasia.github.io/DeepMonkey-Studio',
+                githubUrl: 'https://github.com/fatasia/DeepMonkey-Studio',
+                image: HOST + 'images/DeepMonkey-Studio.webp',
+            },
         ]
     }
 ]
