@@ -745,6 +745,16 @@ export default [
         openUrl: 'https://abilitycastingthreejs.chirostudio.xyz/',
         githubUrl: 'https://github.com/achrefelouafi/AbilityCastingThreeJS',
         image: HOST + 'images/AbilityCastingThreeJS.jpg',
+      },
+      {
+        id: 'duo-swat',
+        name: 'duo-swat',
+        name_en: 'Duo Swat',
+        tip: '这是一个基于 Three.js 的交互式小玩具，模拟用手拍打折叠屏手机来夹住苍蝇。你通过移动鼠标或拖动屏幕来瞄准，点击或按空格键合上手机，如果苍蝇正好在两块屏幕之间就会被夹住。苍蝇会在空中嗡嗡飞，有时会落在屏幕上，但快速移动会惊扰它们。每拍死一只苍蝇，它就会留在屏幕底部。项目使用纯 ES 模块和 import map 加载 three@0.170.0，无需构建步骤。手机模型基于 iPhone Duo 的公开尺寸，包含钛金属边框、铰链盖、摄像头模组和可弯曲的内屏。手部模型来自 MakeHuman，带有红色长指甲，完全位于手机后方，避免折叠时穿模。苍蝇模型有复眼、条纹胸部和关节腿，并具有飞行、着陆和逃跑行为。音效通过 WebAudio 合成，包括嗡嗡声、拍打声和挤压声。还支持调试参数，如调整时间尺度、冻结折叠角度或近距离观察苍蝇。适合在浏览器中体验物理交互和 Three.js 渲染效果。',
+        author: 'AUTO',
+        openUrl: 'https://erayyavuz.github.io/duo-swat/',
+        githubUrl: 'https://github.com/erayyavuz/duo-swat',
+        image: HOST + 'images/duo-swat.webp',
       }
     ],
   },
@@ -816,6 +826,26 @@ export default [
         openUrl: 'https://g2657.github.io/GeometryPainterThreeJS/',
         githubUrl: 'https://github.com/achrefelouafi/GeometryPainterThreeJS',
         image: HOST + 'images/GeometryPainterThreeJS.webp',
+      },
+      {
+        id: 'awesome-opus5-5-videos',
+        name: 'awesome-opus5-5-videos',
+        name_en: 'Awesome Opus 5.5 Videos',
+        tip: '这是一个由 Claude Opus 5.5 生成的病毒式视频合集，每个视频都附带了创作者分享的提示词或原始帖子。所有视频都是通过让 Claude Opus 5.5 用代码编写动画（如 HTML、Canvas、SVG、Three.js 等）制作而成。你可以挑选一个视频，复制其提示词，然后用自己的 AI 代理尝试生成类似效果。合集包含 853 个提示词，其中 523 个在 Skillry 上有实时重制版。内容按类别组织，包括动态图形、解释性视频、3D 场景、游戏与交互等，并持续更新。每个条目都链接到创作者的原始帖子，方便追溯来源。这个项目适合想要探索 AI 生成动画能力、获取创意灵感或直接复用提示词进行实验的开发者和创作者。通过浏览不同类别的视频和提示词，你可以了解如何用自然语言描述复杂的视觉动画，并借助 AI 快速实现。',
+        author: 'AUTO',
+        openUrl: 'https://skillry.dev/ai-videos/opus-5-5',
+        githubUrl: 'https://github.com/yihui-dev/awesome-opus5-5-videos',
+        image: HOST + 'images/awesome-opus5-5-videos.webp',
+      },
+      {
+        id: 'DeepMonkey-Studio',
+        name: '作者的话',
+        name_en: '作者的话',
+        tip: 'DeepMonkey Studio 是一个 AI 原生的可编程三维世界底座，定位为面向元宇宙、AI for Science 和世界模型的开源平台。它提供了从底层自研引擎、数据平台到上层 2D/3D 编辑器、脚本编辑器和插件的完整工具链。底层针对 WebGPU、渲染、工业与 BIM 模型进行了优化，模块独立简洁，可单独作为 SDK 使用。核心功能包括：AI 与本体结合，理解工程对象、关系与可执行动作，并能根据授权修改对象、查询数据或运行分析；将模型、数据与仿真集成在同一工程中，支持 2D 看板、3D 场景、设备拓扑和实时数据；支持导入 IFC、STEP、IGES、DWG、glTF、URDF 等工业模型，并进行轻量化处理；自研引擎支持 WebGPU、Rust 原生和 WASM 共享场景包，可通过 SDK、脚本 API、插件和 MCP 扩展；一次制作可多端交付，发布为 Web 应用。项目采用 M',
+        author: 'AUTO',
+        openUrl: 'https://fatasia.github.io/DeepMonkey-Studio',
+        githubUrl: 'https://github.com/fatasia/DeepMonkey-Studio',
+        image: HOST + 'images/DeepMonkey-Studio.webp',
       }
     ],
   },
@@ -1177,6 +1207,16 @@ export default [
         openUrl: 'https://pc-anatomy.com/',
         githubUrl: 'https://github.com/Yoosseph/pc-anatomy',
         image: HOST + 'images/pc-anatomy.webp',
+      },
+      {
+        id: 'dental-scope',
+        name: 'dental-scope',
+        name_en: 'Dental Scope',
+        tip: 'Dental Scope 是一个开源的交互式三维牙科解剖探索器，让你从整个口腔逐步深入到单颗牙齿的内部结构。你可以查看上下颌、牙龈、完整的恒牙列、神经和颞下颌关节，并进一步探索牙釉质、牙本质、牙髓腔和根管。所有 32 颗恒牙均可单独选择，并支持 FDI、Universal 和 Palmer 三种编号系统切换。每颗牙齿内部包含牙釉质、冠部和根部牙本质、牙骨质、牙周膜、牙髓腔及根管，并按照常见解剖配置呈现。提供五个解剖层级，可以逐层剥离牙齿结构。支持在整体口腔和单颗牙齿两个层面进行解剖，并可在矢状面、冠状面、轴面或视图对齐平面上进行横截面切割，切割面以实体组织渲染，清晰显示釉质厚度、牙本质和牙髓。你可以按名称、编号、组织或同义词搜索，并利用 19 个牙科类别的图层控制显示、隐藏或半透明。相机具有弧形聚焦过渡和八个视图预设，标签会锚定解剖结构并自动避让。还支持深度链接，方便直接跳转到特定牙齿或结',
+        author: 'AUTO',
+        openUrl: 'https://dental-scope.com/',
+        githubUrl: 'https://github.com/Yoosseph/dental-scope',
+        image: HOST + 'images/dental-scope.webp',
       }
     ],
   },
@@ -1553,10 +1593,10 @@ export default [
     ],
   },
   {
-    pid: 'aiTools',
-    name: 'AI工具',
-    name_en: 'AI Tools',
-    order: 80,
+    pid: 'ortherSource',
+    name: '其他资源',
+    name_en: 'Other Resources',
+    order: 90,
     children: [
       {
         id: 'articraft',
@@ -1707,15 +1747,7 @@ export default [
         openUrl: 'https://3dviz.dev/',
         githubUrl: 'https://github.com/viettranx/3dviz-pro-max',
         image: HOST + 'images/3dviz-pro-max.webp',
-      }
-    ],
-  },
-  {
-    pid: 'ortherSource',
-    name: '其他资源',
-    name_en: 'Other Resources',
-    order: 90,
-    children: [
+      },
       {
         id: 'icraft',
         name: '立体架构图',
