@@ -1510,7 +1510,7 @@ export default [
                 githubUrl: 'https://github.com/jaydendavisnc/inkwave',
                 image: HOST + 'images/inkwaveThree.webp',
             },
-            {
+{
                 id: 'MengTokage',
                 name: 'MengTokage',
                 name_en: 'MengTokage',
@@ -1528,7 +1528,7 @@ export default [
                 githubUrl: 'https://github.com/thebuggeddev/endless-train',
                 image: HOST + 'images/endless-train.jpg',
             },
-            {
+{
                 id: 'little-flock',
                 name: 'little-flock',
                 name_en: 'little-flock',
@@ -1537,7 +1537,7 @@ export default [
                 githubUrl: 'https://github.com/songkeys/little-flock',
                 image: HOST + 'images/little-flock.webp',
             },
-            {
+{
                 id: 'pc-anatomy',
                 name: 'pc-anatomy',
                 name_en: 'pc-anatomy',
@@ -1626,6 +1626,60 @@ export default [
                 openUrl: 'https://fatasia.github.io/DeepMonkey-Studio',
                 githubUrl: 'https://github.com/fatasia/DeepMonkey-Studio',
                 image: HOST + 'images/DeepMonkey-Studio.webp',
+            },
+            {
+                id: 'bees-waggle',
+                name: 'bees-waggle',
+                name_en: 'bees-waggle',
+                author: 'AUTO',
+                openUrl: 'https://thtbee.github.io/waggles/bees-waggle/',
+                githubUrl: 'https://github.com/thtbee/waggles/tree/main/bees-waggle',
+                image: HOST + 'images/bees-waggle.webp',
+            },
+            {
+                id: 'skyward-pagoda',
+                name: 'skyward-pagoda',
+                name_en: 'skyward-pagoda',
+                author: 'AUTO',
+                openUrl: 'https://thtbee.github.io/waggles/skyward-pagoda/',
+                githubUrl: 'https://github.com/thtbee/waggles/tree/main/skyward-pagoda',
+                image: HOST + 'images/skyward-pagoda.webp',
+            },
+            {
+                id: 'waggles',
+                name: 'waggles',
+                name_en: 'waggles',
+                author: 'AUTO',
+                openUrl: 'https://thtbee.github.io/waggles',
+                githubUrl: 'https://github.com/thtbee/waggles',
+                image: HOST + 'images/waggles.webp',
+            },
+            {
+                id: '3dgs-weather',
+                name: '3dgs-weather',
+                name_en: '3dgs-weather',
+                author: 'AUTO',
+                openUrl: 'https://3dgs-weather.pages.dev/',
+                githubUrl: 'https://github.com/hh-hang/3dgs-weather',
+                image: HOST + 'images/3dgs-weather.webp',
+            },
+            {
+                id: 'guangzhoupinme',
+                name: 'guangzhoupinme',
+                name_en: 'guangzhoupinme',
+                author: 'AUTO',
+                openUrl: 'https://522e7c37.pinme.dev/',
+                githubUrl: 'https://github.com/ns2250225/guangzhou',
+                image: HOST + 'images/guangzhoupinme.webp',
+            },
+            {
+                id: 'waggleskestrel-k1',
+                name: 'waggleskestrel-k1',
+                name_en: 'wagglesvkestrel-k1',
+                author: 'AUTO',
+                openUrl: 'https://thtbee.github.io/waggles/kestrel-k1/',
+                githubUrl: 'https://github.com/thtbee/waggles/tree/main/kestrel-k1',
+                image: HOST + 'images/waggleskestrel-k1.webp',
             },
         ]
     }
