@@ -1663,7 +1663,7 @@ export default [
                 githubUrl: 'https://github.com/hh-hang/3dgs-weather',
                 image: HOST + 'images/3dgs-weather.webp',
             },
-            {
+{
                 id: 'guangzhoupinme',
                 name: 'guangzhoupinme',
                 name_en: 'guangzhoupinme',
@@ -1672,7 +1672,7 @@ export default [
                 githubUrl: 'https://github.com/ns2250225/guangzhou',
                 image: HOST + 'images/guangzhoupinme.webp',
             },
-            {
+{
                 id: 'waggleskestrel-k1',
                 name: 'waggleskestrel-k1',
                 name_en: 'wagglesvkestrel-k1',
@@ -1735,7 +1735,7 @@ export default [
                 githubUrl: 'https://github.com/billpwchan/sakura-fantasy',
                 image: HOST + 'images/sakura-fantasy.webp',
             },
-            {
+{
                 id: 'threejseval',
                 name: 'threejseval',
                 name_en: 'threejseval',
@@ -1762,7 +1762,7 @@ export default [
                 githubUrl: 'https://github.com/Leonxlnx/athenaion',
                 image: HOST + 'images/athenaion.jpg',
             },
-            {
+{
                 id: 'tesla-roadster-stunt',
                 name: 'tesla-roadster-stunt',
                 name_en: 'tesla-roadster-stunt',
@@ -1771,7 +1771,7 @@ export default [
                 githubUrl: 'https://github.com/oik01/tesla-roadster-stunt',
                 image: HOST + 'images/tesla-roadster-stunt.webp',
             },
-            {
+{
                 id: 'roadster-liftoff',
                 name: 'roadster-liftoff',
                 name_en: 'roadster-liftoff',
@@ -1797,6 +1797,24 @@ export default [
                 openUrl: 'https://thtbee.github.io/waggles/plane-of-focus/',
                 githubUrl: 'https://github.com/thtbee/waggles/tree/main/plane-of-focus',
                 image: HOST + 'images/plane-of-focus.webp',
+            },
+            {
+                id: '3d-model-anything',
+                name: '3d-model-anything',
+                name_en: '3d-model-anything',
+                author: 'AUTO',
+                openUrl: 'https://wesbos.github.io/3d-model-anything/',
+                githubUrl: 'https://github.com/wesbos/3d-model-anything',
+                image: HOST + 'images/3d-model-anything.webp',
+            },
+            {
+                id: 'Open-Industry-Project',
+                name: 'Open-Industry-Project',
+                name_en: 'Open-Industry-Project',
+                author: 'AUTO',
+                openUrl: 'https://www.openindustryproject.org/',
+                githubUrl: 'https://github.com/Open-Industry-Project/Open-Industry-Project',
+                image: HOST + 'images/Open-Industry-Project.webp',
             },
         ]
     }
