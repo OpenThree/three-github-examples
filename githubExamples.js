@@ -1915,6 +1915,33 @@ export default [
                 githubUrl: 'https://github.com/z2586300277/three-cesium-examples',
                 image: HOST + 'images/motionsites3d.webp',
             },
+            {
+                id: 'ai-portals',
+                name: 'ai-portals',
+                name_en: 'ai-portals',
+                author: 'AUTO',
+                openUrl: 'https://portals-endless-worlds.netlify.app/',
+                githubUrl: 'https://github.com/emollick/ai-portals',
+                image: HOST + 'images/ai-portals.webp',
+            },
+            {
+                id: 'three-live',
+                name: 'three-live',
+                name_en: 'three-live',
+                author: 'AUTO',
+                openUrl: 'https://google.github.io/three-live/three/index.html',
+                githubUrl: 'https://github.com/google/three-live',
+                image: HOST + 'images/three-live.webp',
+            },
+            {
+                id: 'nvzhuang',
+                name: 'nvzhuang',
+                name_en: 'nvzhuang',
+                author: 'AUTO',
+                openUrl: 'https://paipiange.github.io/nvzhuang/',
+                githubUrl: 'https://github.com/paipiange/nvzhuang',
+                image: HOST + 'images/nvzhuang.webp',
+            },
         ]
     }
 ]
