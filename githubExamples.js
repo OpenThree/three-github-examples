@@ -1942,6 +1942,15 @@ export default [
                 githubUrl: 'https://github.com/paipiange/nvzhuang',
                 image: HOST + 'images/nvzhuang.webp',
             },
+            {
+                id: 'awesome-fable-52',
+                name: 'awesome-fable-52',
+                name_en: 'awesome-fable-52',
+                author: 'AUTO',
+                openUrl: 'https://github.com/fengyiqicoder/awesome-fable-5.2',
+                githubUrl: 'https://github.com/fengyiqicoder/awesome-fable-5.2',
+                image: HOST + 'images/awesome-fable-5.2.webp',
+            },
         ]
     }
 ]
