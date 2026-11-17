@@ -1951,6 +1951,42 @@ export default [
                 githubUrl: 'https://github.com/fengyiqicoder/awesome-fable-5.2',
                 image: HOST + 'images/awesome-fable-5.2.webp',
             },
+            {
+                id: 'lanternfall',
+                name: 'lanternfall',
+                name_en: 'lanternfall',
+                author: 'AUTO',
+                openUrl: 'https://loktar00.github.io/lanternfall/',
+                githubUrl: 'https://github.com/loktar00/lanternfall',
+                image: HOST + 'images/lanternfall.webp',
+            },
+            {
+                id: 'abyssal-garden',
+                name: 'abyssal-garden',
+                name_en: 'abyssal-garden',
+                author: 'AUTO',
+                openUrl: 'https://noniv.github.io/abyssal-garden/',
+                githubUrl: 'https://github.com/Noniv/abyssal-garden',
+                image: HOST + 'images/abyssal-garden.webp',
+            },
+            {
+                id: 'crimson-loong',
+                name: 'crimson-loong',
+                name_en: 'crimson-loong',
+                author: 'AUTO',
+                openUrl: 'https://chetaslua.github.io/crimson-loong/',
+                githubUrl: 'https://github.com/ChetasLua/crimson-loong',
+                image: HOST + 'images/crimson-loong.webp',
+            },
+            {
+                id: 'threejscc',
+                name: 'threejscc',
+                name_en: 'threejscc',
+                author: 'AUTO',
+                openUrl: 'https://threejs.cc/',
+                githubUrl: 'https://github.com/threejscc/threejscc',
+                image: HOST + 'images/threejscc.webp',
+            },
         ]
     }
 ]
