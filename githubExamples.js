@@ -1348,7 +1348,7 @@ export default [
                 githubUrl: 'https://github.com/Rising1234Sun/qingmingshanghetu',
                 image: HOST + 'images/qingmingshanghetu.webp',
             },
-            {
+{
                 id: 'qingmingsa',
                 name: 'qingmingsa',
                 name_en: 'qingmingsa',
@@ -1393,7 +1393,7 @@ export default [
                 githubUrl: 'https://github.com/bilawalsidhu/gods-eye-view',
                 image: HOST + 'images/gods-eye-view.webp',
             },
-            {
+{
                 id: 'zork-underground-empire',
                 name: 'zork-underground-empire',
                 name_en: 'zork-underground-empire',
@@ -1411,7 +1411,7 @@ export default [
                 githubUrl: 'https://github.com/squall01337/mixamo-llm-mocap',
                 image: HOST + 'images/mixamo-llm-mocap.webp',
             },
-            {
+{
                 id: 'paper-aquarium',
                 name: 'paper-aquarium',
                 name_en: 'paper-aquarium',
@@ -1420,7 +1420,7 @@ export default [
                 githubUrl: 'https://github.com/MrMoT9I/paper-aquarium',
                 image: HOST + 'images/paper-aquarium.webp',
             },
-            {
+{
                 id: 'seed-westlake',
                 name: 'seed-westlake',
                 name_en: 'seed-westlake',
@@ -1429,7 +1429,7 @@ export default [
                 githubUrl: 'https://github.com/ruanyf/seed-westlake',
                 image: HOST + 'images/seed-westlake.webp',
             },
-            {
+{
                 id: 'insect-world',
                 name: 'insect-world',
                 name_en: 'insect-world',
@@ -1438,7 +1438,7 @@ export default [
                 githubUrl: 'https://github.com/xr843/insect-world',
                 image: HOST + 'images/insect-world.webp',
             },
-            {
+{
                 id: 'campus-twin',
                 name: 'campus-twin',
                 name_en: 'campus-twin',
@@ -1447,7 +1447,7 @@ export default [
                 githubUrl: 'https://github.com/5758703/campus-twin',
                 image: HOST + 'images/campus-twin.webp',
             },
-            {
+{
                 id: 'pelican-bike',
                 name: 'pelican-bike',
                 name_en: 'pelican-bike',
@@ -1456,7 +1456,7 @@ export default [
                 githubUrl: 'https://github.com/riba2534/claude-opus-5-5-demo',
                 image: HOST + 'images/pelican-bike.webp',
             },
-            {
+{
                 id: 'tidewater',
                 name: 'tidewater',
                 name_en: 'tidewater',
@@ -1465,7 +1465,7 @@ export default [
                 githubUrl: 'https://github.com/dgreenheck/tidewater',
                 image: HOST + 'images/tidewater.webp',
             },
-            {
+{
                 id: 'grand-atelier',
                 name: 'grand-atelier',
                 name_en: 'grand-atelier',
@@ -1483,7 +1483,7 @@ export default [
                 githubUrl: 'https://github.com/MengTo/sylva',
                 image: HOST + 'images/sylva.webp',
             },
-            {
+{
                 id: 'voxel-musou',
                 name: 'voxel-musou',
                 name_en: 'voxel-musou',
@@ -1492,7 +1492,7 @@ export default [
                 githubUrl: 'https://github.com/mike007jd/voxel-musou',
                 image: HOST + 'images/voxel-musou.webp',
             },
-            {
+{
                 id: 'Transformers',
                 name: 'Transformers',
                 name_en: 'Transformers',
@@ -1501,7 +1501,7 @@ export default [
                 githubUrl: 'https://github.com/scottstts/Transformers',
                 image: HOST + 'images/Transformers.webp',
             },
-            {
+{
                 id: 'inkwaveThree',
                 name: 'inkwaveThree',
                 name_en: 'inkwaveThree',
@@ -1546,7 +1546,7 @@ export default [
                 githubUrl: 'https://github.com/Yoosseph/pc-anatomy',
                 image: HOST + 'images/pc-anatomy.webp',
             },
-            {
+{
                 id: 'AbilityCastingThreeJS',
                 name: 'AbilityCastingThreeJS',
                 name_en: 'AbilityCastingThreeJS',
@@ -1555,7 +1555,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/AbilityCastingThreeJS',
                 image: HOST + 'images/AbilityCastingThreeJS.jpg',
             },
-            {
+{
                 id: 'tokyoThree3d',
                 name: 'tokyoThree3d',
                 name_en: 'tokyoThree3d',
@@ -1564,7 +1564,7 @@ export default [
                 githubUrl: 'https://github.com/jeantimex/tokyo',
                 image: HOST + 'images/tokyoThree3d.webp',
             },
-            {
+{
                 id: 'ProceduralBuildingsThreeJS',
                 name: 'ProceduralBuildingsThreeJS',
                 name_en: 'ProceduralBuildingsThreeJS',
@@ -1573,7 +1573,7 @@ export default [
                 githubUrl: 'https://github.com/achrefelouafi/ProceduralBuildingsThreeJS',
                 image: HOST + 'images/ProceduralBuildingsThreeJS.webp',
             },
-            {
+{
                 id: 'image-blaster',
                 name: 'image-blaster',
                 name_en: 'image-blaster',
@@ -1582,7 +1582,7 @@ export default [
                 githubUrl: 'https://github.com/neilsonnn/image-blaster',
                 image: HOST + 'images/image-blaster.webp',
             },
-            {
+{
                 id: '3dviz-pro-max',
                 name: '3dviz-pro-max',
                 name_en: '3dviz-pro-max',
@@ -1591,7 +1591,7 @@ export default [
                 githubUrl: 'https://github.com/viettranx/3dviz-pro-max',
                 image: HOST + 'images/3dviz-pro-max.webp',
             },
-            {
+{
                 id: 'duo-swat',
                 name: 'duo-swat',
                 name_en: 'duo-swat',
@@ -1600,7 +1600,7 @@ export default [
                 githubUrl: 'https://github.com/erayyavuz/duo-swat',
                 image: HOST + 'images/duo-swat.webp',
             },
-            {
+{
                 id: 'dental-scope',
                 name: 'dental-scope',
                 name_en: 'dental-scope',
@@ -1618,7 +1618,7 @@ export default [
                 githubUrl: 'https://github.com/yihui-dev/awesome-opus5-5-videos',
                 image: HOST + 'images/awesome-opus5-5-videos.webp',
             },
-            {
+{
                 id: 'DeepMonkey-Studio',
                 name: 'DeepMonkey-Studio',
                 name_en: 'DeepMonkey-Studio',
@@ -1645,7 +1645,7 @@ export default [
                 githubUrl: 'https://github.com/thtbee/waggles/tree/main/skyward-pagoda',
                 image: HOST + 'images/skyward-pagoda.webp',
             },
-            {
+{
                 id: 'waggles',
                 name: 'waggles',
                 name_en: 'waggles',
@@ -1708,7 +1708,7 @@ export default [
                 githubUrl: 'https://github.com/billpwchan/neon-zenith',
                 image: HOST + 'images/neon-zenith.webp',
             },
-            {
+{
                 id: 'invisible-cities-astra',
                 name: 'invisible-cities-astra',
                 name_en: 'invisible-cities-astra',
@@ -1717,7 +1717,7 @@ export default [
                 githubUrl: 'https://github.com/stared/invisible-cities-astra',
                 image: HOST + 'images/invisible-cities-astra.webp',
             },
-            {
+{
                 id: 'invisible-cities-opus',
                 name: 'invisible-cities-opus-5.5',
                 name_en: 'invisible-cities-opus-5.5',
@@ -1726,7 +1726,7 @@ export default [
                 githubUrl: 'https://github.com/stared/invisible-cities-opus-5.5',
                 image: HOST + 'images/invisible-cities-opus-5.5.webp',
             },
-            {
+{
                 id: 'sakura-fantasy',
                 name: 'sakura-fantasy',
                 name_en: 'sakura-fantasy',
@@ -1744,7 +1744,7 @@ export default [
                 githubUrl: 'https://github.com/threejseval/threejseval',
                 image: HOST + 'images/threejseval.webp',
             },
-            {
+{
                 id: 'BMapViewer',
                 name: 'BMapViewer',
                 name_en: 'BMapViewer',
@@ -1753,7 +1753,7 @@ export default [
                 githubUrl: 'https://github.com/banyan666/BMapViewer',
                 image: HOST + 'images/BMapViewer.webp',
             },
-            {
+{
                 id: 'athenaion',
                 name: 'athenaion',
                 name_en: 'athenaion',
@@ -1789,7 +1789,7 @@ export default [
                 githubUrl: 'https://github.com/nathan6609/roadster-launch',
                 image: HOST + 'images/roadsterarena.webp',
             },
-            {
+{
                 id: 'plane-of-focus',
                 name: 'plane-of-focus',
                 name_en: 'plane-of-focus',
@@ -1798,7 +1798,7 @@ export default [
                 githubUrl: 'https://github.com/thtbee/waggles/tree/main/plane-of-focus',
                 image: HOST + 'images/plane-of-focus.webp',
             },
-            {
+{
                 id: '3d-model-anything',
                 name: '3d-model-anything',
                 name_en: '3d-model-anything',
@@ -1816,7 +1816,7 @@ export default [
                 githubUrl: 'https://github.com/Open-Industry-Project/Open-Industry-Project',
                 image: HOST + 'images/Open-Industry-Project.webp',
             },
-            {
+{
                 id: 'rainy-night-webgpu',
                 name: 'rainy-night-webgpu',
                 name_en: 'rainy-night-webgpu',
@@ -1843,7 +1843,7 @@ export default [
                 githubUrl: 'https://github.com/xikhar/xikhar.github.io',
                 image: HOST + 'images/sumiro.webp',
             },
-            {
+{
                 id: 'luxun-native-place',
                 name: 'luxun-native-place',
                 name_en: 'luxun-native-place',
@@ -1852,7 +1852,7 @@ export default [
                 githubUrl: 'https://github.com/ruanyf/luxun-native-place',
                 image: HOST + 'images/luxun-native-place.webp',
             },
-            {
+{
                 id: 'video-to-game',
                 name: 'video-to-game',
                 name_en: 'video-to-game',
@@ -1861,7 +1861,7 @@ export default [
                 githubUrl: 'https://github.com/lovisdotio/video-to-game',
                 image: HOST + 'images/video-to-game.webp',
             },
-            {
+{
                 id: 'open-water',
                 name: 'open-water',
                 name_en: 'open-water',
@@ -1870,7 +1870,7 @@ export default [
                 githubUrl: 'https://github.com/Leonxlnx/open-water',
                 image: HOST + 'images/open-water.webp',
             },
-            {
+{
                 id: 'Memories-of-Chinese-Porcelain-Web',
                 name: 'Memories-of-Chinese-Porcelain-Web',
                 name_en: 'Memories-of-Chinese-Porcelain-Web',
@@ -1879,7 +1879,7 @@ export default [
                 githubUrl: 'https://github.com/SherlockYzz/Memories-of-Chinese-Porcelain-Web',
                 image: HOST + 'images/Memories-of-Chinese-Porcelain-Web.webp',
             },
-            {
+{
                 id: 'floorplan-3d',
                 name: 'floorplan-3d',
                 name_en: 'floorplan-3d',
@@ -1888,7 +1888,7 @@ export default [
                 githubUrl: 'https://github.com/wy51ai/floorplan-3d',
                 image: HOST + 'images/floorplan-3d.webp',
             },
-            {
+{
                 id: 'utsuroi',
                 name: 'utsuroi',
                 name_en: 'utsuroi',
@@ -1897,7 +1897,7 @@ export default [
                 githubUrl: 'https://github.com/billpwchan/utsuroi',
                 image: HOST + 'images/utsuroi.webp',
             },
-            {
+{
                 id: 'halcyon',
                 name: 'halcyon',
                 name_en: 'halcyon',
@@ -1915,7 +1915,7 @@ export default [
                 githubUrl: 'https://github.com/z2586300277/three-cesium-examples',
                 image: HOST + 'images/motionsites3d.webp',
             },
-            {
+{
                 id: 'ai-portals',
                 name: 'ai-portals',
                 name_en: 'ai-portals',
@@ -1986,6 +1986,24 @@ export default [
                 openUrl: 'https://threejs.cc/',
                 githubUrl: 'https://github.com/threejscc/threejscc',
                 image: HOST + 'images/threejscc.webp',
+            },
+            {
+                id: 'bettersky-cesium',
+                name: 'bettersky-cesium',
+                name_en: 'bettersky-cesium',
+                author: 'AUTO',
+                openUrl: 'https://iamthek.github.io/bettersky-cesium/',
+                githubUrl: 'https://github.com/iamthek/bettersky-cesium',
+                image: HOST + 'images/bettersky-cesium.webp',
+            },
+            {
+                id: 'yusi-wet-denier-lab',
+                name: 'yusi-wet-denier-lab',
+                name_en: 'yusi-wet-denier-lab',
+                author: 'AUTO',
+                openUrl: 'https://yusi-wet-denier-lab.netlify.app/',
+                githubUrl: 'https://github.com/MartinDelophy/yusi-wet-denier-lab',
+                image: HOST + 'images/yusi-wet-denier-lab.webp',
             },
         ]
     }
