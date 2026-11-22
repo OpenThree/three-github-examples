@@ -1609,7 +1609,7 @@ export default [
                 githubUrl: 'https://github.com/Yoosseph/dental-scope',
                 image: HOST + 'images/dental-scope.webp',
             },
-            {
+{
                 id: 'awesome-opus5-5-videos',
                 name: 'awesome-opus5-5-videos',
                 name_en: 'awesome-opus5-5-videos',
@@ -1627,7 +1627,7 @@ export default [
                 githubUrl: 'https://github.com/fatasia/DeepMonkey-Studio',
                 image: HOST + 'images/DeepMonkey-Studio.webp',
             },
-            {
+{
                 id: 'bees-waggle',
                 name: 'bees-waggle',
                 name_en: 'bees-waggle',
@@ -1636,7 +1636,7 @@ export default [
                 githubUrl: 'https://github.com/thtbee/waggles/tree/main/bees-waggle',
                 image: HOST + 'images/bees-waggle.webp',
             },
-            {
+{
                 id: 'skyward-pagoda',
                 name: 'skyward-pagoda',
                 name_en: 'skyward-pagoda',
@@ -1654,7 +1654,7 @@ export default [
                 githubUrl: 'https://github.com/thtbee/waggles',
                 image: HOST + 'images/waggles.webp',
             },
-            {
+{
                 id: '3dgs-weather',
                 name: '3dgs-weather',
                 name_en: '3dgs-weather',
@@ -1825,7 +1825,7 @@ export default [
                 githubUrl: 'https://github.com/yisky/rainy-night-webgpu',
                 image: HOST + 'images/rainy-night-webgpu.webp',
             },
-            {
+{
                 id: 'pixelfx',
                 name: 'pixelfx',
                 name_en: 'pixelfx',
@@ -1834,7 +1834,7 @@ export default [
                 githubUrl: 'https://github.com/patch-gg/pixelfx',
                 image: HOST + 'images/pixelfx.webp',
             },
-            {
+{
                 id: 'sumiro',
                 name: 'sumiro',
                 name_en: 'sumiro',
@@ -1906,7 +1906,7 @@ export default [
                 githubUrl: 'https://github.com/billpwchan/halcyon',
                 image: HOST + 'images/halcyon.webp',
             },
-            {
+{
                 id: 'motionsites3d',
                 name: 'motionsites3d',
                 name_en: 'motionsites3d',
@@ -1924,7 +1924,7 @@ export default [
                 githubUrl: 'https://github.com/emollick/ai-portals',
                 image: HOST + 'images/ai-portals.webp',
             },
-            {
+{
                 id: 'three-live',
                 name: 'three-live',
                 name_en: 'three-live',
@@ -1933,7 +1933,7 @@ export default [
                 githubUrl: 'https://github.com/google/three-live',
                 image: HOST + 'images/three-live.webp',
             },
-            {
+{
                 id: 'nvzhuang',
                 name: 'nvzhuang',
                 name_en: 'nvzhuang',
@@ -1942,7 +1942,7 @@ export default [
                 githubUrl: 'https://github.com/paipiange/nvzhuang',
                 image: HOST + 'images/nvzhuang.webp',
             },
-            {
+{
                 id: 'awesome-fable-52',
                 name: 'awesome-fable-52',
                 name_en: 'awesome-fable-52',
@@ -1978,7 +1978,7 @@ export default [
                 githubUrl: 'https://github.com/ChetasLua/crimson-loong',
                 image: HOST + 'images/crimson-loong.webp',
             },
-            {
+{
                 id: 'threejscc',
                 name: 'threejscc',
                 name_en: 'threejscc',
@@ -1987,7 +1987,7 @@ export default [
                 githubUrl: 'https://github.com/threejscc/threejscc',
                 image: HOST + 'images/threejscc.webp',
             },
-            {
+{
                 id: 'bettersky-cesium',
                 name: 'bettersky-cesium',
                 name_en: 'bettersky-cesium',
@@ -2004,6 +2004,33 @@ export default [
                 openUrl: 'https://yusi-wet-denier-lab.netlify.app/',
                 githubUrl: 'https://github.com/MartinDelophy/yusi-wet-denier-lab',
                 image: HOST + 'images/yusi-wet-denier-lab.webp',
+            },
+            {
+                id: 'awesome-astra-prompts',
+                name: 'awesome-astra-prompts',
+                name_en: 'awesome-astra-prompts',
+                author: 'AUTO',
+                openUrl: 'https://www.tripo3d.ai/3d-prompts/models/gpt-6-astra',
+                githubUrl: 'https://github.com/TripoGrowthLab/awesome-astra-prompts',
+                image: HOST + 'images/awesome-astra-prompts.webp',
+            },
+            {
+                id: 'threejsai',
+                name: 'threejsai',
+                name_en: 'threejsai',
+                author: 'AUTO',
+                openUrl: 'https://threejsai.com/',
+                githubUrl: 'https://github.com/threejsai/threejsai',
+                image: HOST + 'images/threejsai.webp',
+            },
+            {
+                id: 'one-sweep',
+                name: 'one-sweep',
+                name_en: 'one-sweep',
+                author: 'AUTO',
+                openUrl: 'https://github.com/anstapnever/one-sweep/raw/refs/heads/main/film/one-sweep.mp4',
+                githubUrl: 'https://github.com/anstapnever/one-sweep',
+                image: HOST + 'images/one-sweep.jpg',
             },
         ]
     }
