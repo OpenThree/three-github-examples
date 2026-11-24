@@ -2023,7 +2023,7 @@ export default [
                 githubUrl: 'https://github.com/threejsai/threejsai',
                 image: HOST + 'images/threejsai.webp',
             },
-            {
+{
                 id: 'one-sweep',
                 name: 'one-sweep',
                 name_en: 'one-sweep',
@@ -2031,6 +2031,15 @@ export default [
                 openUrl: 'https://github.com/anstapnever/one-sweep/raw/refs/heads/main/film/one-sweep.mp4',
                 githubUrl: 'https://github.com/anstapnever/one-sweep',
                 image: HOST + 'images/one-sweep.jpg',
+            },
+            {
+                id: 'casa-serra',
+                name: 'casa-serra',
+                name_en: 'casa-serra',
+                author: 'AUTO',
+                openUrl: 'https://sam1983aing.github.io/casa-serra/',
+                githubUrl: 'https://github.com/Sam1983Aing/casa-serra',
+                image: HOST + 'images/casa-serra.webp',
             },
         ]
     }
