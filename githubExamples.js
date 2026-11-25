@@ -1564,10 +1564,10 @@ export default [
                 githubUrl: 'https://github.com/jeantimex/tokyo',
                 image: HOST + 'images/tokyoThree3d.webp',
             },
-{
+            {
                 id: 'ProceduralBuildingsThreeJS',
-                name: 'ProceduralBuildingsThreeJS',
-                name_en: 'ProceduralBuildingsThreeJS',
+                name: '参数化建筑',
+                name_en: 'ProceduralBuildings',
                 author: 'AUTO',
                 openUrl: 'https://proceduralbuildings.chirostudio.xyz/',
                 githubUrl: 'https://github.com/achrefelouafi/ProceduralBuildingsThreeJS',
@@ -2040,6 +2040,15 @@ export default [
                 openUrl: 'https://sam1983aing.github.io/casa-serra/',
                 githubUrl: 'https://github.com/Sam1983Aing/casa-serra',
                 image: HOST + 'images/casa-serra.webp',
+            },
+            {
+                id: 'hmzq',
+                name: '幻梦-星光桌球',
+                name_en: 'hmzq',
+                author: 'AUTO',
+                openUrl: 'https://hmzq-billiards.app.workbuddy.host/?sharecode=M37O2RWK7U&shareId=cc0611f3fce2466aaefc9774d6ecc4f4',
+                githubUrl: 'https://github.com/HuanMengHaiYan/hmzq',
+                image: HOST + 'images/hmzq.webp',
             },
         ]
     }
