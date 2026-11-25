@@ -2050,6 +2050,15 @@ export default [
                 githubUrl: 'https://github.com/HuanMengHaiYan/hmzq',
                 image: HOST + 'images/hmzq.webp',
             },
+            {
+                id: 'three-screen-lab',
+                name: 'three-screen-lab',
+                name_en: 'three-screen-lab',
+                author: 'AUTO',
+                openUrl: 'https://yinweinidongle.github.io/screen-picture-demo/home.html',
+                githubUrl: 'https://github.com/agentthink/three-screen-lab',
+                image: HOST + 'images/three-screen-lab.webp',
+            },
         ]
     }
 ]
