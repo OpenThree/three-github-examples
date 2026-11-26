@@ -2059,6 +2059,24 @@ export default [
                 githubUrl: 'https://github.com/agentthink/three-screen-lab',
                 image: HOST + 'images/three-screen-lab.webp',
             },
+            {
+                id: 'sand3d',
+                name: 'sand3d',
+                name_en: 'sand3d',
+                author: 'AUTO',
+                openUrl: 'https://sandflow.ai/sand3d/',
+                githubUrl: 'https://github.com/Sandflow-ai/sand3d',
+                image: HOST + 'images/sand3d.webp',
+            },
+            {
+                id: 'Facade-crafter-threejs',
+                name: 'Facade-crafter-threejs',
+                name_en: 'Facade-crafter-threejs',
+                author: 'AUTO',
+                openUrl: 'https://g2657.github.io/Facade-crafter-threejs/',
+                githubUrl: 'https://github.com/achrefelouafi/Facade-crafter-threejs',
+                image: HOST + 'images/Facade-crafter-threejs.webp',
+            },
         ]
     }
 ]
